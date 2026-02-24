@@ -48,9 +48,22 @@ def git_value(repo_dir: Path, args: list[str]) -> str:
     return out.strip()
 
 
+def to_posix(path: Path) -> str:
+    return path.as_posix()
+
+
+def to_rel_posix(path: Path, base: Path) -> str:
+    try:
+        relative = path.resolve().relative_to(base.resolve())
+    except Exception:
+        relative = path.resolve()
+    return to_posix(relative)
+
+
 def repo_metadata(repo_dir: Path) -> dict[str, str]:
     return {
-        "path": str(repo_dir.resolve()),
+        "path": to_rel_posix(repo_dir, PROJECT_ROOT),
+        "path_base": "project_root",
         "branch": git_value(repo_dir, ["rev-parse", "--abbrev-ref", "HEAD"]),
         "commit": git_value(repo_dir, ["rev-parse", "HEAD"]),
         "remote_origin": git_value(repo_dir, ["remote", "get-url", "origin"]),
@@ -124,7 +137,7 @@ def extract_endpoints(backend_dir: Path) -> list[dict[str, Any]]:
                     method_path=normalize_path(method_path),
                     controller=controller_name,
                     java_method=java_method,
-                    file=str(file_path.as_posix()),
+                    file=to_rel_posix(file_path, backend_dir),
                     line=i + 1,
                 )
             )
@@ -167,7 +180,7 @@ def extract_entities(backend_dir: Path) -> list[dict[str, Any]]:
                 "table": table_match.group(1) if table_match else "",
                 "id_fields": id_fields,
                 "relationship_annotations": relationship_count,
-                "file": str(file_path.as_posix()),
+                "file": to_rel_posix(file_path, backend_dir),
             }
         )
     return entities
@@ -177,11 +190,13 @@ def extract_backend_structure(backend_dir: Path) -> dict[str, Any]:
     java_files = list(backend_dir.rglob("*.java"))
     return {
         "controllers": sorted(
-            str(p.as_posix()) for p in backend_dir.rglob("*Controller.java")
+            to_rel_posix(p, backend_dir) for p in backend_dir.rglob("*Controller.java")
         ),
-        "services": sorted(str(p.as_posix()) for p in backend_dir.rglob("*Service.java")),
+        "services": sorted(
+            to_rel_posix(p, backend_dir) for p in backend_dir.rglob("*Service.java")
+        ),
         "repositories": sorted(
-            str(p.as_posix()) for p in backend_dir.rglob("*Repository.java")
+            to_rel_posix(p, backend_dir) for p in backend_dir.rglob("*Repository.java")
         ),
         "total_java_files": len(java_files),
     }
@@ -191,7 +206,7 @@ def extract_frontend_components(frontend_dir: Path) -> list[str]:
     components_dir = frontend_dir / "src" / "components"
     if not components_dir.exists():
         return []
-    return sorted(str(p.as_posix()) for p in components_dir.rglob("*.js"))
+    return sorted(to_rel_posix(p, frontend_dir) for p in components_dir.rglob("*.js"))
 
 
 def extract_frontend_api_calls(frontend_dir: Path) -> list[dict[str, Any]]:
@@ -283,6 +298,10 @@ def build_ground_truth(backend_dir: Path, frontend_dir: Path) -> dict[str, Any]:
     frontend_api_calls = extract_frontend_api_calls(frontend_dir)
 
     return {
+        "path_policy": {
+            "filesystem_paths": "project_relative_or_repo_relative_posix",
+            "path_separator": "/",
+        },
         "sources": {
             "backend": repo_metadata(backend_dir),
             "frontend": repo_metadata(frontend_dir),

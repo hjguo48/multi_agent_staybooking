@@ -1,13 +1,19 @@
 {
+  "path_policy": {
+    "filesystem_paths": "project_relative_or_repo_relative_posix",
+    "path_separator": "/"
+  },
   "sources": {
     "backend": {
-      "path": "D:\\CASTGAN_Project\\multi-agent staybooking\\ground_truth\\staybooking-project",
+      "path": "ground_truth/staybooking-project",
+      "path_base": "project_root",
       "branch": "main",
       "commit": "81b85eab7d2d14076eb9b32234522b2f42c66382",
       "remote_origin": "https://github.com/hjguo48/staybooking-project.git"
     },
     "frontend": {
-      "path": "D:\\CASTGAN_Project\\multi-agent staybooking\\ground_truth\\stayboookingfe",
+      "path": "ground_truth/stayboookingfe",
+      "path_base": "project_root",
       "branch": "main",
       "commit": "4a7a9551a37d6210c40760b30218b20cb03f8394",
       "remote_origin": "https://github.com/hjguo48/stayboookingfe.git"
@@ -22,7 +28,7 @@
         "method_path": "/register",
         "controller": "AuthenticationController",
         "java_method": "register",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/authentication/AuthenticationController.java",
+        "file": "src/main/java/com/laioffer/staybooking/authentication/AuthenticationController.java",
         "line": 24
       },
       {
@@ -32,7 +38,7 @@
         "method_path": "/login",
         "controller": "AuthenticationController",
         "java_method": "login",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/authentication/AuthenticationController.java",
+        "file": "src/main/java/com/laioffer/staybooking/authentication/AuthenticationController.java",
         "line": 31
       },
       {
@@ -42,7 +48,7 @@
         "method_path": "",
         "controller": "BookingController",
         "java_method": "getGuestBookings",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/booking/BookingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/booking/BookingController.java",
         "line": 28
       },
       {
@@ -52,7 +58,7 @@
         "method_path": "",
         "controller": "BookingController",
         "java_method": "createBooking",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/booking/BookingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/booking/BookingController.java",
         "line": 34
       },
       {
@@ -62,7 +68,7 @@
         "method_path": "/{bookingId}",
         "controller": "BookingController",
         "java_method": "deleteBooking",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/booking/BookingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/booking/BookingController.java",
         "line": 41
       },
       {
@@ -72,7 +78,7 @@
         "method_path": "",
         "controller": "ListingController",
         "java_method": "getListings",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/listing/ListingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/listing/ListingController.java",
         "line": 34
       },
       {
@@ -82,7 +88,7 @@
         "method_path": "",
         "controller": "ListingController",
         "java_method": "createListing",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/listing/ListingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/listing/ListingController.java",
         "line": 40
       },
       {
@@ -92,7 +98,7 @@
         "method_path": "/{listingId}",
         "controller": "ListingController",
         "java_method": "deleteListing",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/listing/ListingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/listing/ListingController.java",
         "line": 54
       },
       {
@@ -102,7 +108,7 @@
         "method_path": "/search",
         "controller": "ListingController",
         "java_method": "search",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/listing/ListingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/listing/ListingController.java",
         "line": 61
       },
       {
@@ -112,7 +118,7 @@
         "method_path": "/{listingId}/bookings",
         "controller": "ListingController",
         "java_method": "getListingBookings",
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/listing/ListingController.java",
+        "file": "src/main/java/com/laioffer/staybooking/listing/ListingController.java",
         "line": 77
       }
     ],
@@ -124,7 +130,7 @@
           "id"
         ],
         "relationship_annotations": 2,
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/model/BookingEntity.java"
+        "file": "src/main/java/com/laioffer/staybooking/model/BookingEntity.java"
       },
       {
         "class": "ListingEntity",
@@ -133,7 +139,7 @@
           "id"
         ],
         "relationship_annotations": 1,
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/model/ListingEntity.java"
+        "file": "src/main/java/com/laioffer/staybooking/model/ListingEntity.java"
       },
       {
         "class": "UserEntity",
@@ -142,36 +148,36 @@
           "id"
         ],
         "relationship_annotations": 0,
-        "file": "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/model/UserEntity.java"
+        "file": "src/main/java/com/laioffer/staybooking/model/UserEntity.java"
       }
     ],
     "structure": {
       "controllers": [
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/authentication/AuthenticationController.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/booking/BookingController.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/listing/ListingController.java"
+        "src/main/java/com/laioffer/staybooking/authentication/AuthenticationController.java",
+        "src/main/java/com/laioffer/staybooking/booking/BookingController.java",
+        "src/main/java/com/laioffer/staybooking/listing/ListingController.java"
       ],
       "services": [
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/authentication/AuthenticationService.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/booking/BookingService.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/listing/ListingService.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/location/GeocodingService.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/storage/ImageStorageService.java"
+        "src/main/java/com/laioffer/staybooking/authentication/AuthenticationService.java",
+        "src/main/java/com/laioffer/staybooking/booking/BookingService.java",
+        "src/main/java/com/laioffer/staybooking/listing/ListingService.java",
+        "src/main/java/com/laioffer/staybooking/location/GeocodingService.java",
+        "src/main/java/com/laioffer/staybooking/storage/ImageStorageService.java"
       ],
       "repositories": [
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/repository/BookingRepository.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/repository/ListingRepository.java",
-        "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/staybooking-project/src/main/java/com/laioffer/staybooking/repository/UserRepository.java"
+        "src/main/java/com/laioffer/staybooking/repository/BookingRepository.java",
+        "src/main/java/com/laioffer/staybooking/repository/ListingRepository.java",
+        "src/main/java/com/laioffer/staybooking/repository/UserRepository.java"
       ],
       "total_java_files": 41
     }
   },
   "frontend": {
     "components": [
-      "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/stayboookingfe/src/components/GuestHomePage.js",
-      "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/stayboookingfe/src/components/HostHomePage.js",
-      "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/stayboookingfe/src/components/LoginPage.js",
-      "D:/CASTGAN_Project/multi-agent staybooking/ground_truth/stayboookingfe/src/components/UploadStay.js"
+      "src/components/GuestHomePage.js",
+      "src/components/HostHomePage.js",
+      "src/components/LoginPage.js",
+      "src/components/UploadStay.js"
     ],
     "api_calls": [
       {

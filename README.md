@@ -106,3 +106,5 @@ Week 3 Step 2 artifacts generated:
 
 - Ground truth uses repository reality as source of truth.
 - Methodology numeric assumptions are treated as reference only.
+- Ground truth filesystem paths in JSON are emitted as portable POSIX relative paths
+  (no machine-specific absolute paths).

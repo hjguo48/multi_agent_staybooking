@@ -1,32 +1,32 @@
 {
   "pipeline": "week1_baseline_pipeline",
   "config_path": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\experiment_configs\\week1_baseline.json",
-  "executed_at": "2026-02-24T07:26:08.091520+00:00",
+  "executed_at": "2026-02-24T14:00:50.980469+00:00",
   "status": "success",
   "steps": [
     {
       "name": "verify_baseline_lock",
       "command": [
-        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
+        "E:\\Python\\python.exe",
         "evaluation/verify_baseline_lock.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-24T07:26:07.571999+00:00",
-      "ended_at": "2026-02-24T07:26:07.809536+00:00",
+      "started_at": "2026-02-24T14:00:50.399801+00:00",
+      "ended_at": "2026-02-24T14:00:50.675637+00:00",
       "stdout": "[backend] OK commit=81b85eab7d2d14076eb9b32234522b2f42c66382 branch=main origin=https://github.com/hjguo48/staybooking-project.git\n[frontend] OK commit=4a7a9551a37d6210c40760b30218b20cb03f8394 branch=main origin=https://github.com/hjguo48/stayboookingfe.git\nBASELINE_VERIFY: PASS\n",
       "stderr": ""
     },
     {
       "name": "extract_ground_truth",
       "command": [
-        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
+        "E:\\Python\\python.exe",
         "evaluation/extract_ground_truth.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-24T07:26:07.809536+00:00",
-      "ended_at": "2026-02-24T07:26:08.091520+00:00",
+      "started_at": "2026-02-24T14:00:50.675637+00:00",
+      "ended_at": "2026-02-24T14:00:50.980469+00:00",
       "stdout": "Wrote JSON: D:\\CASTGAN_Project\\multi-agent staybooking\\ground_truth\\benchmark\\staybooking_ground_truth.json\nWrote report: D:\\CASTGAN_Project\\multi-agent staybooking\\ground_truth\\benchmark\\staybooking_ground_truth.md\n",
       "stderr": ""
     }

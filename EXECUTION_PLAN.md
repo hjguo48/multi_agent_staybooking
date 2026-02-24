@@ -191,6 +191,11 @@ Plan owner: Project execution baseline agreed with user.
 - Unit tests expanded:
 - `tests/test_sequential_topology.py`
 - `tests/test_tools.py`
-- `python -m unittest discover -s tests -p "test_*.py"` => PASS (15 tests)
+- Ground truth portability fix:
+- `evaluation/extract_ground_truth.py` now emits repo-relative/project-relative POSIX paths
+- `tests/test_ground_truth_paths.py` prevents absolute-path regressions
+- `python evaluation/extract_ground_truth.py` => PASS (portable benchmark regenerated)
+- `python run_experiment.py --task week1` => PASS after portability change
+- `python -m unittest discover -s tests -p "test_*.py"` => PASS (16 tests)
 - Week 3 status: COMPLETE
 - Next phase: Week 4 Hub-and-Spoke topology implementation.
