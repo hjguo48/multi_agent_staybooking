@@ -1,0 +1,213 @@
+{
+  "status": "success",
+  "contract_path": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompt_contracts.json",
+  "total_checks": 34,
+  "passed_checks": 34,
+  "failed_checks": 0,
+  "checks": [
+    {
+      "agent": "pm",
+      "check_name": "prompt_file_exists",
+      "passed": true,
+      "details": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\pm_agent.md"
+    },
+    {
+      "agent": "pm",
+      "check_name": "schema_file_exists",
+      "passed": true,
+      "details": "D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\requirements.json"
+    },
+    {
+      "agent": "pm",
+      "check_name": "schema_key_project_name",
+      "passed": true,
+      "details": "prop=True, required=True, key=project_name"
+    },
+    {
+      "agent": "pm",
+      "check_name": "schema_key_functional_requirements",
+      "passed": true,
+      "details": "prop=True, required=True, key=functional_requirements"
+    },
+    {
+      "agent": "pm",
+      "check_name": "schema_key_non_functional_requirements",
+      "passed": true,
+      "details": "prop=True, required=True, key=non_functional_requirements"
+    },
+    {
+      "agent": "pm",
+      "check_name": "schema_key_api_contracts",
+      "passed": true,
+      "details": "prop=True, required=True, key=api_contracts"
+    },
+    {
+      "agent": "pm",
+      "check_name": "schema_key_data_model",
+      "passed": true,
+      "details": "prop=True, required=True, key=data_model"
+    },
+    {
+      "agent": "pm",
+      "check_name": "prompt_contains::Output MUST be valid JSON",
+      "passed": true,
+      "details": "token=Output MUST be valid JSON"
+    },
+    {
+      "agent": "pm",
+      "check_name": "prompt_contains::schemas/requirements.json",
+      "passed": true,
+      "details": "token=schemas/requirements.json"
+    },
+    {
+      "agent": "pm",
+      "check_name": "prompt_contains::functional_requirements",
+      "passed": true,
+      "details": "token=functional_requirements"
+    },
+    {
+      "agent": "pm",
+      "check_name": "prompt_contains::api_contracts",
+      "passed": true,
+      "details": "token=api_contracts"
+    },
+    {
+      "agent": "architect",
+      "check_name": "prompt_file_exists",
+      "passed": true,
+      "details": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\architect_agent.md"
+    },
+    {
+      "agent": "architect",
+      "check_name": "schema_file_exists",
+      "passed": true,
+      "details": "D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\architecture.json"
+    },
+    {
+      "agent": "architect",
+      "check_name": "schema_key_tech_stack",
+      "passed": true,
+      "details": "prop=True, required=True, key=tech_stack"
+    },
+    {
+      "agent": "architect",
+      "check_name": "schema_key_modules",
+      "passed": true,
+      "details": "prop=True, required=True, key=modules"
+    },
+    {
+      "agent": "architect",
+      "check_name": "schema_key_database_schema",
+      "passed": true,
+      "details": "prop=True, required=True, key=database_schema"
+    },
+    {
+      "agent": "architect",
+      "check_name": "schema_key_openapi_spec",
+      "passed": true,
+      "details": "prop=True, required=True, key=openapi_spec"
+    },
+    {
+      "agent": "architect",
+      "check_name": "schema_key_deployment",
+      "passed": true,
+      "details": "prop=True, required=True, key=deployment"
+    },
+    {
+      "agent": "architect",
+      "check_name": "prompt_contains::Output MUST be valid JSON",
+      "passed": true,
+      "details": "token=Output MUST be valid JSON"
+    },
+    {
+      "agent": "architect",
+      "check_name": "prompt_contains::schemas/architecture.json",
+      "passed": true,
+      "details": "token=schemas/architecture.json"
+    },
+    {
+      "agent": "architect",
+      "check_name": "prompt_contains::openapi_spec",
+      "passed": true,
+      "details": "token=openapi_spec"
+    },
+    {
+      "agent": "architect",
+      "check_name": "prompt_contains::modules",
+      "passed": true,
+      "details": "token=modules"
+    },
+    {
+      "agent": "qa",
+      "check_name": "prompt_file_exists",
+      "passed": true,
+      "details": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\qa_agent.md"
+    },
+    {
+      "agent": "qa",
+      "check_name": "schema_file_exists",
+      "passed": true,
+      "details": "D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\bug_report.json"
+    },
+    {
+      "agent": "qa",
+      "check_name": "schema_key_bug_id",
+      "passed": true,
+      "details": "prop=True, required=True, key=bug_id"
+    },
+    {
+      "agent": "qa",
+      "check_name": "schema_key_severity",
+      "passed": true,
+      "details": "prop=True, required=True, key=severity"
+    },
+    {
+      "agent": "qa",
+      "check_name": "schema_key_category",
+      "passed": true,
+      "details": "prop=True, required=True, key=category"
+    },
+    {
+      "agent": "qa",
+      "check_name": "schema_key_file",
+      "passed": true,
+      "details": "prop=True, required=True, key=file"
+    },
+    {
+      "agent": "qa",
+      "check_name": "schema_key_description",
+      "passed": true,
+      "details": "prop=True, required=True, key=description"
+    },
+    {
+      "agent": "qa",
+      "check_name": "schema_key_related_requirement",
+      "passed": true,
+      "details": "prop=True, required=True, key=related_requirement"
+    },
+    {
+      "agent": "qa",
+      "check_name": "prompt_contains::schemas/bug_report.json",
+      "passed": true,
+      "details": "token=schemas/bug_report.json"
+    },
+    {
+      "agent": "qa",
+      "check_name": "prompt_contains::related requirement ID",
+      "passed": true,
+      "details": "token=related requirement ID"
+    },
+    {
+      "agent": "qa",
+      "check_name": "prompt_contains::Critical",
+      "passed": true,
+      "details": "token=Critical"
+    },
+    {
+      "agent": "qa",
+      "check_name": "prompt_contains::Major",
+      "passed": true,
+      "details": "token=Major"
+    }
+  ]
+}

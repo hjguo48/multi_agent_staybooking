@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://staybooking.local/schemas/architecture.json",
+  "title": "ArchitectureDesign",
+  "type": "object",
+  "required": [
+    "tech_stack",
+    "modules",
+    "database_schema",
+    "openapi_spec",
+    "deployment"
+  ],
+  "properties": {
+    "tech_stack": {
+      "type": "object"
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "responsibility"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "responsibility": {
+            "type": "string"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "database_schema": {
+      "type": "object"
+    },
+    "openapi_spec": {
+      "type": "object"
+    },
+    "deployment": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

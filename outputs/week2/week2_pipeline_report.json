@@ -1,0 +1,66 @@
+{
+  "pipeline": "week2_core_runtime_smoke",
+  "config_path": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\experiment_configs\\week2_smoke.json",
+  "executed_at": "2026-02-24T07:22:30.177928+00:00",
+  "status": "success",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "E:\\Python\\python.exe",
+        "evaluation/verify_baseline_lock.py"
+      ],
+      "returncode": 0,
+      "status": "success",
+      "started_at": "2026-02-24T07:22:29.721142+00:00",
+      "ended_at": "2026-02-24T07:22:29.933292+00:00",
+      "stdout": "[backend] OK commit=81b85eab7d2d14076eb9b32234522b2f42c66382 branch=main origin=https://github.com/hjguo48/staybooking-project.git\n[frontend] OK commit=4a7a9551a37d6210c40760b30218b20cb03f8394 branch=main origin=https://github.com/hjguo48/stayboookingfe.git\nBASELINE_VERIFY: PASS\n",
+      "stderr": ""
+    },
+    {
+      "name": "week2_smoke",
+      "command": [
+        "E:\\Python\\python.exe",
+        "evaluation/week2_smoke.py"
+      ],
+      "returncode": 0,
+      "status": "success",
+      "started_at": "2026-02-24T07:22:29.933292+00:00",
+      "ended_at": "2026-02-24T07:22:29.998977+00:00",
+      "stdout": "[PASS] project_state_created: run_id=0125e76683ff4cefba4e4f048aab1206\n[PASS] artifact_versioning: requirements latest version=2\n[PASS] message_log_tracking: message_count=2\n[PASS] usage_counters: tokens=256, api_calls=1\nState snapshot: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week2\\week2_smoke_state.json\nReport: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week2\\week2_smoke_report.json\n",
+      "stderr": ""
+    },
+    {
+      "name": "validate_prompt_contracts",
+      "command": [
+        "E:\\Python\\python.exe",
+        "evaluation/validate_prompt_contracts.py"
+      ],
+      "returncode": 0,
+      "status": "success",
+      "started_at": "2026-02-24T07:22:29.998977+00:00",
+      "ended_at": "2026-02-24T07:22:30.064957+00:00",
+      "stdout": "[PASS] pm::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\pm_agent.md\n[PASS] pm::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\requirements.json\n[PASS] pm::schema_key_project_name - prop=True, required=True, key=project_name\n[PASS] pm::schema_key_functional_requirements - prop=True, required=True, key=functional_requirements\n[PASS] pm::schema_key_non_functional_requirements - prop=True, required=True, key=non_functional_requirements\n[PASS] pm::schema_key_api_contracts - prop=True, required=True, key=api_contracts\n[PASS] pm::schema_key_data_model - prop=True, required=True, key=data_model\n[PASS] pm::prompt_contains::Output MUST be valid JSON - token=Output MUST be valid JSON\n[PASS] pm::prompt_contains::schemas/requirements.json - token=schemas/requirements.json\n[PASS] pm::prompt_contains::functional_requirements - token=functional_requirements\n[PASS] pm::prompt_contains::api_contracts - token=api_contracts\n[PASS] architect::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\architect_agent.md\n[PASS] architect::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\architecture.json\n[PASS] architect::schema_key_tech_stack - prop=True, required=True, key=tech_stack\n[PASS] architect::schema_key_modules - prop=True, required=True, key=modules\n[PASS] architect::schema_key_database_schema - prop=True, required=True, key=database_schema\n[PASS] architect::schema_key_openapi_spec - prop=True, required=True, key=openapi_spec\n[PASS] architect::schema_key_deployment - prop=True, required=True, key=deployment\n[PASS] architect::prompt_contains::Output MUST be valid JSON - token=Output MUST be valid JSON\n[PASS] architect::prompt_contains::schemas/architecture.json - token=schemas/architecture.json\n[PASS] architect::prompt_contains::openapi_spec - token=openapi_spec\n[PASS] architect::prompt_contains::modules - token=modules\n[PASS] qa::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\qa_agent.md\n[PASS] qa::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\bug_report.json\n[PASS] qa::schema_key_bug_id - prop=True, required=True, key=bug_id\n[PASS] qa::schema_key_severity - prop=True, required=True, key=severity\n[PASS] qa::schema_key_category - prop=True, required=True, key=category\n[PASS] qa::schema_key_file - prop=True, required=True, key=file\n[PASS] qa::schema_key_description - prop=True, required=True, key=description\n[PASS] qa::schema_key_related_requirement - prop=True, required=True, key=related_requirement\n[PASS] qa::prompt_contains::schemas/bug_report.json - token=schemas/bug_report.json\n[PASS] qa::prompt_contains::related requirement ID - token=related requirement ID\n[PASS] qa::prompt_contains::Critical - token=Critical\n[PASS] qa::prompt_contains::Major - token=Major\nPrompt contract report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week2\\prompt_contract_report.json\n",
+      "stderr": ""
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "E:\\Python\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ],
+      "returncode": 0,
+      "status": "success",
+      "started_at": "2026-02-24T07:22:30.064957+00:00",
+      "ended_at": "2026-02-24T07:22:30.177544+00:00",
+      "stdout": "",
+      "stderr": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.019s\n\nOK\n"
+    }
+  ]
+}

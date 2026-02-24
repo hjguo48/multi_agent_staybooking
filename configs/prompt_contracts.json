@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "contracts": [
+    {
+      "agent": "pm",
+      "prompt_path": "configs/prompts/pm_agent.md",
+      "schema_path": "schemas/requirements.json",
+      "required_schema_keys": [
+        "project_name",
+        "functional_requirements",
+        "non_functional_requirements",
+        "api_contracts",
+        "data_model"
+      ],
+      "must_contain": [
+        "Output MUST be valid JSON",
+        "schemas/requirements.json",
+        "functional_requirements",
+        "api_contracts"
+      ]
+    },
+    {
+      "agent": "architect",
+      "prompt_path": "configs/prompts/architect_agent.md",
+      "schema_path": "schemas/architecture.json",
+      "required_schema_keys": [
+        "tech_stack",
+        "modules",
+        "database_schema",
+        "openapi_spec",
+        "deployment"
+      ],
+      "must_contain": [
+        "Output MUST be valid JSON",
+        "schemas/architecture.json",
+        "openapi_spec",
+        "modules"
+      ]
+    },
+    {
+      "agent": "qa",
+      "prompt_path": "configs/prompts/qa_agent.md",
+      "schema_path": "schemas/bug_report.json",
+      "required_schema_keys": [
+        "bug_id",
+        "severity",
+        "category",
+        "file",
+        "description",
+        "related_requirement"
+      ],
+      "must_contain": [
+        "schemas/bug_report.json",
+        "related requirement ID",
+        "Critical",
+        "Major"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "lock_version": 1,
+  "generated_at": "2026-02-23",
+  "description": "Locked ground-truth source versions for StayBooking experiments.",
+  "repositories": {
+    "backend": {
+      "name": "staybooking-project",
+      "role": "java_backend",
+      "remote_origin": "https://github.com/hjguo48/staybooking-project.git",
+      "branch": "main",
+      "commit": "81b85eab7d2d14076eb9b32234522b2f42c66382",
+      "local_path": "ground_truth/staybooking-project"
+    },
+    "frontend": {
+      "name": "stayboookingfe",
+      "role": "react_frontend",
+      "remote_origin": "https://github.com/hjguo48/stayboookingfe.git",
+      "branch": "main",
+      "commit": "4a7a9551a37d6210c40760b30218b20cb03f8394",
+      "local_path": "ground_truth/stayboookingfe"
+    }
+  },
+  "rules": {
+    "ground_truth_priority": "repository",
+    "methodology_numbers_are_reference_only": true
+  }
+}

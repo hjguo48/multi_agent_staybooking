@@ -1,0 +1,616 @@
+001: Multi-Agent Collaborative Development System
+002: for Automated Full-Stack Web Application Engineering
+003: Detailed Methodology & Implementation Plan
+004: Jiahao (August) Guo
+005: University of Pennsylvania — MCIT
+006: February 2026
+007: Table of Contents
+008: 1. Research Overview & Motivation
+009: 2. System Architecture
+010: 3. Agent Role Specifications
+011: 4. Communication Topologies
+012: 5. Shared Memory & Artifact Management
+013: 6. Task Decomposition Framework
+014: 7. Implementation Technology Stack
+015: 8. Benchmark Design: StayBooking Ground Truth
+016: 9. Evaluation Metrics & Rubrics
+017: 10. Experimental Procedure
+018: 11. Ablation Study Design
+019: 12. Expected Challenges & Mitigations
+020: 13. Timeline & Milestones
+021: 1. Research Overview & Motivation
+022: This research investigates how multiple LLM-based agents, each assigned a specialized software engineering role, can collaboratively produce a complete, deployable full-stack web application. Unlike prior work (MetaGPT, ChatDev) that evaluates generated systems against loosely-defined requirements, our study uses a real-world codebase — StayBooking — as a ground-truth reference, enabling rigorous, multi-dimensional quality assessment.
+023: 1.1 Research Questions
+024: RQ1: How does communication topology among agents affect the functional completeness, code quality, and architectural coherence of the generated system?
+025: RQ2: What is the optimal granularity of task decomposition for multi-agent full-stack development — module-level, feature-level, or layer-level?
+026: RQ3: How does iterative feedback (QA → Developer loops) quantitatively improve code correctness compared to single-pass generation?
+027: RQ4: What are the failure modes unique to multi-agent software engineering, and how can they be mitigated through protocol design?
+028: 1.2 Key Contributions
+029: A systematic comparison of four communication topologies under controlled conditions with a real-world ground-truth system.
+030: A multi-granularity task decomposition framework tailored for full-stack web applications.
+031: A comprehensive evaluation rubric spanning functionality, code quality, architecture, deployability, and efficiency.
+032: Empirical analysis of failure modes and convergence behavior in multi-agent software engineering.
+033: 2. System Architecture
+034: The system follows a modular orchestration architecture where a central Orchestrator manages agent lifecycle, message routing, and artifact storage. Each agent is an independent LLM instance with a specialized system prompt, tool access, and structured I/O schema.
+035: 2.1 High-Level Architecture Diagram
+036: The architecture consists of four layers:
+037: Layer
+038: Components
+039: Responsibility
+040: Orchestration
+041: Orchestrator, Topology Router, State Manager
+042: Agent lifecycle, message routing, global state tracking, termination conditions
+043: Agent
+044: PM, Architect, Backend Dev, Frontend Dev, QA, DevOps agents
+045: Role-specific reasoning, code generation, review, testing
+046: Tool
+047: Code Executor, File System, Git, Docker, Test Runner, Linter
+048: Grounding agent outputs in real execution feedback
+049: Storage
+050: Artifact Store, Message Log, Shared Context
+051: Persistent artifacts, conversation history, cross-agent context
+052: 2.2 Orchestrator Design
+053: The Orchestrator is implemented as a state machine using LangGraph. Each state corresponds to an agent's turn, and transitions are governed by the active communication topology. The Orchestrator manages:
+054: Turn Scheduling: Determines which agent(s) execute next based on the topology graph and current state.
+055: Message Routing: Filters and delivers messages according to topology-specific visibility rules (e.g., in Hub-and-Spoke, agents only see Coordinator messages).
+056: Artifact Registry: Tracks all generated artifacts (documents, code files, configs) with versioning and provenance metadata.
+057: Termination Control: Monitors convergence signals (QA pass rate, iteration count, token budget) and triggers graceful shutdown.
+058: 2.3 Agent Interface Contract
+059: Every agent conforms to a unified interface to ensure interoperability across topologies:
+060: class BaseAgent:
+061:     def __init__(self, role: str, llm: ChatModel, tools: List[Tool]):
+062:         self.role = role
+063:         self.llm = llm
+064:         self.tools = tools
+065:         self.memory = ConversationBufferMemory()
+066:     def receive(self, message: AgentMessage) -> None:
+067:         """Process incoming message and update internal state."""
+068:     def act(self, context: SharedContext) -> AgentOutput:
+069:         """Generate output artifacts and/or messages."""
+070:     def review(self, artifact: Artifact) -> ReviewResult:
+071:         """Review another agent's output (for peer-review topologies)."""
+072: @dataclass
+073: class AgentMessage:
+074:     sender: str          # Agent role identifier
+075:     receiver: str        # Target agent or 'broadcast'
+076:     content: str         # Natural language or structured data
+077:     artifacts: List[Artifact]  # Attached code/doc artifacts
+078:     msg_type: Enum       # TASK, REVIEW, FEEDBACK, APPROVAL
+079: 3. Agent Role Specifications
+080: Each agent is defined by four components: (1) a system prompt encoding its role identity and behavioral constraints, (2) structured input/output schemas, (3) tool access permissions, and (4) evaluation criteria for self-assessment.
+081: 3.1 Product Manager Agent
+082: Purpose: Transform natural language project descriptions into structured, unambiguous requirement specifications that downstream agents can consume.
+083: System Prompt Core: 
+084: You are a senior Product Manager. Given a project description,
+085: produce a structured Requirements Document containing:
+086: 1. Functional Requirements (FR): Enumerated user stories in
+087:    Given/When/Then format with acceptance criteria.
+088: 2. Non-Functional Requirements (NFR): Performance targets,
+089:    security requirements, scalability expectations.
+090: 3. API Contract Draft: RESTful endpoint list with HTTP methods,
+091:    request/response schemas, and status codes.
+092: 4. Data Model Overview: Core entities and their relationships.
+093: 5. Priority Matrix: MoSCoW classification of all requirements.
+094: Output must be valid JSON conforming to RequirementsSchema.
+095: Output Schema (RequirementsDocument): 
+096: {
+097:   "project_name": "string",
+098:   "functional_requirements": [
+099:     {
+100:       "id": "FR-001",
+101:       "user_story": "As a [role], I want [action] so that [benefit]",
+102:       "acceptance_criteria": ["Given..., When..., Then..."],
+103:       "priority": "Must | Should | Could | Won't",
+104:       "complexity": "Low | Medium | High"
+105:     }
+106:   ],
+107:   "non_functional_requirements": [...],
+108:   "api_contracts": [
+109:     {
+110:       "endpoint": "/api/v1/resource",
+111:       "method": "POST",
+112:       "request_schema": {...},
+113:       "response_schema": {...},
+114:       "auth_required": true
+115:     }
+116:   ],
+117:   "data_model": {
+118:     "entities": [...],
+119:     "relationships": [...]
+120:   }
+121: }
+122: Tools: None (pure reasoning agent). Receives natural language input, outputs structured JSON.
+123: Quality Gate: Output must pass JSON schema validation. All functional requirements must have at least one acceptance criterion. API contracts must cover all CRUD operations implied by the data model.
+124: 3.2 Architect Agent
+125: Purpose: Translate requirements into concrete technical architecture decisions, including technology stack selection, system decomposition, database schema design, and deployment architecture.
+126: System Prompt Core: 
+127: You are a Senior Software Architect. Given a RequirementsDocument,
+128: produce an ArchitectureDesign containing:
+129: 1. Technology Stack: Framework, language, database, cache, cloud
+130:    provider with justification for each choice.
+131: 2. System Decomposition: Module/package structure with dependency
+132:    graph. Each module has clear responsibility boundaries.
+133: 3. Database Schema: Complete DDL with indexes, constraints, and
+134:    migration strategy.
+135: 4. API Specification: OpenAPI 3.0 spec derived from PM's contracts.
+136: 5. Deployment Architecture: Container topology, networking, and
+137:    scaling strategy.
+138: 6. Cross-Cutting Concerns: Authentication flow, error handling
+139:    strategy, logging/monitoring approach.
+140: Output Schema (ArchitectureDesign): 
+141: {
+142:   "tech_stack": {
+143:     "backend": { "language": "Java 17", "framework": "Spring Boot 3.x", ... },
+144:     "frontend": { "framework": "React 18", "state_mgmt": "Context API", ... },
+145:     "database": { "primary": "MySQL 8.0", "cache": "Redis 7.x" },
+146:     "infrastructure": { "cloud": "AWS", "container": "Docker", ... }
+147:   },
+148:   "modules": [
+149:     { "name": "auth-service", "responsibility": "...", "dependencies": [...] }
+150:   ],
+151:   "database_schema": { "tables": [...], "indexes": [...] },
+152:   "openapi_spec": { ... },
+153:   "deployment": { "containers": [...], "networking": {...} }
+154: }
+155: Tools: File system (write architecture docs), optional web search for verifying library compatibility.
+156: Quality Gate: OpenAPI spec must be valid. Database schema must satisfy 3NF. Every functional requirement must map to at least one module.
+157: 3.3 Backend Developer Agent
+158: Purpose: Generate compilable, well-structured backend source code that implements the architecture design, including all layers (Controller, Service, Repository), configuration, and unit tests.
+159: System Prompt Core: 
+160: You are a Senior Backend Developer specializing in Spring Boot.
+161: Given an ArchitectureDesign, generate production-quality Java code:
+162: 1. Project Structure: Maven/Gradle config with all dependencies.
+163: 2. Entity Layer: JPA entities matching the database schema.
+164: 3. Repository Layer: Spring Data JPA repositories.
+165: 4. Service Layer: Business logic with transaction management.
+166: 5. Controller Layer: REST controllers matching OpenAPI spec.
+167: 6. Security Config: JWT authentication with Spring Security.
+168: 7. Cache Config: Redis/Caffeine caching for hot paths.
+169: 8. Exception Handling: Global exception handler with proper
+170:    HTTP status codes and error response format.
+171: 9. Application Config: application.yml for all environments.
+172: CONSTRAINTS:
+173: - Every public method must have Javadoc.
+174: - Follow SOLID principles strictly.
+175: - Use constructor injection, never field injection.
+176: - All configuration must be externalized (no hardcoded values).
+177: Tools: File system (create/write files), Code executor (compile check via `mvn compile`), Linter (Checkstyle), Git (commit artifacts).
+178: Quality Gate: Code must compile without errors. Checkstyle violations < 10. All controller endpoints must match the OpenAPI spec.
+179: 3.4 Frontend Developer Agent
+180: Purpose: Generate a complete React frontend application that integrates with the backend API, with component hierarchy, routing, state management, and responsive UI.
+181: System Prompt Core: 
+182: You are a Senior Frontend Developer specializing in React.
+183: Given the ArchitectureDesign and Backend API spec, generate:
+184: 1. Project scaffolding with Create React App or Vite.
+185: 2. Component hierarchy: pages, shared components, layouts.
+186: 3. API integration layer: Axios/fetch service with interceptors.
+187: 4. Authentication flow: Login/Register with JWT token management.
+188: 5. Routing: React Router with protected routes.
+189: 6. State management: Context API or Redux as specified.
+190: 7. Responsive CSS/styling approach.
+191: CONSTRAINTS:
+192: - All API calls must go through the integration layer.
+193: - Handle loading, error, and empty states for every data fetch.
+194: - Components must be functional with hooks (no class components).
+195: Tools: File system, Code executor (`npm run build` for build verification), Linter (ESLint), Git.
+196: Quality Gate: Build must succeed. ESLint errors = 0. All API endpoints from the spec must have corresponding service functions.
+197: 3.5 QA / Tester Agent
+198: Purpose: Validate generated code through automated test generation, static analysis, and integration testing. Report bugs with structured diagnostics back to developer agents.
+199: System Prompt Core: 
+200: You are a Senior QA Engineer. Given source code and requirements:
+201: 1. Generate unit tests (JUnit 5 for backend, Jest for frontend).
+202: 2. Generate integration tests for API endpoints.
+203: 3. Run static analysis (SonarQube rules, ESLint).
+204: 4. Verify requirement coverage: map each FR to test cases.
+205: 5. Produce a structured BugReport for each failure:
+206:    { severity, location, description, reproduction_steps,
+207:      suggested_fix, related_requirement }
+208: CONSTRAINTS:
+209: - Every functional requirement must have >= 1 test case.
+210: - Test edge cases: null inputs, boundary values, auth failures.
+211: - Bug reports must be actionable (include file + line number).
+212: Bug Report Schema: 
+213: {
+214:   "bug_id": "BUG-001",
+215:   "severity": "Critical | Major | Minor | Trivial",
+216:   "category": "Logic | Security | Performance | Style",
+217:   "file": "src/main/java/.../UserService.java",
+218:   "line_range": [45, 52],
+219:   "description": "NPE when user email is null",
+220:   "related_requirement": "FR-003",
+221:   "suggested_fix": "Add null check before calling...",
+222:   "test_case": "testRegisterWithNullEmail()"
+223: }
+224: Tools: Code executor (run tests via `mvn test`, `npm test`), Static analysis tools (SonarQube scanner, ESLint), File system (read source code).
+225: 3.6 DevOps Agent
+226: Purpose: Generate deployment configurations and execute the build-test-deploy pipeline, producing a running system accessible via HTTP.
+227: System Prompt Core: 
+228: You are a Senior DevOps Engineer. Given the complete codebase:
+229: 1. Generate Dockerfiles for backend and frontend services.
+230: 2. Generate docker-compose.yml with all services (app, db, cache).
+231: 3. Generate CI/CD pipeline config (GitHub Actions).
+232: 4. Generate environment-specific configs (dev, staging, prod).
+233: 5. Execute deployment and verify health checks.
+234: 6. Produce a DeploymentReport with status and access URLs.
+235: CONSTRAINTS:
+236: - Multi-stage Docker builds for minimal image size.
+237: - Health check endpoints must be configured.
+238: - Secrets must use environment variables, never hardcoded.
+239: - Database initialization scripts must be idempotent.
+240: Tools: File system, Docker CLI, docker-compose, Shell executor (for health check verification), Git.
+241: Quality Gate: All containers must start successfully. Health check endpoints return 200. Frontend can reach backend API.
+242: 4. Communication Topologies
+243: This section formally defines the four communication topologies to be compared. Each topology is specified as a directed graph G = (V, E) where V = {PM, Arch, BDev, FDev, QA, DevOps} and edges define permitted message flows.
+244: 4.1 Topology A: Sequential Pipeline
+245: The simplest topology. Agents execute in strict order with unidirectional information flow. Each agent receives only the output of its immediate predecessor.
+246: Flow: PM → Architect → Backend Dev → Frontend Dev → QA → DevOps
+247: Implementation in LangGraph: 
+248: from langgraph.graph import StateGraph
+249: workflow = StateGraph(ProjectState)
+250: workflow.add_node("pm", pm_agent.act)
+251: workflow.add_node("architect", architect_agent.act)
+252: workflow.add_node("backend_dev", backend_dev_agent.act)
+253: workflow.add_node("frontend_dev", frontend_dev_agent.act)
+254: workflow.add_node("qa", qa_agent.act)
+255: workflow.add_node("devops", devops_agent.act)
+256: workflow.add_edge("pm", "architect")
+257: workflow.add_edge("architect", "backend_dev")
+258: workflow.add_edge("backend_dev", "frontend_dev")
+259: workflow.add_edge("frontend_dev", "qa")
+260: workflow.add_edge("qa", "devops")
+261: workflow.set_entry_point("pm")
+262: workflow.set_finish_point("devops")
+263: Characteristics: Minimal token overhead, no backtracking, but errors accumulate without correction.
+264: 4.2 Topology B: Hub-and-Spoke
+265: A central Coordinator Agent mediates all communication. Worker agents never communicate directly — they send outputs to the Coordinator, which synthesizes context and dispatches tasks.
+266: Coordinator Agent System Prompt: 
+267: You are the Project Coordinator. Your responsibilities:
+268: 1. Receive outputs from each specialist agent.
+269: 2. Check for consistency across outputs (e.g., API contracts
+270:    match between Architect, Backend Dev, and Frontend Dev).
+271: 3. Resolve conflicts by sending clarification requests.
+272: 4. Decide the next agent to activate based on project state.
+273: 5. Maintain a global Project Status document.
+274: You have visibility into ALL agent outputs and conversation logs.
+275: Other agents ONLY see messages from you.
+276: Implementation: 
+277: def coordinator_router(state: ProjectState) -> str:
+278:     """Coordinator decides next agent based on project phase."""
+279:     if not state.requirements:
+280:         return "pm"
+281:     elif not state.architecture:
+282:         return "architect"
+283:     elif not state.backend_code:
+284:         return "backend_dev"
+285:     elif not state.frontend_code:
+286:         return "frontend_dev"
+287:     elif state.qa_report and state.qa_report.has_critical_bugs:
+288:         return state.qa_report.assign_to  # Route back to dev
+289:     elif not state.qa_report:
+290:         return "qa"
+291:     else:
+292:         return "devops"
+293: Characteristics: Strong consistency enforcement, but Coordinator becomes a bottleneck and single point of failure. Higher token cost due to context relay.
+294: 4.3 Topology C: Peer-to-Peer with Review
+295: Agents follow the sequential pipeline but with bidirectional review links. Each agent's output must be approved by its consumer before proceeding. If rejected, the output goes back for revision.
+296: Review Protocol: 
+297: @dataclass
+298: class ReviewResult:
+299:     status: Literal['APPROVED', 'REVISION_NEEDED']
+300:     comments: List[str]
+301:     blocking_issues: List[str]  # Must be resolved before approval
+302: # Review pairs (producer → reviewer):
+303: # PM requirements → Architect reviews for technical feasibility
+304: # Architect design → Backend Dev reviews for implementability
+305: # Backend API     → Frontend Dev reviews for consumability
+306: # All code        → QA reviews for testability
+307: REVIEW_PAIRS = {
+308:     "pm": "architect",
+309:     "architect": "backend_dev",
+310:     "backend_dev": "frontend_dev",
+311:     "frontend_dev": "qa",
+312: }
+313: MAX_REVISION_ROUNDS = 3  # Prevent infinite loops
+314: Characteristics: Better error catching at boundaries, but up to 2× the number of LLM calls due to review rounds. Risk of deadlock if two agents repeatedly reject each other's work.
+315: 4.4 Topology D: Iterative Feedback Loop
+316: The most complex topology, simulating agile sprints. After an initial sequential pass, the QA Agent triggers iterative feedback loops back to developer agents until quality thresholds are met or the iteration budget is exhausted.
+317: Iteration Control Logic: 
+318: def feedback_loop_router(state: ProjectState) -> str:
+319:     if state.iteration >= MAX_ITERATIONS:
+320:         return "devops"  # Force deployment with current quality
+321:     qa_report = state.qa_report
+322:     if qa_report.critical_bugs > 0:
+323:         # Route to the agent responsible for the buggy module
+324:         return qa_report.primary_assignee
+325:     elif qa_report.test_pass_rate < QUALITY_THRESHOLD:
+326:         # If pass rate below threshold, route to relevant dev
+327:         return qa_report.primary_assignee
+328:     else:
+329:         return "devops"  # Quality sufficient, proceed to deploy
+330: MAX_ITERATIONS = 5
+331: QUALITY_THRESHOLD = 0.85  # 85% test pass rate
+332: Sprint Cycle: 
+333: Initial pass: PM → Architect → Backend Dev → Frontend Dev → QA
+334: QA produces test results and bug reports with severity classification
+335: If critical/major bugs exist, route specific bug reports to responsible Dev agent
+336: Dev agent receives bug reports + original context, generates patches
+337: QA re-runs tests on patched code
+338: Repeat steps 3-5 until quality threshold met or MAX_ITERATIONS reached
+339: DevOps agent deploys the final version
+340: Characteristics: Most realistic simulation of software development. Highest potential quality but also highest token cost. Convergence behavior is a key experimental variable.
+341: 5. Shared Memory & Artifact Management
+342: A critical challenge in multi-agent systems is maintaining consistent shared state. We implement a structured Artifact Store that serves as the single source of truth for all generated artifacts.
+343: 5.1 Shared Context Structure
+344: @dataclass
+345: class ProjectState:
+346:     """Global project state accessible to all agents."""
+347:     # Phase artifacts (populated sequentially)
+348:     requirements: Optional[RequirementsDocument] = None
+349:     architecture: Optional[ArchitectureDesign] = None
+350:     backend_code: Optional[CodeArtifact] = None
+351:     frontend_code: Optional[CodeArtifact] = None
+352:     qa_report: Optional[QAReport] = None
+353:     deployment: Optional[DeploymentReport] = None
+354:     # Cross-cutting state
+355:     message_log: List[AgentMessage] = field(default_factory=list)
+356:     artifact_versions: Dict[str, List[Artifact]] = field(default_factory=dict)
+357:     iteration: int = 0
+358:     total_tokens: int = 0
+359:     total_api_calls: int = 0
+360: @dataclass
+361: class CodeArtifact:
+362:     files: Dict[str, str]          # filepath → content
+363:     compile_status: bool
+364:     lint_warnings: int
+365:     test_results: Optional[TestResults] = None
+366: 5.2 Context Window Management
+367: Since LLM context windows are limited, each agent receives a curated subset of the global state. The Orchestrator applies a context budget strategy:
+368: Full Context: The agent's own previous outputs and the immediately upstream artifact (e.g., Backend Dev always sees the full ArchitectureDesign).
+369: Summary Context: Other agents' outputs are summarized by the Orchestrator using a separate LLM call to fit within token limits.
+370: Reference Context: File paths and metadata for artifacts not included in full, allowing agents to request specific files if needed.
+371: 6. Task Decomposition Framework
+372: We investigate three levels of task granularity to determine the optimal decomposition strategy for multi-agent development:
+373: Granularity
+374: Decomposition Unit
+375: Example
+376: Trade-offs
+377: Layer-Level
+378: Backend Dev generates ALL backend code at once; Frontend Dev generates ALL frontend code at once
+379: One prompt: "Generate the complete Spring Boot backend for StayBooking"
+380: Fewest LLM calls but high risk of inconsistency and context overflow
+381: Module-Level
+382: Backend Dev generates one module at a time (auth, listing, booking, search)
+383: Prompt 1: "Generate auth module" → Prompt 2: "Generate listing module"
+384: Balanced approach; moderate calls; can verify per-module before continuing
+385: Feature-Level
+386: Each feature (user login, search listings, make booking) is a complete vertical slice across all agents
+387: All agents collaborate on "user registration" end-to-end before moving to "listing search"
+388: Most calls but best cross-layer consistency; highest integration quality
+389: 6.1 StayBooking Module Decomposition
+390: For the module-level granularity (our primary configuration), StayBooking is decomposed into:
+391: Module
+392: Backend Components
+393: Frontend Components
+394: Key Complexity
+395: M1: Authentication
+396: UserEntity, UserRepository, UserService, AuthController, JwtUtil, SecurityConfig
+397: LoginPage, RegisterPage, AuthContext, PrivateRoute
+398: JWT flow, password hashing, token refresh
+399: M2: Listing Mgmt
+400: StayEntity, StayRepository, StayService, StayController, ImageStorage (GCS)
+401: HostHomePage, UploadStay, StayCard, ImageGallery
+402: Image upload to cloud, CRUD with ownership validation
+403: M3: Search
+404: SearchService, GeoSearchController, ElasticSearch integration
+405: SearchPage, SearchFilters, MapView, ResultList
+406: Geo-spatial search, date range filtering, availability check
+407: M4: Booking
+408: ReservationEntity, ReservationRepository, ReservationService, ReservationController
+409: BookingPage, ReservationList, BookingConfirmation
+410: Date conflict detection, transaction management
+411: 7. Implementation Technology Stack
+412: Component
+413: Technology
+414: Justification
+415: Agent Framework
+416: LangGraph (v0.2+)
+417: Native support for cyclic graphs, conditional routing, and persistent state — essential for feedback loops
+418: LLM Backbone
+419: Claude Sonnet 4 (primary), GPT-4o (comparison), DeepSeek-V3 (open-source baseline)
+420: Compare closed-source vs open-source; different context window sizes enable different strategies
+421: Tool Integration
+422: LangChain Tools + custom wrappers
+423: Unified tool interface for shell execution, file I/O, Docker, Git, and linting
+424: Code Execution
+425: Docker-in-Docker sandbox
+426: Isolated execution environment for compiling, testing, and deploying generated code safely
+427: Static Analysis
+428: SonarQube (backend), ESLint (frontend)
+429: Automated code quality metrics collection
+430: Experiment Tracking
+431: Weights & Biases (W&B)
+432: Track token usage, iteration counts, quality metrics across runs; built-in visualization
+433: Version Control
+434: Git (programmatic)
+435: Each agent commits artifacts with structured commit messages; enables diff-based analysis
+436: 7.1 Environment Setup
+437: # Project structure
+438: multi-agent-dev/
+439: ├── agents/
+440: │   ├── base_agent.py          # BaseAgent interface
+441: │   ├── pm_agent.py            # Product Manager
+442: │   ├── architect_agent.py     # Architect
+443: │   ├── backend_dev_agent.py   # Backend Developer
+444: │   ├── frontend_dev_agent.py  # Frontend Developer
+445: │   ├── qa_agent.py            # QA / Tester
+446: │   ├── devops_agent.py        # DevOps
+447: │   └── coordinator_agent.py   # Hub-and-Spoke coordinator
+448: ├── topologies/
+449: │   ├── sequential.py          # Topology A
+450: │   ├── hub_spoke.py           # Topology B
+451: │   ├── peer_review.py         # Topology C
+452: │   └── iterative_feedback.py  # Topology D
+453: ├── tools/
+454: │   ├── code_executor.py       # Sandboxed code runner
+455: │   ├── file_system.py         # File I/O wrapper
+456: │   ├── git_tool.py            # Git operations
+457: │   ├── docker_tool.py         # Docker/compose ops
+458: │   ├── linter.py              # Static analysis runner
+459: │   └── test_runner.py         # JUnit/Jest runner
+460: ├── evaluation/
+461: │   ├── benchmark.py           # StayBooking ground truth loader
+462: │   ├── metrics.py             # All evaluation metrics
+463: │   ├── comparator.py          # Generated vs ground truth diff
+464: │   └── reporter.py            # Experiment report generator
+465: ├── schemas/
+466: │   ├── requirements.json      # RequirementsDocument schema
+467: │   ├── architecture.json      # ArchitectureDesign schema
+468: │   ├── bug_report.json        # BugReport schema
+469: │   └── project_state.json     # ProjectState schema
+470: ├── configs/
+471: │   ├── experiment_configs/    # Per-experiment YAML configs
+472: │   └── prompts/               # Agent system prompts (versioned)
+473: ├── ground_truth/
+474: │   └── staybooking/           # Full StayBooking codebase
+475: ├── outputs/                   # Generated systems per experiment
+476: ├── run_experiment.py          # Main entry point
+477: └── requirements.txt
+478: 8. Benchmark Design: StayBooking Ground Truth
+479: The StayBooking project serves as both the inspiration for the natural language requirements and the ground truth for evaluation. This section describes how we construct the benchmark.
+480: 8.1 Ground Truth Extraction
+481: From the existing StayBooking codebase (github.com/hjguo48/staybooking-project and stayboookingfe), we extract:
+482: Functional Checklist: 22 distinct functional requirements derived from analyzing all controller endpoints, service methods, and frontend pages.
+483: API Contract Specification: 14 REST endpoints with exact request/response schemas, extracted from controller annotations.
+484: Database Schema: 5 entity classes (User, Stay, StayImage, Reservation, Authority) with all JPA mappings and constraints.
+485: Architecture Fingerprint: Package structure, dependency patterns, configuration choices, and cross-cutting concern implementations.
+486: 8.2 Three-Level Benchmark Tasks
+487: Level 1: Single Module Generation
+488: Input: Natural language description of one module (e.g., 'Implement a user authentication module with registration, login, and JWT-based session management for a Spring Boot application.'). Expected output: A compilable, testable module. Evaluation: Compare against the corresponding module in StayBooking ground truth.
+489: Level 2: Full System Generation
+490: Input: Complete project description covering all four modules. Expected output: A full-stack application with backend, frontend, database, and deployment configs. Evaluation: Compare against the complete StayBooking system across all metrics.
+491: Level 3: Incremental Feature Addition
+492: Input: The generated Level 2 system + a new feature request (e.g., 'Add a review and rating system for stays, allowing guests to leave 1-5 star ratings with text reviews. Display average ratings on listing pages.'). Expected output: The extended system with the new feature integrated. Evaluation: New feature works correctly AND existing functionality is not broken (regression testing).
+493: 9. Evaluation Metrics & Rubrics
+494: We define five metric categories, each with automated and/or human-assessed sub-metrics:
+495: Category
+496: Metric
+497: Measurement Method
+498: Weight
+499: Functional Completeness
+500: Requirement Coverage Rate (RCR)
+501: # implemented FRs / # total FRs × 100%; verified by test cases
+502: 30%
+503: Code Quality
+504: SonarQube Score, Cyclomatic Complexity, Duplication Rate
+505: Automated: SonarQube scanner + ESLint; thresholds from industry benchmarks
+506: 20%
+507: Architecture Quality
+508: Layer Separation Score, Dependency Correctness, Pattern Adherence
+509: Semi-automated: AST analysis for layer violations + human rubric (1-5 scale)
+510: 20%
+511: Deployability
+512: Build Success, Test Pass Rate, Container Health, E2E Accessibility
+513: Automated: compile → test → docker build → health check → HTTP request pipeline
+514: 20%
+515: Efficiency
+516: Total Tokens, API Calls, Wall-Clock Time, Iteration Count
+517: Automated: instrumented in Orchestrator; logged to W&B
+518: 10%
+519: 9.1 Composite Score Calculation
+520: The final quality score Q for each experimental run is computed as:
+521: Q = 0.30 × RCR + 0.20 × CodeQuality + 0.20 × ArchScore + 0.20 × DeployScore + 0.10 × (1 - NormEfficiency)
+522: Where NormEfficiency is token usage normalized to [0,1] across all runs (lower is better, hence 1 - NormEfficiency).
+523: 10. Experimental Procedure
+524: 10.1 Independent Variables
+525: V1 — Communication Topology: Sequential (A), Hub-and-Spoke (B), Peer-Review (C), Iterative Feedback (D)
+526: V2 — Task Granularity: Layer-Level, Module-Level, Feature-Level
+527: V3 — LLM Backbone: Claude Sonnet 4, GPT-4o, DeepSeek-V3
+528: 10.2 Experiment Matrix
+529: Primary experiments: 4 topologies × 3 granularities × 3 LLMs = 36 configurations. Each run 3 times for variance → 108 total runs. Estimated token budget: ~50M tokens.
+530: 10.3 Control Variables
+531: Same natural language input for all runs (pre-written StayBooking project description)
+532: Same temperature setting (0.2 for code generation, 0.7 for requirements/design)
+533: Same maximum token budget per agent per turn (8,192 tokens)
+534: Same tool availability per agent role
+535: Same evaluation pipeline applied uniformly
+536: 10.4 Execution Protocol
+537: For each experimental run:
+538: Initialize a clean workspace (fresh Git repo, empty Docker environment).
+539: Load the experiment config (topology, granularity, LLM) from YAML.
+540: Inject the StayBooking project description as the initial user input.
+541: Execute the multi-agent workflow; log all messages, artifacts, and metrics to W&B.
+542: Upon completion (or timeout at 60 minutes), snapshot the workspace.
+543: Run the automated evaluation pipeline against the ground truth.
+544: For architecture quality, queue for human evaluation (blind review by 2 evaluators).
+545: Aggregate results into the experiment database.
+546: 11. Ablation Study Design
+547: To isolate the contribution of individual components, we conduct the following ablation experiments on the best-performing topology (determined from the main experiments):
+548: Ablation
+549: What We Remove
+550: What We Measure
+551: A1: No QA Agent
+552: Remove the QA agent entirely; no testing or bug reporting phase
+553: Impact on functional completeness and code correctness
+554: A2: No Architect
+555: Remove Architect; PM output goes directly to developers
+556: Impact on architecture quality, cross-module consistency
+557: A3: No DevOps
+558: Remove DevOps agent; assess code without deployment verification
+559: Whether deployment feedback improves code quality
+560: A4: No Tools
+561: Disable all tool access (no compile, no test execution)
+562: Impact of execution grounding on code quality
+563: A5: Single Agent Baseline
+564: Replace entire system with one LLM generating everything
+565: Quantify the value of role specialization
+566: A6: No Shared Context
+567: Each agent only sees its direct input, no global state access
+568: Impact of shared memory on cross-module consistency
+569: 12. Expected Challenges & Mitigations
+570: Challenge
+571: Description
+572: Mitigation Strategy
+573: Context Window Overflow
+574: Full-stack codebases easily exceed 128K tokens; agents cannot see all code at once
+575: Hierarchical summarization; file-level reference index; on-demand retrieval via RAG over the codebase
+576: API Contract Drift
+577: Backend and Frontend agents generate incompatible API interfaces
+578: Architect produces a formal OpenAPI spec; both dev agents must reference it; QA validates contract compliance
+579: Infinite Feedback Loops
+580: QA and Dev agents enter a loop where fixes introduce new bugs
+581: Hard iteration cap (MAX_ITERATIONS=5); monotonic quality requirement (each iteration must not decrease test pass rate)
+582: Non-Determinism
+583: LLM outputs vary between runs, making comparison difficult
+584: 3 runs per config with statistical reporting (mean ± std); low temperature for code; fixed random seeds where possible
+585: Evaluation Subjectivity
+586: Architecture quality is inherently subjective
+587: Detailed rubric with anchor examples; 2 independent human raters; Cohen's kappa for inter-rater reliability
+588: Cost Management
+589: 108 runs × multi-agent conversations = significant API costs
+590: Start with Level 1 (single module) to validate framework; use DeepSeek for rapid iteration; reserve Claude/GPT-4o for final runs
+591: 13. Timeline & Milestones
+592: Phase
+593: Tasks
+594: Duration
+595: Deliverable
+596: Phase 1
+597: Implement BaseAgent, Orchestrator, Sequential topology; ground truth extraction from StayBooking; tool integration
+598: Weeks 1-3
+599: Working prototype: Sequential pipeline generates auth module
+600: Phase 2
+601: Implement remaining 3 topologies; prompt engineering and iteration for all 6 agent roles
+602: Weeks 4-6
+603: All 4 topologies functional; Level 1 benchmark validated
+604: Phase 3
+605: Run full experiment matrix (Level 1 + Level 2); collect all automated metrics
+606: Weeks 7-9
+607: Raw experimental data for 108 runs; W&B dashboards
+608: Phase 4
+609: Ablation studies; Level 3 experiments; human evaluation of architecture quality
+610: Weeks 10-11
+611: Complete ablation results; inter-rater agreement scores
+612: Phase 5
+613: Statistical analysis; paper writing; figure/table generation
+614: Weeks 12-14
+615: Submission-ready paper
+616: — End of Methodology Document —

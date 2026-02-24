@@ -1,0 +1,32 @@
+{
+  "status": "success",
+  "checks": [
+    {
+      "name": "project_state_created",
+      "passed": true,
+      "details": "run_id=0125e76683ff4cefba4e4f048aab1206"
+    },
+    {
+      "name": "artifact_versioning",
+      "passed": true,
+      "details": "requirements latest version=2"
+    },
+    {
+      "name": "message_log_tracking",
+      "passed": true,
+      "details": "message_count=2"
+    },
+    {
+      "name": "usage_counters",
+      "passed": true,
+      "details": "tokens=256, api_calls=1"
+    }
+  ],
+  "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week2\\week2_smoke_state.json",
+  "artifacts": {
+    "requirements_versions": [
+      1,
+      2
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "week1_baseline_pipeline",
+  "description": "Week 1 reproducibility checks: baseline lock verification + ground truth extraction.",
+  "report_path": "outputs/week1/week1_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "extract_ground_truth",
+      "command": [
+        "${PYTHON}",
+        "evaluation/extract_ground_truth.py"
+      ]
+    }
+  ]
+}
