@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from core.orchestrator import Orchestrator, TurnResult
+from .base import BaseTopology
 
 DEFAULT_SEQUENTIAL_ROLES = [
     "pm",
@@ -17,14 +17,10 @@ DEFAULT_SEQUENTIAL_ROLES = [
 
 
 @dataclass
-class SequentialTopology:
+class SequentialTopology(BaseTopology):
     """Run agents in strict PM->Architect->Backend->Frontend->QA->DevOps order."""
 
-    orchestrator: Orchestrator
     roles: list[str] = field(default_factory=lambda: list(DEFAULT_SEQUENTIAL_ROLES))
 
-    def run(self, kickoff_content: str) -> list[TurnResult]:
-        if not self.roles:
-            return []
-        self.orchestrator.kickoff(self.roles[0], kickoff_content)
-        return self.orchestrator.run_sequence(self.roles)
+    def plan_roles(self) -> list[str]:
+        return list(self.roles)
