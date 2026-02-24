@@ -1,4 +1,4 @@
-# Multi-Agent StayBooking Execution Plan (Baseline)
+﻿# Multi-Agent StayBooking Execution Plan (Baseline)
 
 Last updated: 2026-02-24
 Plan owner: Project execution baseline agreed with user.
@@ -157,10 +157,10 @@ Plan owner: Project execution baseline agreed with user.
 - Pipeline entrypoint:
 - `python run_experiment.py --task week3-step1` => PASS
 - Week 3 Step 1 evidence:
-- `outputs/week3/week3_step1_state.json`
-- `outputs/week3/week3_step1_orchestrator_report.json`
-- `outputs/week3/week3_step1_pipeline_report.json`
-- `outputs/week3/week3_step1_acceptance_matrix.md`
+- `outputs/week3/step1/week3_step1_state.json`
+- `outputs/week3/step1/week3_step1_orchestrator_report.json`
+- `outputs/week3/step1/week3_step1_pipeline_report.json`
+- `outputs/week3/step1/week3_step1_acceptance_matrix.md`
 - Unit tests expanded:
 - `tests/test_orchestrator.py`
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (11 tests)
@@ -180,10 +180,10 @@ Plan owner: Project execution baseline agreed with user.
 - Pipeline entrypoint:
 - `python run_experiment.py --task week3-step2` => PASS
 - Week 3 Step 2 evidence:
-- `outputs/week3/week3_step2_state.json`
-- `outputs/week3/week3_step2_sequential_report.json`
-- `outputs/week3/week3_step2_pipeline_report.json`
-- `outputs/week3/week3_step2_acceptance_matrix.md`
+- `outputs/week3/step2/week3_step2_state.json`
+- `outputs/week3/step2/week3_step2_sequential_report.json`
+- `outputs/week3/step2/week3_step2_pipeline_report.json`
+- `outputs/week3/step2/week3_step2_acceptance_matrix.md`
 - Tool wrappers (minimal):
 - `tools/file_system.py`
 - `tools/code_executor.py`
@@ -199,3 +199,4 @@ Plan owner: Project execution baseline agreed with user.
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (16 tests)
 - Week 3 status: COMPLETE
 - Next phase: Week 4 Hub-and-Spoke topology implementation.
+

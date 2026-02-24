@@ -78,9 +78,9 @@ python evaluation/week3_step1_orchestrator_smoke.py
 
 Week 3 Step 1 artifacts generated:
 
-- `outputs/week3/week3_step1_state.json`
-- `outputs/week3/week3_step1_orchestrator_report.json`
-- `outputs/week3/week3_step1_pipeline_report.json`
+- `outputs/week3/step1/week3_step1_state.json`
+- `outputs/week3/step1/week3_step1_orchestrator_report.json`
+- `outputs/week3/step1/week3_step1_pipeline_report.json`
 
 ## Week 3 Step 2 Commands
 
@@ -98,9 +98,9 @@ python evaluation/week3_step2_sequential_smoke.py
 
 Week 3 Step 2 artifacts generated:
 
-- `outputs/week3/week3_step2_state.json`
-- `outputs/week3/week3_step2_sequential_report.json`
-- `outputs/week3/week3_step2_pipeline_report.json`
+- `outputs/week3/step2/week3_step2_state.json`
+- `outputs/week3/step2/week3_step2_sequential_report.json`
+- `outputs/week3/step2/week3_step2_pipeline_report.json`
 
 ## Notes
 

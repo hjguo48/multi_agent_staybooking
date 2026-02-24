@@ -1,52 +1,52 @@
 {
   "pipeline": "week3_step2_sequential_pipeline",
   "config_path": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\experiment_configs\\week3_step2_sequential.json",
-  "executed_at": "2026-02-24T10:50:04.097949+00:00",
+  "executed_at": "2026-02-24T14:37:44.144809+00:00",
   "status": "success",
   "steps": [
     {
       "name": "verify_baseline_lock",
       "command": [
-        "E:\\Python\\python.exe",
+        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
         "evaluation/verify_baseline_lock.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-24T10:50:03.403715+00:00",
-      "ended_at": "2026-02-24T10:50:03.666718+00:00",
+      "started_at": "2026-02-24T14:37:43.090723+00:00",
+      "ended_at": "2026-02-24T14:37:43.361434+00:00",
       "stdout": "[backend] OK commit=81b85eab7d2d14076eb9b32234522b2f42c66382 branch=main origin=https://github.com/hjguo48/staybooking-project.git\n[frontend] OK commit=4a7a9551a37d6210c40760b30218b20cb03f8394 branch=main origin=https://github.com/hjguo48/stayboookingfe.git\nBASELINE_VERIFY: PASS\n",
       "stderr": ""
     },
     {
       "name": "validate_prompt_contracts",
       "command": [
-        "E:\\Python\\python.exe",
+        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
         "evaluation/validate_prompt_contracts.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-24T10:50:03.666718+00:00",
-      "ended_at": "2026-02-24T10:50:03.741715+00:00",
+      "started_at": "2026-02-24T14:37:43.361434+00:00",
+      "ended_at": "2026-02-24T14:37:43.457204+00:00",
       "stdout": "[PASS] pm::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\pm_agent.md\n[PASS] pm::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\requirements.json\n[PASS] pm::schema_key_project_name - prop=True, required=True, key=project_name\n[PASS] pm::schema_key_functional_requirements - prop=True, required=True, key=functional_requirements\n[PASS] pm::schema_key_non_functional_requirements - prop=True, required=True, key=non_functional_requirements\n[PASS] pm::schema_key_api_contracts - prop=True, required=True, key=api_contracts\n[PASS] pm::schema_key_data_model - prop=True, required=True, key=data_model\n[PASS] pm::prompt_contains::Output MUST be valid JSON - token=Output MUST be valid JSON\n[PASS] pm::prompt_contains::schemas/requirements.json - token=schemas/requirements.json\n[PASS] pm::prompt_contains::functional_requirements - token=functional_requirements\n[PASS] pm::prompt_contains::api_contracts - token=api_contracts\n[PASS] architect::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\architect_agent.md\n[PASS] architect::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\architecture.json\n[PASS] architect::schema_key_tech_stack - prop=True, required=True, key=tech_stack\n[PASS] architect::schema_key_modules - prop=True, required=True, key=modules\n[PASS] architect::schema_key_database_schema - prop=True, required=True, key=database_schema\n[PASS] architect::schema_key_openapi_spec - prop=True, required=True, key=openapi_spec\n[PASS] architect::schema_key_deployment - prop=True, required=True, key=deployment\n[PASS] architect::prompt_contains::Output MUST be valid JSON - token=Output MUST be valid JSON\n[PASS] architect::prompt_contains::schemas/architecture.json - token=schemas/architecture.json\n[PASS] architect::prompt_contains::openapi_spec - token=openapi_spec\n[PASS] architect::prompt_contains::modules - token=modules\n[PASS] qa::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\qa_agent.md\n[PASS] qa::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\bug_report.json\n[PASS] qa::schema_key_bug_id - prop=True, required=True, key=bug_id\n[PASS] qa::schema_key_severity - prop=True, required=True, key=severity\n[PASS] qa::schema_key_category - prop=True, required=True, key=category\n[PASS] qa::schema_key_file - prop=True, required=True, key=file\n[PASS] qa::schema_key_description - prop=True, required=True, key=description\n[PASS] qa::schema_key_related_requirement - prop=True, required=True, key=related_requirement\n[PASS] qa::prompt_contains::schemas/bug_report.json - token=schemas/bug_report.json\n[PASS] qa::prompt_contains::related requirement ID - token=related requirement ID\n[PASS] qa::prompt_contains::Critical - token=Critical\n[PASS] qa::prompt_contains::Major - token=Major\nPrompt contract report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week2\\prompt_contract_report.json\n",
       "stderr": ""
     },
     {
       "name": "week3_step2_sequential_smoke",
       "command": [
-        "E:\\Python\\python.exe",
+        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
         "evaluation/week3_step2_sequential_smoke.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-24T10:50:03.741715+00:00",
-      "ended_at": "2026-02-24T10:50:03.828371+00:00",
-      "stdout": "[PASS] turn_count: turn_count=6\n[PASS] all_turns_success: all turn results should be success\n[PASS] state_fields_populated: requirements/architecture/backend_code/frontend_code/qa_report/deployment populated\n[PASS] artifact_keys_present: artifact_keys=['architecture', 'backend_code', 'deployment', 'frontend_code', 'qa_report', 'requirements']\n[PASS] qa_quality_gate: qa_summary={'test_pass_rate': 1.0, 'critical_bugs': 0, 'major_bugs': 0}\n[PASS] deployment_success: deployment_status=success\n[PASS] message_flow_recorded: message_count=6\n[PASS] usage_counters_accumulated: tokens=3090, api_calls=6\nState snapshot: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week3\\week3_step2_state.json\nReport: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week3\\week3_step2_sequential_report.json\n",
+      "started_at": "2026-02-24T14:37:43.457204+00:00",
+      "ended_at": "2026-02-24T14:37:43.567156+00:00",
+      "stdout": "[PASS] turn_count: turn_count=6\n[PASS] all_turns_success: all turn results should be success\n[PASS] state_fields_populated: requirements/architecture/backend_code/frontend_code/qa_report/deployment populated\n[PASS] artifact_keys_present: artifact_keys=['architecture', 'backend_code', 'deployment', 'frontend_code', 'qa_report', 'requirements']\n[PASS] qa_quality_gate: qa_summary={'test_pass_rate': 1.0, 'critical_bugs': 0, 'major_bugs': 0}\n[PASS] deployment_success: deployment_status=success\n[PASS] message_flow_recorded: message_count=6\n[PASS] usage_counters_accumulated: tokens=3090, api_calls=6\nState snapshot: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week3\\step2\\week3_step2_state.json\nReport: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week3\\step2\\week3_step2_sequential_report.json\n",
       "stderr": ""
     },
     {
       "name": "unit_tests",
       "command": [
-        "E:\\Python\\python.exe",
+        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
         "-m",
         "unittest",
         "discover",
@@ -57,10 +57,10 @@
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-24T10:50:03.828371+00:00",
-      "ended_at": "2026-02-24T10:50:04.097949+00:00",
+      "started_at": "2026-02-24T14:37:43.567156+00:00",
+      "ended_at": "2026-02-24T14:37:44.144809+00:00",
       "stdout": "",
-      "stderr": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.147s\n\nOK\n"
+      "stderr": "...................\n----------------------------------------------------------------------\nRan 19 tests in 0.415s\n\nOK\n"
     }
   ]
 }

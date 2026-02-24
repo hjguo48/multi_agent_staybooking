@@ -1,7 +1,7 @@
 {
   "name": "week3_step2_sequential_pipeline",
   "description": "Week 3 Step 2: sequential topology end-to-end baseline flow.",
-  "report_path": "outputs/week3/week3_step2_pipeline_report.json",
+  "report_path": "outputs/week3/step2/week3_step2_pipeline_report.json",
   "steps": [
     {
       "name": "verify_baseline_lock",

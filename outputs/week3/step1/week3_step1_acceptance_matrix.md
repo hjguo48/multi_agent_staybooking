@@ -19,11 +19,11 @@ Step: 1 (Minimal Orchestrator Runtime)
 
 2. Single turn execution updates shared state and usage counters.
 - Status: PASS
-- Evidence: `evaluation/week3_step1_orchestrator_smoke.py`, `outputs/week3/week3_step1_state.json`
+- Evidence: `evaluation/week3_step1_orchestrator_smoke.py`, `outputs/week3/step1/week3_step1_state.json`
 
 3. Artifact registration and version references are recorded.
 - Status: PASS
-- Evidence: `outputs/week3/week3_step1_orchestrator_report.json`
+- Evidence: `outputs/week3/step1/week3_step1_orchestrator_report.json`
 
 4. Message routing works for direct and kickoff task flow.
 - Status: PASS
@@ -35,7 +35,7 @@ Step: 1 (Minimal Orchestrator Runtime)
 
 6. Week3 Step1 pipeline executes end-to-end.
 - Status: PASS
-- Evidence: `outputs/week3/week3_step1_pipeline_report.json`
+- Evidence: `outputs/week3/step1/week3_step1_pipeline_report.json`
 
 ## Result
 

@@ -11,7 +11,7 @@ from typing import Any
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-OUTPUT_DIR = PROJECT_ROOT / "outputs" / "week3"
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "week3" / "step1"
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
