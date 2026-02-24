@@ -1,0 +1,73 @@
+{
+  "status": "success",
+  "checks": [
+    {
+      "name": "turn_count",
+      "passed": true,
+      "details": "turn_count=2"
+    },
+    {
+      "name": "all_turns_success",
+      "passed": true,
+      "details": "all results success expected True"
+    },
+    {
+      "name": "requirements_state_updated",
+      "passed": true,
+      "details": "requirements={'artifact_ref': 'requirements:v1'}"
+    },
+    {
+      "name": "architecture_state_updated",
+      "passed": true,
+      "details": "architecture={'artifact_ref': 'architecture:v1'}"
+    },
+    {
+      "name": "artifact_versions_recorded",
+      "passed": true,
+      "details": "requirements_v=1, architecture_v=1"
+    },
+    {
+      "name": "message_log_recorded",
+      "passed": true,
+      "details": "message_count=3"
+    },
+    {
+      "name": "usage_counters_updated",
+      "passed": true,
+      "details": "tokens=730, api_calls=2"
+    }
+  ],
+  "turn_results": [
+    {
+      "agent_role": "pm",
+      "success": true,
+      "artifacts_registered": [
+        "requirements:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 320,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "requirements"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "architect",
+      "success": true,
+      "artifacts_registered": [
+        "architecture:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 410,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "architecture"
+      ],
+      "stop": false,
+      "error": null
+    }
+  ],
+  "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week3\\week3_step1_state.json"
+}

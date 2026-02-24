@@ -1,0 +1,34 @@
+{
+  "name": "week3_step1_orchestrator_pipeline",
+  "description": "Week 3 Step 1: minimal orchestrator runtime validation.",
+  "report_path": "outputs/week3/week3_step1_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "week3_step1_orchestrator_smoke",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week3_step1_orchestrator_smoke.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}

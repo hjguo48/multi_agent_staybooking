@@ -1,0 +1,41 @@
+{
+  "name": "week3_step2_sequential_pipeline",
+  "description": "Week 3 Step 2: sequential topology end-to-end baseline flow.",
+  "report_path": "outputs/week3/week3_step2_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "validate_prompt_contracts",
+      "command": [
+        "${PYTHON}",
+        "evaluation/validate_prompt_contracts.py"
+      ]
+    },
+    {
+      "name": "week3_step2_sequential_smoke",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week3_step2_sequential_smoke.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}

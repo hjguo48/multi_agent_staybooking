@@ -62,6 +62,46 @@ Week 2 artifacts generated:
 - `outputs/week2/week2_pipeline_report.json`
 - `outputs/week2/prompt_contract_report.json`
 
+## Week 3 Step 1 Commands
+
+Run Week 3 Step 1 pipeline (minimal orchestrator runtime):
+
+```bash
+python run_experiment.py --task week3-step1
+```
+
+Run Week 3 Step 1 smoke only:
+
+```bash
+python evaluation/week3_step1_orchestrator_smoke.py
+```
+
+Week 3 Step 1 artifacts generated:
+
+- `outputs/week3/week3_step1_state.json`
+- `outputs/week3/week3_step1_orchestrator_report.json`
+- `outputs/week3/week3_step1_pipeline_report.json`
+
+## Week 3 Step 2 Commands
+
+Run Week 3 Step 2 pipeline (sequential topology flow):
+
+```bash
+python run_experiment.py --task week3-step2
+```
+
+Run Week 3 Step 2 smoke only:
+
+```bash
+python evaluation/week3_step2_sequential_smoke.py
+```
+
+Week 3 Step 2 artifacts generated:
+
+- `outputs/week3/week3_step2_state.json`
+- `outputs/week3/week3_step2_sequential_report.json`
+- `outputs/week3/week3_step2_pipeline_report.json`
+
 ## Notes
 
 - Ground truth uses repository reality as source of truth.

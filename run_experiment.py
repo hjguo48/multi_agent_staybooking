@@ -20,6 +20,12 @@ DEFAULT_WEEK1_CONFIG = (
 DEFAULT_WEEK2_CONFIG = (
     PROJECT_ROOT / "configs" / "experiment_configs" / "week2_smoke.json"
 )
+DEFAULT_WEEK3_STEP1_CONFIG = (
+    PROJECT_ROOT / "configs" / "experiment_configs" / "week3_step1_orchestrator.json"
+)
+DEFAULT_WEEK3_STEP2_CONFIG = (
+    PROJECT_ROOT / "configs" / "experiment_configs" / "week3_step2_sequential.json"
+)
 
 
 @dataclass
@@ -145,6 +151,8 @@ def parse_args() -> argparse.Namespace:
         choices=[
             "week1",
             "week2-smoke",
+            "week3-step1",
+            "week3-step2",
             "verify-baseline",
             "extract-ground-truth",
             "validate-prompts"
@@ -177,6 +185,16 @@ def main() -> int:
             [sys.executable, str(PROJECT_ROOT / "evaluation" / "validate_prompt_contracts.py")],
             cwd=PROJECT_ROOT,
         )
+    if args.task == "week3-step1":
+        config_path = (
+            resolve_path(args.config) if args.config else DEFAULT_WEEK3_STEP1_CONFIG
+        )
+        return execute_from_config(config_path)
+    if args.task == "week3-step2":
+        config_path = (
+            resolve_path(args.config) if args.config else DEFAULT_WEEK3_STEP2_CONFIG
+        )
+        return execute_from_config(config_path)
     if args.task == "week2-smoke":
         config_path = resolve_path(args.config) if args.config else DEFAULT_WEEK2_CONFIG
         return execute_from_config(config_path)
