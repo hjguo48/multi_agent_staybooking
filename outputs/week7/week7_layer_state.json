@@ -1,8 +1,10 @@
 {
-  "run_id": "9de36138125744ca930a2c39791e49ba",
-  "created_at": "2026-02-25T03:55:09.141451+00:00",
-  "updated_at": "2026-02-25T03:55:09.141451+00:00",
-  "requirements": null,
+  "run_id": "1c72dc3b79d34900a7ce1ed02326054e",
+  "created_at": "2026-02-25T04:40:58.064265+00:00",
+  "updated_at": "2026-02-25T04:40:58.064265+00:00",
+  "requirements": {
+    "artifact_ref": "requirements:v1"
+  },
   "architecture": {
     "artifact_ref": "architecture:v1"
   },
@@ -12,12 +14,65 @@
   "frontend_code": {
     "artifact_ref": "frontend_code:v1"
   },
-  "qa_report": null,
-  "deployment": null,
+  "qa_report": {
+    "artifact_ref": "qa_report:v1"
+  },
+  "deployment": {
+    "artifact_ref": "deployment:v1"
+  },
   "iteration": 0,
-  "total_tokens": 1810,
-  "total_api_calls": 3,
+  "total_tokens": 3090,
+  "total_api_calls": 6,
   "artifact_store": {
+    "requirements": [
+      {
+        "artifact_id": "requirements-doc",
+        "artifact_type": "requirements",
+        "producer": "pm",
+        "content": {
+          "project_name": "StayBooking",
+          "functional_requirements": [
+            {
+              "id": "FR-001",
+              "user_story": "As a guest, I want to register and login using JWT.",
+              "acceptance_criteria": [
+                "Given valid registration data, user account is created",
+                "Given valid credentials, JWT is returned on login"
+              ],
+              "priority": "Must",
+              "complexity": "Low"
+            }
+          ],
+          "non_functional_requirements": [
+            {
+              "id": "NFR-001",
+              "description": "Token-based authentication required"
+            }
+          ],
+          "api_contracts": [
+            {
+              "endpoint": "/auth/register",
+              "method": "POST",
+              "auth_required": false
+            },
+            {
+              "endpoint": "/auth/login",
+              "method": "POST",
+              "auth_required": false
+            }
+          ],
+          "data_model": {
+            "entities": [
+              "User"
+            ],
+            "relationships": []
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T04:40:58.064265+00:00",
+        "metadata": {}
+      }
+    ],
     "architecture": [
       {
         "artifact_id": "architecture-doc",
@@ -84,7 +139,7 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T03:55:09.141451+00:00",
+        "created_at": "2026-02-25T04:40:58.064265+00:00",
         "metadata": {}
       }
     ],
@@ -111,7 +166,7 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T03:55:09.141451+00:00",
+        "created_at": "2026-02-25T04:40:58.064265+00:00",
         "metadata": {}
       }
     ],
@@ -138,7 +193,58 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T03:55:09.141451+00:00",
+        "created_at": "2026-02-25T04:40:58.064265+00:00",
+        "metadata": {}
+      }
+    ],
+    "qa_report": [
+      {
+        "artifact_id": "qa-report-auth",
+        "artifact_type": "qa_report",
+        "producer": "qa",
+        "content": {
+          "summary": {
+            "test_pass_rate": 1.0,
+            "critical_bugs": 0,
+            "major_bugs": 0
+          },
+          "bug_reports": [],
+          "coverage_map": {
+            "FR-001": [
+              "testRegister",
+              "testLogin"
+            ]
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T04:40:58.064265+00:00",
+        "metadata": {}
+      }
+    ],
+    "deployment": [
+      {
+        "artifact_id": "deployment-report-auth",
+        "artifact_type": "deployment",
+        "producer": "devops",
+        "content": {
+          "status": "success",
+          "mode": "local-simulated",
+          "services": [
+            "backend",
+            "frontend",
+            "postgres"
+          ],
+          "health_checks": {
+            "backend": 200,
+            "frontend": 200
+          },
+          "access_urls": {
+            "frontend": "http://localhost:3000",
+            "backend": "http://localhost:8080"
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T04:40:58.064265+00:00",
         "metadata": {}
       }
     ]
@@ -146,11 +252,22 @@
   "message_log": [
     {
       "sender": "orchestrator",
-      "receiver": "architect",
-      "content": "Layer-level scope: align architecture layer with backend and frontend auth implementation layers.",
+      "receiver": "pm",
+      "content": "[layer] Prelude planning for layer-level execution.",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T03:55:09.141451+00:00",
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "pm",
+      "receiver": "architect",
+      "content": "Requirements ready for architecture design.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "requirements-doc:v1"
+      ],
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
       "metadata": {}
     },
     {
@@ -161,7 +278,16 @@
       "artifacts": [
         "architecture-doc:v1"
       ],
-      "timestamp": "2026-02-25T03:55:09.141451+00:00",
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "orchestrator",
+      "receiver": "backend_dev",
+      "content": "[layer] Execute layer work item: full_stack_delivery.",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
       "metadata": {}
     },
     {
@@ -172,7 +298,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T03:55:09.141451+00:00",
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
       "metadata": {}
     },
     {
@@ -183,7 +309,27 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T03:55:09.141451+00:00",
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "orchestrator",
+      "receiver": "qa",
+      "content": "[layer] Finalization after 1 layer work items.",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "qa",
+      "receiver": "devops",
+      "content": "QA passed. Ready for deployment validation.",
+      "msg_type": "APPROVAL",
+      "artifacts": [
+        "qa-report-auth:v1"
+      ],
+      "timestamp": "2026-02-25T04:40:58.064265+00:00",
       "metadata": {}
     }
   ]

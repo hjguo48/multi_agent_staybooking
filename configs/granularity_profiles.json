@@ -1,58 +1,23 @@
 {
-  "version": 1,
+  "version": 2,
   "default": "module",
   "profiles": {
     "layer": {
-      "description": "Layer-level task scope focused on architecture and implementation layers.",
+      "description": "Layer-level decomposition: generate complete backend and frontend layers in one pass.",
+      "decomposition_unit": "layer",
       "topology": "sequential",
-      "kickoff_content": "Layer-level scope: align architecture layer with backend and frontend auth implementation layers.",
-      "roles": [
-        "architect",
+      "work_items": [
+        "full_stack_delivery"
+      ],
+      "prelude_roles": [
+        "pm",
+        "architect"
+      ],
+      "per_item_roles": [
         "backend_dev",
         "frontend_dev"
       ],
-      "expected_state_fields": [
-        "architecture",
-        "backend_code",
-        "frontend_code"
-      ],
-      "forbidden_state_fields": [
-        "requirements",
-        "qa_report",
-        "deployment"
-      ]
-    },
-    "module": {
-      "description": "Module-level task scope for delivering a complete auth module with QA gate.",
-      "topology": "sequential",
-      "kickoff_content": "Module-level scope: deliver auth module from requirements to QA validation.",
-      "roles": [
-        "pm",
-        "architect",
-        "backend_dev",
-        "frontend_dev",
-        "qa"
-      ],
-      "expected_state_fields": [
-        "requirements",
-        "architecture",
-        "backend_code",
-        "frontend_code",
-        "qa_report"
-      ],
-      "forbidden_state_fields": [
-        "deployment"
-      ]
-    },
-    "feature": {
-      "description": "Feature-level task scope for end-to-end auth feature including deployment validation.",
-      "topology": "sequential",
-      "kickoff_content": "Feature-level scope: deliver auth feature end-to-end including deployment readiness.",
-      "roles": [
-        "pm",
-        "architect",
-        "backend_dev",
-        "frontend_dev",
+      "final_roles": [
         "qa",
         "devops"
       ],
@@ -64,7 +29,92 @@
         "qa_report",
         "deployment"
       ],
-      "forbidden_state_fields": []
+      "forbidden_state_fields": [],
+      "expected_artifact_versions": {
+        "requirements": 1,
+        "architecture": 1,
+        "backend_code": 1,
+        "frontend_code": 1,
+        "qa_report": 1,
+        "deployment": 1
+      }
+    },
+    "module": {
+      "description": "Module-level decomposition: implement authentication, listing, search, and booking modules incrementally.",
+      "decomposition_unit": "module",
+      "topology": "sequential",
+      "work_items": [
+        "authentication",
+        "listing_mgmt",
+        "search",
+        "booking"
+      ],
+      "prelude_roles": [
+        "pm",
+        "architect"
+      ],
+      "per_item_roles": [
+        "backend_dev",
+        "frontend_dev",
+        "qa"
+      ],
+      "final_roles": [
+        "devops"
+      ],
+      "expected_state_fields": [
+        "requirements",
+        "architecture",
+        "backend_code",
+        "frontend_code",
+        "qa_report",
+        "deployment"
+      ],
+      "forbidden_state_fields": [],
+      "expected_artifact_versions": {
+        "requirements": 1,
+        "architecture": 1,
+        "backend_code": 4,
+        "frontend_code": 4,
+        "qa_report": 4,
+        "deployment": 1
+      }
+    },
+    "feature": {
+      "description": "Feature-level decomposition: complete vertical slices per feature before moving to the next one.",
+      "decomposition_unit": "feature",
+      "topology": "sequential",
+      "work_items": [
+        "user_registration",
+        "listing_search",
+        "make_booking"
+      ],
+      "prelude_roles": [],
+      "per_item_roles": [
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "devops"
+      ],
+      "final_roles": [],
+      "expected_state_fields": [
+        "requirements",
+        "architecture",
+        "backend_code",
+        "frontend_code",
+        "qa_report",
+        "deployment"
+      ],
+      "forbidden_state_fields": [],
+      "expected_artifact_versions": {
+        "requirements": 3,
+        "architecture": 3,
+        "backend_code": 3,
+        "frontend_code": 3,
+        "qa_report": 3,
+        "deployment": 3
+      }
     }
   }
 }

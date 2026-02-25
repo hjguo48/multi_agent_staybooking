@@ -1,7 +1,7 @@
 {
   "pipeline": "week7_granularity_switch_pipeline",
   "config_path": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\experiment_configs\\week7_granularity_switch.json",
-  "executed_at": "2026-02-25T03:55:09.854029+00:00",
+  "executed_at": "2026-02-25T04:40:58.649136+00:00",
   "status": "success",
   "steps": [
     {
@@ -12,8 +12,8 @@
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T03:55:08.518479+00:00",
-      "ended_at": "2026-02-25T03:55:08.840550+00:00",
+      "started_at": "2026-02-25T04:40:57.666488+00:00",
+      "ended_at": "2026-02-25T04:40:57.878244+00:00",
       "stdout": "[backend] OK commit=81b85eab7d2d14076eb9b32234522b2f42c66382 branch=main origin=https://github.com/hjguo48/staybooking-project.git\n[frontend] OK commit=4a7a9551a37d6210c40760b30218b20cb03f8394 branch=main origin=https://github.com/hjguo48/stayboookingfe.git\nBASELINE_VERIFY: PASS\n",
       "stderr": ""
     },
@@ -25,8 +25,8 @@
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T03:55:08.840550+00:00",
-      "ended_at": "2026-02-25T03:55:08.996210+00:00",
+      "started_at": "2026-02-25T04:40:57.878244+00:00",
+      "ended_at": "2026-02-25T04:40:57.959434+00:00",
       "stdout": "[PASS] pm::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\pm_agent.md\n[PASS] pm::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\requirements.json\n[PASS] pm::schema_key_project_name - prop=True, required=True, key=project_name\n[PASS] pm::schema_key_functional_requirements - prop=True, required=True, key=functional_requirements\n[PASS] pm::schema_key_non_functional_requirements - prop=True, required=True, key=non_functional_requirements\n[PASS] pm::schema_key_api_contracts - prop=True, required=True, key=api_contracts\n[PASS] pm::schema_key_data_model - prop=True, required=True, key=data_model\n[PASS] pm::prompt_contains::Output MUST be valid JSON - token=Output MUST be valid JSON\n[PASS] pm::prompt_contains::schemas/requirements.json - token=schemas/requirements.json\n[PASS] pm::prompt_contains::functional_requirements - token=functional_requirements\n[PASS] pm::prompt_contains::api_contracts - token=api_contracts\n[PASS] architect::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\architect_agent.md\n[PASS] architect::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\architecture.json\n[PASS] architect::schema_key_tech_stack - prop=True, required=True, key=tech_stack\n[PASS] architect::schema_key_modules - prop=True, required=True, key=modules\n[PASS] architect::schema_key_database_schema - prop=True, required=True, key=database_schema\n[PASS] architect::schema_key_openapi_spec - prop=True, required=True, key=openapi_spec\n[PASS] architect::schema_key_deployment - prop=True, required=True, key=deployment\n[PASS] architect::prompt_contains::Output MUST be valid JSON - token=Output MUST be valid JSON\n[PASS] architect::prompt_contains::schemas/architecture.json - token=schemas/architecture.json\n[PASS] architect::prompt_contains::openapi_spec - token=openapi_spec\n[PASS] architect::prompt_contains::modules - token=modules\n[PASS] qa::prompt_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\prompts\\qa_agent.md\n[PASS] qa::schema_file_exists - D:\\CASTGAN_Project\\multi-agent staybooking\\schemas\\bug_report.json\n[PASS] qa::schema_key_bug_id - prop=True, required=True, key=bug_id\n[PASS] qa::schema_key_severity - prop=True, required=True, key=severity\n[PASS] qa::schema_key_category - prop=True, required=True, key=category\n[PASS] qa::schema_key_file - prop=True, required=True, key=file\n[PASS] qa::schema_key_description - prop=True, required=True, key=description\n[PASS] qa::schema_key_related_requirement - prop=True, required=True, key=related_requirement\n[PASS] qa::prompt_contains::schemas/bug_report.json - token=schemas/bug_report.json\n[PASS] qa::prompt_contains::related requirement ID - token=related requirement ID\n[PASS] qa::prompt_contains::Critical - token=Critical\n[PASS] qa::prompt_contains::Major - token=Major\nPrompt contract report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week2\\prompt_contract_report.json\n",
       "stderr": ""
     },
@@ -38,9 +38,9 @@
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T03:55:08.996210+00:00",
-      "ended_at": "2026-02-25T03:55:09.162979+00:00",
-      "stdout": "[PASS] layer_turn_count: turn_count=3, expected=3\n[PASS] layer_role_order: roles=['architect', 'backend_dev', 'frontend_dev']\n[PASS] layer_all_turns_success: all turn results should be success\n[PASS] layer_state_shape: state shape matches profile constraints\n[PASS] layer_usage_count: api_calls=3, expected=3, tokens=1810\n[PASS] module_turn_count: turn_count=5, expected=5\n[PASS] module_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa']\n[PASS] module_all_turns_success: all turn results should be success\n[PASS] module_state_shape: state shape matches profile constraints\n[PASS] module_usage_count: api_calls=5, expected=5, tokens=2700\n[PASS] feature_turn_count: turn_count=6, expected=6\n[PASS] feature_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']\n[PASS] feature_all_turns_success: all turn results should be success\n[PASS] feature_state_shape: state shape matches profile constraints\n[PASS] feature_usage_count: api_calls=6, expected=6, tokens=3090\nSummary report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_granularity_switch_report.json\n",
+      "started_at": "2026-02-25T04:40:57.959434+00:00",
+      "ended_at": "2026-02-25T04:40:58.082264+00:00",
+      "stdout": "[PASS] layer_turn_count: turn_count=6, expected=6\n[PASS] layer_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']\n[PASS] layer_all_turns_success: all turn results should be success\n[PASS] layer_state_shape: state shape matches profile constraints\n[PASS] layer_usage_count: api_calls=6, expected=6, tokens=3090\n[PASS] layer_artifact_versions: artifact versions match expected map: {'requirements': 1, 'architecture': 1, 'backend_code': 1, 'frontend_code': 1, 'qa_report': 1, 'deployment': 1}\n[PASS] module_turn_count: turn_count=15, expected=15\n[PASS] module_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'devops']\n[PASS] module_all_turns_success: all turn results should be success\n[PASS] module_state_shape: state shape matches profile constraints\n[PASS] module_usage_count: api_calls=15, expected=15, tokens=8370\n[PASS] module_artifact_versions: artifact versions match expected map: {'requirements': 1, 'architecture': 1, 'backend_code': 4, 'frontend_code': 4, 'qa_report': 4, 'deployment': 1}\n[PASS] feature_turn_count: turn_count=18, expected=18\n[PASS] feature_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops', 'pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops', 'pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']\n[PASS] feature_all_turns_success: all turn results should be success\n[PASS] feature_state_shape: state shape matches profile constraints\n[PASS] feature_usage_count: api_calls=18, expected=18, tokens=9270\n[PASS] feature_artifact_versions: artifact versions match expected map: {'requirements': 3, 'architecture': 3, 'backend_code': 3, 'frontend_code': 3, 'qa_report': 3, 'deployment': 3}\nSummary report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_granularity_switch_report.json\n",
       "stderr": ""
     },
     {
@@ -57,10 +57,10 @@
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T03:55:09.162979+00:00",
-      "ended_at": "2026-02-25T03:55:09.854029+00:00",
+      "started_at": "2026-02-25T04:40:58.082264+00:00",
+      "ended_at": "2026-02-25T04:40:58.649136+00:00",
       "stdout": "",
-      "stderr": "..............................\n----------------------------------------------------------------------\nRan 30 tests in 0.463s\n\nOK\n"
+      "stderr": "..............................\n----------------------------------------------------------------------\nRan 30 tests in 0.422s\n\nOK\n"
     }
   ]
 }

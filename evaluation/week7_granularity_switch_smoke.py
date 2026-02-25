@@ -33,10 +33,14 @@ from topologies.sequential import SequentialTopology
 @dataclass
 class ScenarioSummary:
     granularity: str
+    decomposition_unit: str
+    work_item_count: int
     turn_count: int
+    expected_turn_count: int
     role_order: list[str]
     total_tokens: int
     total_api_calls: int
+    artifact_versions: dict[str, int]
     state_snapshot: str
     report_snapshot: str
 
@@ -46,6 +50,14 @@ class CheckResult:
     name: str
     passed: bool
     details: str
+
+
+@dataclass
+class StageTrace:
+    stage: str
+    work_item: str | None
+    roles: list[str]
+    turn_count: int
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -85,6 +97,45 @@ def assert_state_shape(profile: GranularityProfile, state: Any) -> tuple[bool, s
     return True, "state shape matches profile constraints"
 
 
+def collect_artifact_versions(state: Any) -> dict[str, int]:
+    return {
+        key: len(versions)
+        for key, versions in state.artifact_store.artifact_versions.items()
+    }
+
+
+def assert_artifact_versions(
+    profile: GranularityProfile, state: Any
+) -> tuple[bool, str]:
+    actual = collect_artifact_versions(state)
+    expected = profile.expected_artifact_versions
+
+    mismatches: list[str] = []
+    for key, expected_count in expected.items():
+        actual_count = actual.get(key, 0)
+        if actual_count != expected_count:
+            mismatches.append(
+                f"{key}: actual={actual_count}, expected={expected_count}"
+            )
+
+    unexpected_keys = sorted(set(actual.keys()) - set(expected.keys()))
+    if mismatches or unexpected_keys:
+        return (
+            False,
+            f"mismatches={mismatches}, unexpected_keys={unexpected_keys}, actual={actual}",
+        )
+    return True, f"artifact versions match expected map: {expected}"
+
+
+def run_stage(
+    orchestrator: Orchestrator, roles: list[str], kickoff_content: str
+) -> list[Any]:
+    if not roles:
+        return []
+    topology = SequentialTopology(orchestrator=orchestrator, roles=roles)
+    return topology.run(kickoff_content)
+
+
 def run_profile(profile: GranularityProfile) -> tuple[ScenarioSummary, list[CheckResult], int]:
     orchestrator = Orchestrator()
     register_default_agents(orchestrator)
@@ -92,26 +143,90 @@ def run_profile(profile: GranularityProfile) -> tuple[ScenarioSummary, list[Chec
     if profile.topology != "sequential":
         raise ValueError(f"Unsupported topology for week7 smoke: {profile.topology}")
 
-    topology = SequentialTopology(orchestrator=orchestrator, roles=profile.roles)
-    turn_results = topology.run(profile.kickoff_content)
+    turn_results: list[Any] = []
+    stage_trace: list[StageTrace] = []
+
+    prelude_results = run_stage(
+        orchestrator,
+        profile.prelude_roles,
+        (
+            f"[{profile.name}] Prelude planning for "
+            f"{profile.decomposition_unit}-level execution."
+        ),
+    )
+    turn_results.extend(prelude_results)
+    if profile.prelude_roles:
+        stage_trace.append(
+            StageTrace(
+                stage="prelude",
+                work_item=None,
+                roles=list(profile.prelude_roles),
+                turn_count=len(prelude_results),
+            )
+        )
+
+    for work_item in profile.work_items:
+        item_results = run_stage(
+            orchestrator,
+            profile.per_item_roles,
+            (
+                f"[{profile.name}] Execute {profile.decomposition_unit} work item: "
+                f"{work_item}."
+            ),
+        )
+        turn_results.extend(item_results)
+        stage_trace.append(
+            StageTrace(
+                stage="work_item",
+                work_item=work_item,
+                roles=list(profile.per_item_roles),
+                turn_count=len(item_results),
+            )
+        )
+
+    final_results = run_stage(
+        orchestrator,
+        profile.final_roles,
+        (
+            f"[{profile.name}] Finalization after "
+            f"{len(profile.work_items)} {profile.decomposition_unit} work items."
+        ),
+    )
+    turn_results.extend(final_results)
+    if profile.final_roles:
+        stage_trace.append(
+            StageTrace(
+                stage="final",
+                work_item=None,
+                roles=list(profile.final_roles),
+                turn_count=len(final_results),
+            )
+        )
+
     state = orchestrator.state
+    actual_role_order = [result.agent_role for result in turn_results]
+    artifact_versions = collect_artifact_versions(state)
 
     state_path = OUTPUT_DIR / f"week7_{profile.name}_state.json"
     profile_report_path = OUTPUT_DIR / f"week7_{profile.name}_report.json"
     state.save_json(state_path)
 
     state_shape_ok, state_shape_detail = assert_state_shape(profile, state)
+    artifact_ok, artifact_detail = assert_artifact_versions(profile, state)
 
     checks = [
         CheckResult(
             name=f"{profile.name}_turn_count",
-            passed=len(turn_results) == len(profile.roles),
-            details=f"turn_count={len(turn_results)}, expected={len(profile.roles)}",
+            passed=len(turn_results) == profile.expected_turn_count,
+            details=(
+                f"turn_count={len(turn_results)}, "
+                f"expected={profile.expected_turn_count}"
+            ),
         ),
         CheckResult(
             name=f"{profile.name}_role_order",
-            passed=[result.agent_role for result in turn_results] == profile.roles,
-            details=f"roles={[result.agent_role for result in turn_results]}",
+            passed=actual_role_order == profile.expected_role_order,
+            details=f"roles={actual_role_order}",
         ),
         CheckResult(
             name=f"{profile.name}_all_turns_success",
@@ -125,11 +240,16 @@ def run_profile(profile: GranularityProfile) -> tuple[ScenarioSummary, list[Chec
         ),
         CheckResult(
             name=f"{profile.name}_usage_count",
-            passed=state.total_api_calls == len(profile.roles),
+            passed=state.total_api_calls == profile.expected_turn_count,
             details=(
                 f"api_calls={state.total_api_calls}, "
-                f"expected={len(profile.roles)}, tokens={state.total_tokens}"
+                f"expected={profile.expected_turn_count}, tokens={state.total_tokens}"
             ),
+        ),
+        CheckResult(
+            name=f"{profile.name}_artifact_versions",
+            passed=artifact_ok,
+            details=artifact_detail,
         ),
     ]
 
@@ -138,19 +258,26 @@ def run_profile(profile: GranularityProfile) -> tuple[ScenarioSummary, list[Chec
         profile_report_path,
         {
             "granularity": profile.name,
+            "decomposition_unit": profile.decomposition_unit,
             "status": "success" if profile_status == 0 else "failed",
+            "stage_trace": [asdict(item) for item in stage_trace],
             "checks": [asdict(item) for item in checks],
             "turn_results": [asdict(result) for result in turn_results],
+            "artifact_versions": artifact_versions,
             "state_snapshot": str(state_path),
         },
     )
 
     summary = ScenarioSummary(
         granularity=profile.name,
+        decomposition_unit=profile.decomposition_unit,
+        work_item_count=len(profile.work_items),
         turn_count=len(turn_results),
-        role_order=[result.agent_role for result in turn_results],
+        expected_turn_count=profile.expected_turn_count,
+        role_order=actual_role_order,
         total_tokens=state.total_tokens,
         total_api_calls=state.total_api_calls,
+        artifact_versions=artifact_versions,
         state_snapshot=str(state_path),
         report_snapshot=str(profile_report_path),
     )

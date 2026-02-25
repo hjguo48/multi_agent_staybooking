@@ -9,35 +9,10 @@
   "summary": [
     {
       "granularity": "layer",
-      "turn_count": 3,
-      "role_order": [
-        "architect",
-        "backend_dev",
-        "frontend_dev"
-      ],
-      "total_tokens": 1810,
-      "total_api_calls": 3,
-      "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_layer_state.json",
-      "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_layer_report.json"
-    },
-    {
-      "granularity": "module",
-      "turn_count": 5,
-      "role_order": [
-        "pm",
-        "architect",
-        "backend_dev",
-        "frontend_dev",
-        "qa"
-      ],
-      "total_tokens": 2700,
-      "total_api_calls": 5,
-      "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_module_state.json",
-      "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_module_report.json"
-    },
-    {
-      "granularity": "feature",
+      "decomposition_unit": "layer",
+      "work_item_count": 1,
       "turn_count": 6,
+      "expected_turn_count": 6,
       "role_order": [
         "pm",
         "architect",
@@ -48,6 +23,89 @@
       ],
       "total_tokens": 3090,
       "total_api_calls": 6,
+      "artifact_versions": {
+        "requirements": 1,
+        "architecture": 1,
+        "backend_code": 1,
+        "frontend_code": 1,
+        "qa_report": 1,
+        "deployment": 1
+      },
+      "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_layer_state.json",
+      "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_layer_report.json"
+    },
+    {
+      "granularity": "module",
+      "decomposition_unit": "module",
+      "work_item_count": 4,
+      "turn_count": 15,
+      "expected_turn_count": 15,
+      "role_order": [
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "devops"
+      ],
+      "total_tokens": 8370,
+      "total_api_calls": 15,
+      "artifact_versions": {
+        "requirements": 1,
+        "architecture": 1,
+        "backend_code": 4,
+        "frontend_code": 4,
+        "qa_report": 4,
+        "deployment": 1
+      },
+      "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_module_state.json",
+      "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_module_report.json"
+    },
+    {
+      "granularity": "feature",
+      "decomposition_unit": "feature",
+      "work_item_count": 3,
+      "turn_count": 18,
+      "expected_turn_count": 18,
+      "role_order": [
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "devops",
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "devops",
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "devops"
+      ],
+      "total_tokens": 9270,
+      "total_api_calls": 18,
+      "artifact_versions": {
+        "requirements": 3,
+        "architecture": 3,
+        "backend_code": 3,
+        "frontend_code": 3,
+        "qa_report": 3,
+        "deployment": 3
+      },
       "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_feature_state.json",
       "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_feature_report.json"
     }
@@ -56,12 +114,12 @@
     {
       "name": "layer_turn_count",
       "passed": true,
-      "details": "turn_count=3, expected=3"
+      "details": "turn_count=6, expected=6"
     },
     {
       "name": "layer_role_order",
       "passed": true,
-      "details": "roles=['architect', 'backend_dev', 'frontend_dev']"
+      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']"
     },
     {
       "name": "layer_all_turns_success",
@@ -76,17 +134,22 @@
     {
       "name": "layer_usage_count",
       "passed": true,
-      "details": "api_calls=3, expected=3, tokens=1810"
+      "details": "api_calls=6, expected=6, tokens=3090"
+    },
+    {
+      "name": "layer_artifact_versions",
+      "passed": true,
+      "details": "artifact versions match expected map: {'requirements': 1, 'architecture': 1, 'backend_code': 1, 'frontend_code': 1, 'qa_report': 1, 'deployment': 1}"
     },
     {
       "name": "module_turn_count",
       "passed": true,
-      "details": "turn_count=5, expected=5"
+      "details": "turn_count=15, expected=15"
     },
     {
       "name": "module_role_order",
       "passed": true,
-      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa']"
+      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'devops']"
     },
     {
       "name": "module_all_turns_success",
@@ -101,17 +164,22 @@
     {
       "name": "module_usage_count",
       "passed": true,
-      "details": "api_calls=5, expected=5, tokens=2700"
+      "details": "api_calls=15, expected=15, tokens=8370"
+    },
+    {
+      "name": "module_artifact_versions",
+      "passed": true,
+      "details": "artifact versions match expected map: {'requirements': 1, 'architecture': 1, 'backend_code': 4, 'frontend_code': 4, 'qa_report': 4, 'deployment': 1}"
     },
     {
       "name": "feature_turn_count",
       "passed": true,
-      "details": "turn_count=6, expected=6"
+      "details": "turn_count=18, expected=18"
     },
     {
       "name": "feature_role_order",
       "passed": true,
-      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']"
+      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops', 'pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops', 'pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']"
     },
     {
       "name": "feature_all_turns_success",
@@ -126,7 +194,12 @@
     {
       "name": "feature_usage_count",
       "passed": true,
-      "details": "api_calls=6, expected=6, tokens=3090"
+      "details": "api_calls=18, expected=18, tokens=9270"
+    },
+    {
+      "name": "feature_artifact_versions",
+      "passed": true,
+      "details": "artifact versions match expected map: {'requirements': 3, 'architecture': 3, 'backend_code': 3, 'frontend_code': 3, 'qa_report': 3, 'deployment': 3}"
     }
   ]
 }

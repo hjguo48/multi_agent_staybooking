@@ -21,19 +21,23 @@ Focus: Config-driven granularity switch (Layer / Module / Feature)
 - Status: PASS
 - Evidence: `core/granularity.py`
 
-3. Smoke run executes all three granularities with profile-driven role switch.
+3. Smoke run executes all three granularities with decomposition-unit switching (layer/module/feature).
 - Status: PASS
 - Evidence: `evaluation/week7_granularity_switch_smoke.py`, `outputs/week7/week7_granularity_switch_report.json`
 
-4. Layer/module/feature state shapes are validated against profile constraints.
+4. Layer/module/feature state shapes and artifact version maps are validated against profile constraints.
 - Status: PASS
 - Evidence: `outputs/week7/week7_layer_report.json`, `outputs/week7/week7_module_report.json`, `outputs/week7/week7_feature_report.json`
 
-5. Week7 pipeline runs end-to-end with baseline checks and full test suite.
+5. Turn counts reflect decomposition strategy rather than simple role depth.
+- Status: PASS
+- Evidence: `outputs/week7/week7_granularity_switch_report.json` (`layer=6`, `module=15`, `feature=18`)
+
+6. Week7 pipeline runs end-to-end with baseline checks and full test suite.
 - Status: PASS
 - Evidence: `outputs/week7/week7_granularity_switch_pipeline_report.json`
 
-6. Granularity switch behavior is covered by unit tests.
+7. Granularity switch behavior is covered by unit tests.
 - Status: PASS
 - Evidence: `tests/test_granularity_switch.py`
 

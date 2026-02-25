@@ -17,11 +17,32 @@ class GranularityProfile:
 
     name: str
     description: str
+    decomposition_unit: str
     topology: str
-    kickoff_content: str
-    roles: list[str]
+    work_items: list[str]
+    prelude_roles: list[str]
+    per_item_roles: list[str]
+    final_roles: list[str]
     expected_state_fields: list[str]
     forbidden_state_fields: list[str]
+    expected_artifact_versions: dict[str, int]
+
+    @property
+    def expected_turn_count(self) -> int:
+        return (
+            len(self.prelude_roles)
+            + len(self.work_items) * len(self.per_item_roles)
+            + len(self.final_roles)
+        )
+
+    @property
+    def expected_role_order(self) -> list[str]:
+        roles: list[str] = []
+        roles.extend(self.prelude_roles)
+        for _ in self.work_items:
+            roles.extend(self.per_item_roles)
+        roles.extend(self.final_roles)
+        return roles
 
 
 @dataclass(frozen=True)
@@ -45,6 +66,24 @@ def _coerce_str_list(value: object, field_name: str) -> list[str]:
     if not all(isinstance(item, str) for item in value):
         raise ValueError(f"{field_name} must contain only strings")
     return [item.strip() for item in value if item.strip()]
+
+
+def _coerce_str_int_map(value: object, field_name: str) -> dict[str, int]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{field_name} must be an object mapping str->int")
+    normalized: dict[str, int] = {}
+    for raw_key, raw_val in value.items():
+        key = str(raw_key).strip()
+        if not key:
+            raise ValueError(f"{field_name} contains empty key")
+        try:
+            int_val = int(raw_val)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{field_name}.{key} must be int") from exc
+        if int_val < 0:
+            raise ValueError(f"{field_name}.{key} must be >= 0")
+        normalized[key] = int_val
+    return normalized
 
 
 def load_granularity_registry(path: Path) -> GranularityRegistry:
@@ -76,9 +115,21 @@ def load_granularity_registry(path: Path) -> GranularityRegistry:
         profile = GranularityProfile(
             name=key,
             description=str(item.get("description", "")).strip(),
+            decomposition_unit=str(item.get("decomposition_unit", key)).strip().lower(),
             topology=topology,
-            kickoff_content=str(item.get("kickoff_content", "")).strip(),
-            roles=_coerce_str_list(item.get("roles", []), f"{key}.roles"),
+            work_items=_coerce_str_list(item.get("work_items", []), f"{key}.work_items"),
+            prelude_roles=_coerce_str_list(
+                item.get("prelude_roles", []),
+                f"{key}.prelude_roles",
+            ),
+            per_item_roles=_coerce_str_list(
+                item.get("per_item_roles", []),
+                f"{key}.per_item_roles",
+            ),
+            final_roles=_coerce_str_list(
+                item.get("final_roles", []),
+                f"{key}.final_roles",
+            ),
             expected_state_fields=_coerce_str_list(
                 item.get("expected_state_fields", []),
                 f"{key}.expected_state_fields",
@@ -87,11 +138,17 @@ def load_granularity_registry(path: Path) -> GranularityRegistry:
                 item.get("forbidden_state_fields", []),
                 f"{key}.forbidden_state_fields",
             ),
+            expected_artifact_versions=_coerce_str_int_map(
+                item.get("expected_artifact_versions", {}),
+                f"{key}.expected_artifact_versions",
+            ),
         )
-        if not profile.roles:
-            raise ValueError(f"profile '{key}' must define at least one role")
-        if not profile.kickoff_content:
-            raise ValueError(f"profile '{key}' must define kickoff_content")
+        if not profile.work_items:
+            raise ValueError(f"profile '{key}' must define at least one work_item")
+        if not profile.per_item_roles:
+            raise ValueError(f"profile '{key}' must define per_item_roles")
+        if not profile.expected_artifact_versions:
+            raise ValueError(f"profile '{key}' must define expected_artifact_versions")
 
         profiles[key] = profile
 

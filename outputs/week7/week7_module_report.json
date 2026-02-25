@@ -1,16 +1,76 @@
 {
   "granularity": "module",
+  "decomposition_unit": "module",
   "status": "success",
+  "stage_trace": [
+    {
+      "stage": "prelude",
+      "work_item": null,
+      "roles": [
+        "pm",
+        "architect"
+      ],
+      "turn_count": 2
+    },
+    {
+      "stage": "work_item",
+      "work_item": "authentication",
+      "roles": [
+        "backend_dev",
+        "frontend_dev",
+        "qa"
+      ],
+      "turn_count": 3
+    },
+    {
+      "stage": "work_item",
+      "work_item": "listing_mgmt",
+      "roles": [
+        "backend_dev",
+        "frontend_dev",
+        "qa"
+      ],
+      "turn_count": 3
+    },
+    {
+      "stage": "work_item",
+      "work_item": "search",
+      "roles": [
+        "backend_dev",
+        "frontend_dev",
+        "qa"
+      ],
+      "turn_count": 3
+    },
+    {
+      "stage": "work_item",
+      "work_item": "booking",
+      "roles": [
+        "backend_dev",
+        "frontend_dev",
+        "qa"
+      ],
+      "turn_count": 3
+    },
+    {
+      "stage": "final",
+      "work_item": null,
+      "roles": [
+        "devops"
+      ],
+      "turn_count": 1
+    }
+  ],
   "checks": [
     {
       "name": "module_turn_count",
       "passed": true,
-      "details": "turn_count=5, expected=5"
+      "details": "turn_count=15, expected=15"
     },
     {
       "name": "module_role_order",
       "passed": true,
-      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa']"
+      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'devops']"
     },
     {
       "name": "module_all_turns_success",
@@ -25,7 +85,12 @@
     {
       "name": "module_usage_count",
       "passed": true,
-      "details": "api_calls=5, expected=5, tokens=2700"
+      "details": "api_calls=15, expected=15, tokens=8370"
+    },
+    {
+      "name": "module_artifact_versions",
+      "passed": true,
+      "details": "artifact versions match expected map: {'requirements': 1, 'architecture': 1, 'backend_code': 4, 'frontend_code': 4, 'qa_report': 4, 'deployment': 1}"
     }
   ],
   "turn_results": [
@@ -103,7 +168,165 @@
       ],
       "stop": false,
       "error": null
+    },
+    {
+      "agent_role": "backend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "backend_code:v2"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 680,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "backend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "frontend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "frontend_code:v2"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 610,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "frontend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "qa",
+      "success": true,
+      "artifacts_registered": [
+        "qa_report:v2"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 470,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "qa_report"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "backend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "backend_code:v3"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 680,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "backend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "frontend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "frontend_code:v3"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 610,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "frontend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "qa",
+      "success": true,
+      "artifacts_registered": [
+        "qa_report:v3"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 470,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "qa_report"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "backend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "backend_code:v4"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 680,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "backend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "frontend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "frontend_code:v4"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 610,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "frontend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "qa",
+      "success": true,
+      "artifacts_registered": [
+        "qa_report:v4"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 470,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "qa_report"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "devops",
+      "success": true,
+      "artifacts_registered": [
+        "deployment:v1"
+      ],
+      "messages_emitted": 0,
+      "usage_tokens": 390,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "deployment"
+      ],
+      "stop": true,
+      "error": null
     }
   ],
+  "artifact_versions": {
+    "requirements": 1,
+    "architecture": 1,
+    "backend_code": 4,
+    "frontend_code": 4,
+    "qa_report": 4,
+    "deployment": 1
+  },
   "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_module_state.json"
 }
