@@ -26,6 +26,9 @@ DEFAULT_WEEK3_STEP1_CONFIG = (
 DEFAULT_WEEK3_STEP2_CONFIG = (
     PROJECT_ROOT / "configs" / "experiment_configs" / "week3_step2_sequential.json"
 )
+DEFAULT_WEEK4_HUB_CONFIG = (
+    PROJECT_ROOT / "configs" / "experiment_configs" / "week4_hub_spoke.json"
+)
 
 
 @dataclass
@@ -153,6 +156,7 @@ def parse_args() -> argparse.Namespace:
             "week2-smoke",
             "week3-step1",
             "week3-step2",
+            "week4-hub",
             "verify-baseline",
             "extract-ground-truth",
             "validate-prompts"
@@ -163,7 +167,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--config",
         default=None,
-        help="Optional pipeline config JSON path for week1/week2-smoke tasks",
+        help="Optional pipeline config JSON path for week task runs",
     )
     return parser.parse_args()
 
@@ -193,6 +197,11 @@ def main() -> int:
     if args.task == "week3-step2":
         config_path = (
             resolve_path(args.config) if args.config else DEFAULT_WEEK3_STEP2_CONFIG
+        )
+        return execute_from_config(config_path)
+    if args.task == "week4-hub":
+        config_path = (
+            resolve_path(args.config) if args.config else DEFAULT_WEEK4_HUB_CONFIG
         )
         return execute_from_config(config_path)
     if args.task == "week2-smoke":

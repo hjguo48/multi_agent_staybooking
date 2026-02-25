@@ -1,0 +1,41 @@
+{
+  "name": "week4_hub_spoke_pipeline",
+  "description": "Week 4: Hub-and-Spoke topology validation with coordinator-mediated routing.",
+  "report_path": "outputs/week4/week4_hub_spoke_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "validate_prompt_contracts",
+      "command": [
+        "${PYTHON}",
+        "evaluation/validate_prompt_contracts.py"
+      ]
+    },
+    {
+      "name": "week4_hub_spoke_smoke",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week4_hub_spoke_smoke.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}

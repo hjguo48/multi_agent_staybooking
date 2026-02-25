@@ -1,0 +1,204 @@
+{
+  "status": "success",
+  "checks": [
+    {
+      "name": "turn_count",
+      "passed": true,
+      "details": "turn_count=12"
+    },
+    {
+      "name": "turn_pattern",
+      "passed": true,
+      "details": "coordinator_turns=6, spoke_order=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']"
+    },
+    {
+      "name": "all_turns_success",
+      "passed": true,
+      "details": "all turn results should be success"
+    },
+    {
+      "name": "coordinator_routing_messages",
+      "passed": true,
+      "details": "coordinator_task_messages=6"
+    },
+    {
+      "name": "state_fields_populated",
+      "passed": true,
+      "details": "all lifecycle state fields populated"
+    },
+    {
+      "name": "deployment_success",
+      "passed": true,
+      "details": "deployment_status=success"
+    },
+    {
+      "name": "usage_counters_accumulated",
+      "passed": true,
+      "details": "tokens=4170, api_calls=12"
+    },
+    {
+      "name": "iteration_counter",
+      "passed": true,
+      "details": "iteration=6"
+    }
+  ],
+  "turn_results": [
+    {
+      "agent_role": "coordinator",
+      "success": true,
+      "artifacts_registered": [],
+      "messages_emitted": 1,
+      "usage_tokens": 180,
+      "usage_api_calls": 1,
+      "updated_fields": [],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "pm",
+      "success": true,
+      "artifacts_registered": [
+        "requirements:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 420,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "requirements"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "coordinator",
+      "success": true,
+      "artifacts_registered": [],
+      "messages_emitted": 1,
+      "usage_tokens": 180,
+      "usage_api_calls": 1,
+      "updated_fields": [],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "architect",
+      "success": true,
+      "artifacts_registered": [
+        "architecture:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 520,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "architecture"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "coordinator",
+      "success": true,
+      "artifacts_registered": [],
+      "messages_emitted": 1,
+      "usage_tokens": 180,
+      "usage_api_calls": 1,
+      "updated_fields": [],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "backend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "backend_code:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 680,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "backend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "coordinator",
+      "success": true,
+      "artifacts_registered": [],
+      "messages_emitted": 1,
+      "usage_tokens": 180,
+      "usage_api_calls": 1,
+      "updated_fields": [],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "frontend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "frontend_code:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 610,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "frontend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "coordinator",
+      "success": true,
+      "artifacts_registered": [],
+      "messages_emitted": 1,
+      "usage_tokens": 180,
+      "usage_api_calls": 1,
+      "updated_fields": [],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "qa",
+      "success": true,
+      "artifacts_registered": [
+        "qa_report:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 470,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "qa_report"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "coordinator",
+      "success": true,
+      "artifacts_registered": [],
+      "messages_emitted": 1,
+      "usage_tokens": 180,
+      "usage_api_calls": 1,
+      "updated_fields": [],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "devops",
+      "success": true,
+      "artifacts_registered": [
+        "deployment:v1"
+      ],
+      "messages_emitted": 0,
+      "usage_tokens": 390,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "deployment"
+      ],
+      "stop": true,
+      "error": null
+    }
+  ],
+  "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week4\\week4_hub_spoke_state.json"
+}

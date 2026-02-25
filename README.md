@@ -102,6 +102,26 @@ Week 3 Step 2 artifacts generated:
 - `outputs/week3/step2/week3_step2_sequential_report.json`
 - `outputs/week3/step2/week3_step2_pipeline_report.json`
 
+## Week 4 Commands
+
+Run Week 4 pipeline (Hub-and-Spoke topology):
+
+```bash
+python run_experiment.py --task week4-hub
+```
+
+Run Week 4 smoke only:
+
+```bash
+python evaluation/week4_hub_spoke_smoke.py
+```
+
+Week 4 artifacts generated:
+
+- `outputs/week4/week4_hub_spoke_state.json`
+- `outputs/week4/week4_hub_spoke_report.json`
+- `outputs/week4/week4_hub_spoke_pipeline_report.json`
+
 ## Notes
 
 - Ground truth uses repository reality as source of truth.

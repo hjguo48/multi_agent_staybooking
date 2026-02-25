@@ -1,6 +1,6 @@
 ﻿# Multi-Agent StayBooking Execution Plan (Baseline)
 
-Last updated: 2026-02-24
+Last updated: 2026-02-25
 Plan owner: Project execution baseline agreed with user.
 
 ## Rules (Strict)
@@ -88,7 +88,7 @@ Plan owner: Project execution baseline agreed with user.
 - Finalize paper-ready tables, figures, and reproducibility docs.
 - Deliverable: submission-ready package.
 
-## Current Status Snapshot (as of 2026-02-24)
+## Current Status Snapshot (as of 2026-02-25)
 
 - Week 1 completed items:
 - Step 1 (baseline lock) completed:
@@ -198,5 +198,25 @@ Plan owner: Project execution baseline agreed with user.
 - `python run_experiment.py --task week1` => PASS after portability change
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (16 tests)
 - Week 3 status: COMPLETE
-- Next phase: Week 4 Hub-and-Spoke topology implementation.
+- Week 4 implemented:
+- Coordinator agent:
+- `agents/coordinator_agent.py`
+- Hub-and-Spoke topology runtime:
+- `topologies/hub_spoke.py`
+- `topologies/__init__.py` exports updated
+- Week 4 smoke and pipeline config:
+- `evaluation/week4_hub_spoke_smoke.py`
+- `configs/experiment_configs/week4_hub_spoke.json`
+- Pipeline entrypoint:
+- `python run_experiment.py --task week4-hub` => PASS
+- Week 4 evidence:
+- `outputs/week4/week4_hub_spoke_state.json`
+- `outputs/week4/week4_hub_spoke_report.json`
+- `outputs/week4/week4_hub_spoke_pipeline_report.json`
+- `outputs/week4/week4_hub_spoke_acceptance_matrix.md`
+- Unit tests expanded:
+- `tests/test_hub_spoke_topology.py`
+- `python -m unittest discover -s tests -p "test_*.py"` => PASS (22 tests)
+- Week 4 status: COMPLETE
+- Next phase: Week 5 Peer Review topology implementation.
 
