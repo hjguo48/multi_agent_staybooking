@@ -1,0 +1,41 @@
+{
+  "name": "week5_peer_review_pipeline",
+  "description": "Week 5: Peer Review topology with bounded revision loops.",
+  "report_path": "outputs/week5/week5_peer_review_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "validate_prompt_contracts",
+      "command": [
+        "${PYTHON}",
+        "evaluation/validate_prompt_contracts.py"
+      ]
+    },
+    {
+      "name": "week5_peer_review_smoke",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week5_peer_review_smoke.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}
