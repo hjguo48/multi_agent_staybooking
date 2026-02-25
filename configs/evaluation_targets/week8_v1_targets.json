@@ -1,0 +1,24 @@
+{
+  "ground_truth_path": "ground_truth/benchmark/staybooking_ground_truth.json",
+  "weights": {
+    "rcr": 0.30,
+    "code_quality": 0.20,
+    "arch_score": 0.20,
+    "deploy_score": 0.20,
+    "efficiency": 0.10
+  },
+  "runs": [
+    {
+      "name": "week7-layer",
+      "state_path": "outputs/week7/week7_layer_state.json"
+    },
+    {
+      "name": "week7-module",
+      "state_path": "outputs/week7/week7_module_state.json"
+    },
+    {
+      "name": "week7-feature",
+      "state_path": "outputs/week7/week7_feature_state.json"
+    }
+  ]
+}

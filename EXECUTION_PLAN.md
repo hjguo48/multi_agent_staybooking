@@ -278,5 +278,23 @@ Plan owner: Project execution baseline agreed with user.
 - `tests/test_granularity_switch.py`
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (30 tests)
 - Week 7 status: COMPLETE
-- Next phase: Week 8 evaluation pipeline v1 implementation.
+- Week 8 implemented:
+- Metric calculation core:
+- `core/evaluation_metrics.py`
+- `core/__init__.py` exports updated
+- Evaluation target config:
+- `configs/evaluation_targets/week8_v1_targets.json`
+- Week 8 smoke and pipeline config:
+- `evaluation/week8_evaluation_pipeline_v1.py`
+- `configs/experiment_configs/week8_evaluation_v1.json`
+- Pipeline entrypoint:
+- `python run_experiment.py --task week8-evaluation-v1` => PASS
+- Week 8 evidence:
+- `outputs/week8/week8_evaluation_report.json`
+- `outputs/week8/week8_evaluation_pipeline_report.json`
+- Unit tests expanded:
+- `tests/test_evaluation_metrics.py`
+- `python -m unittest discover -s tests -p "test_*.py"` => PASS (33 tests)
+- Week 8 status: COMPLETE
+- Next phase: Week 9 pilot experiments and stability fixes.
 

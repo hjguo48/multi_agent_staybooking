@@ -1,0 +1,154 @@
+{
+  "status": "success",
+  "targets_config": "configs/evaluation_targets/week8_v1_targets.json",
+  "ground_truth_path": "ground_truth/benchmark/staybooking_ground_truth.json",
+  "weights": {
+    "rcr": 0.3,
+    "code_quality": 0.2,
+    "arch_score": 0.2,
+    "deploy_score": 0.2,
+    "efficiency": 0.1
+  },
+  "runs": [
+    {
+      "run_name": "week7-layer",
+      "state_path": "outputs/week7/week7_layer_state.json",
+      "requirement_coverage": 1.0,
+      "api_coverage": 0.25,
+      "entity_coverage": 0.3333333333333333,
+      "rcr": 0.5277777777777778,
+      "code_quality": 1.0,
+      "arch_score": 0.5291666666666667,
+      "deploy_score": 1.0,
+      "total_tokens": 3090,
+      "total_api_calls": 6,
+      "iteration_count": 0,
+      "wall_clock_seconds": 0.0,
+      "norm_efficiency": 0.0,
+      "composite_score": 0.7641666666666667,
+      "percentages": {
+        "rcr": 52.77777777777778,
+        "code_quality": 100.0,
+        "arch_score": 52.916666666666664,
+        "deploy_score": 100.0,
+        "composite_score": 76.41666666666667
+      }
+    },
+    {
+      "run_name": "week7-module",
+      "state_path": "outputs/week7/week7_module_state.json",
+      "requirement_coverage": 1.0,
+      "api_coverage": 0.25,
+      "entity_coverage": 0.3333333333333333,
+      "rcr": 0.5277777777777778,
+      "code_quality": 1.0,
+      "arch_score": 0.5291666666666667,
+      "deploy_score": 1.0,
+      "total_tokens": 8370,
+      "total_api_calls": 15,
+      "iteration_count": 0,
+      "wall_clock_seconds": 0.001002,
+      "norm_efficiency": 0.8543689320388349,
+      "composite_score": 0.6787297734627832,
+      "percentages": {
+        "rcr": 52.77777777777778,
+        "code_quality": 100.0,
+        "arch_score": 52.916666666666664,
+        "deploy_score": 100.0,
+        "composite_score": 67.87297734627832
+      }
+    },
+    {
+      "run_name": "week7-feature",
+      "state_path": "outputs/week7/week7_feature_state.json",
+      "requirement_coverage": 1.0,
+      "api_coverage": 0.25,
+      "entity_coverage": 0.3333333333333333,
+      "rcr": 0.5277777777777778,
+      "code_quality": 1.0,
+      "arch_score": 0.5291666666666667,
+      "deploy_score": 1.0,
+      "total_tokens": 9270,
+      "total_api_calls": 18,
+      "iteration_count": 0,
+      "wall_clock_seconds": 0.0,
+      "norm_efficiency": 1.0,
+      "composite_score": 0.6641666666666667,
+      "percentages": {
+        "rcr": 52.77777777777778,
+        "code_quality": 100.0,
+        "arch_score": 52.916666666666664,
+        "deploy_score": 100.0,
+        "composite_score": 66.41666666666667
+      }
+    }
+  ],
+  "ranking": [
+    {
+      "rank": 1,
+      "run_name": "week7-layer",
+      "composite_score": 0.7641666666666667,
+      "composite_score_pct": 76.41666666666667,
+      "total_tokens": 3090,
+      "norm_efficiency": 0.0
+    },
+    {
+      "rank": 2,
+      "run_name": "week7-module",
+      "composite_score": 0.6787297734627832,
+      "composite_score_pct": 67.87297734627832,
+      "total_tokens": 8370,
+      "norm_efficiency": 0.8543689320388349
+    },
+    {
+      "rank": 3,
+      "run_name": "week7-feature",
+      "composite_score": 0.6641666666666667,
+      "composite_score_pct": 66.41666666666667,
+      "total_tokens": 9270,
+      "norm_efficiency": 1.0
+    }
+  ],
+  "checks": [
+    {
+      "name": "week7-layer_state_exists",
+      "passed": true,
+      "details": "loaded outputs/week7/week7_layer_state.json"
+    },
+    {
+      "name": "week7-module_state_exists",
+      "passed": true,
+      "details": "loaded outputs/week7/week7_module_state.json"
+    },
+    {
+      "name": "week7-feature_state_exists",
+      "passed": true,
+      "details": "loaded outputs/week7/week7_feature_state.json"
+    },
+    {
+      "name": "run_count",
+      "passed": true,
+      "details": "evaluated_runs=3"
+    },
+    {
+      "name": "week7-layer_metric_ranges",
+      "passed": true,
+      "details": "rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=0.0000, q=0.7642"
+    },
+    {
+      "name": "week7-module_metric_ranges",
+      "passed": true,
+      "details": "rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=0.8544, q=0.6787"
+    },
+    {
+      "name": "week7-feature_metric_ranges",
+      "passed": true,
+      "details": "rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=1.0000, q=0.6642"
+    },
+    {
+      "name": "ranking_sorted_desc",
+      "passed": true,
+      "details": "ranking_size=3"
+    }
+  ]
+}

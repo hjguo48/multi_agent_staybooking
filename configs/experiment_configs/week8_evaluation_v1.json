@@ -1,0 +1,41 @@
+{
+  "name": "week8_evaluation_pipeline_v1",
+  "description": "Week 8: evaluation pipeline v1 with weighted composite score.",
+  "report_path": "outputs/week8/week8_evaluation_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "week7_granularity_switch_smoke",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week7_granularity_switch_smoke.py"
+      ]
+    },
+    {
+      "name": "week8_evaluation_pipeline_v1",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week8_evaluation_pipeline_v1.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}

@@ -187,6 +187,25 @@ Week 7 artifacts generated:
 - `outputs/week7/week7_feature_state.json`
 - `outputs/week7/week7_granularity_switch_acceptance_matrix.md`
 
+## Week 8 Commands
+
+Run Week 8 pipeline (evaluation pipeline v1 + weighted composite score):
+
+```bash
+python run_experiment.py --task week8-evaluation-v1
+```
+
+Run Week 8 evaluation script only:
+
+```bash
+python evaluation/week8_evaluation_pipeline_v1.py
+```
+
+Week 8 artifacts generated:
+
+- `outputs/week8/week8_evaluation_report.json`
+- `outputs/week8/week8_evaluation_pipeline_report.json`
+
 ## Notes
 
 - Ground truth uses repository reality as source of truth.
