@@ -29,6 +29,9 @@ DEFAULT_WEEK3_STEP2_CONFIG = (
 DEFAULT_WEEK4_HUB_CONFIG = (
     PROJECT_ROOT / "configs" / "experiment_configs" / "week4_hub_spoke.json"
 )
+DEFAULT_WEEK5_PEER_REVIEW_CONFIG = (
+    PROJECT_ROOT / "configs" / "experiment_configs" / "week5_peer_review.json"
+)
 
 
 @dataclass
@@ -157,6 +160,7 @@ def parse_args() -> argparse.Namespace:
             "week3-step1",
             "week3-step2",
             "week4-hub",
+            "week5-peer-review",
             "verify-baseline",
             "extract-ground-truth",
             "validate-prompts"
@@ -202,6 +206,13 @@ def main() -> int:
     if args.task == "week4-hub":
         config_path = (
             resolve_path(args.config) if args.config else DEFAULT_WEEK4_HUB_CONFIG
+        )
+        return execute_from_config(config_path)
+    if args.task == "week5-peer-review":
+        config_path = (
+            resolve_path(args.config)
+            if args.config
+            else DEFAULT_WEEK5_PEER_REVIEW_CONFIG
         )
         return execute_from_config(config_path)
     if args.task == "week2-smoke":

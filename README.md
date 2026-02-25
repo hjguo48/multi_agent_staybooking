@@ -122,6 +122,27 @@ Week 4 artifacts generated:
 - `outputs/week4/week4_hub_spoke_report.json`
 - `outputs/week4/week4_hub_spoke_pipeline_report.json`
 
+## Week 5 Commands
+
+Run Week 5 pipeline (Peer Review topology):
+
+```bash
+python run_experiment.py --task week5-peer-review
+```
+
+Run Week 5 smoke only:
+
+```bash
+python evaluation/week5_peer_review_smoke.py
+```
+
+Week 5 artifacts generated:
+
+- `outputs/week5/week5_peer_review_state.json`
+- `outputs/week5/week5_peer_review_report.json`
+- `outputs/week5/week5_peer_review_pipeline_report.json`
+- `outputs/week5/week5_peer_review_acceptance_matrix.md`
+
 ## Notes
 
 - Ground truth uses repository reality as source of truth.
