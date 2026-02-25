@@ -1,0 +1,132 @@
+{
+  "status": "success",
+  "config": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\granularity_profiles.json",
+  "profiles_run": [
+    "layer",
+    "module",
+    "feature"
+  ],
+  "summary": [
+    {
+      "granularity": "layer",
+      "turn_count": 3,
+      "role_order": [
+        "architect",
+        "backend_dev",
+        "frontend_dev"
+      ],
+      "total_tokens": 1810,
+      "total_api_calls": 3,
+      "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_layer_state.json",
+      "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_layer_report.json"
+    },
+    {
+      "granularity": "module",
+      "turn_count": 5,
+      "role_order": [
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa"
+      ],
+      "total_tokens": 2700,
+      "total_api_calls": 5,
+      "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_module_state.json",
+      "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_module_report.json"
+    },
+    {
+      "granularity": "feature",
+      "turn_count": 6,
+      "role_order": [
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "devops"
+      ],
+      "total_tokens": 3090,
+      "total_api_calls": 6,
+      "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_feature_state.json",
+      "report_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_feature_report.json"
+    }
+  ],
+  "checks": [
+    {
+      "name": "layer_turn_count",
+      "passed": true,
+      "details": "turn_count=3, expected=3"
+    },
+    {
+      "name": "layer_role_order",
+      "passed": true,
+      "details": "roles=['architect', 'backend_dev', 'frontend_dev']"
+    },
+    {
+      "name": "layer_all_turns_success",
+      "passed": true,
+      "details": "all turn results should be success"
+    },
+    {
+      "name": "layer_state_shape",
+      "passed": true,
+      "details": "state shape matches profile constraints"
+    },
+    {
+      "name": "layer_usage_count",
+      "passed": true,
+      "details": "api_calls=3, expected=3, tokens=1810"
+    },
+    {
+      "name": "module_turn_count",
+      "passed": true,
+      "details": "turn_count=5, expected=5"
+    },
+    {
+      "name": "module_role_order",
+      "passed": true,
+      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa']"
+    },
+    {
+      "name": "module_all_turns_success",
+      "passed": true,
+      "details": "all turn results should be success"
+    },
+    {
+      "name": "module_state_shape",
+      "passed": true,
+      "details": "state shape matches profile constraints"
+    },
+    {
+      "name": "module_usage_count",
+      "passed": true,
+      "details": "api_calls=5, expected=5, tokens=2700"
+    },
+    {
+      "name": "feature_turn_count",
+      "passed": true,
+      "details": "turn_count=6, expected=6"
+    },
+    {
+      "name": "feature_role_order",
+      "passed": true,
+      "details": "roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']"
+    },
+    {
+      "name": "feature_all_turns_success",
+      "passed": true,
+      "details": "all turn results should be success"
+    },
+    {
+      "name": "feature_state_shape",
+      "passed": true,
+      "details": "state shape matches profile constraints"
+    },
+    {
+      "name": "feature_usage_count",
+      "passed": true,
+      "details": "api_calls=6, expected=6, tokens=3090"
+    }
+  ]
+}

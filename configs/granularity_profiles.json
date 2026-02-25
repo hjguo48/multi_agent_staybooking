@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "default": "module",
+  "profiles": {
+    "layer": {
+      "description": "Layer-level task scope focused on architecture and implementation layers.",
+      "topology": "sequential",
+      "kickoff_content": "Layer-level scope: align architecture layer with backend and frontend auth implementation layers.",
+      "roles": [
+        "architect",
+        "backend_dev",
+        "frontend_dev"
+      ],
+      "expected_state_fields": [
+        "architecture",
+        "backend_code",
+        "frontend_code"
+      ],
+      "forbidden_state_fields": [
+        "requirements",
+        "qa_report",
+        "deployment"
+      ]
+    },
+    "module": {
+      "description": "Module-level task scope for delivering a complete auth module with QA gate.",
+      "topology": "sequential",
+      "kickoff_content": "Module-level scope: deliver auth module from requirements to QA validation.",
+      "roles": [
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa"
+      ],
+      "expected_state_fields": [
+        "requirements",
+        "architecture",
+        "backend_code",
+        "frontend_code",
+        "qa_report"
+      ],
+      "forbidden_state_fields": [
+        "deployment"
+      ]
+    },
+    "feature": {
+      "description": "Feature-level task scope for end-to-end auth feature including deployment validation.",
+      "topology": "sequential",
+      "kickoff_content": "Feature-level scope: deliver auth feature end-to-end including deployment readiness.",
+      "roles": [
+        "pm",
+        "architect",
+        "backend_dev",
+        "frontend_dev",
+        "qa",
+        "devops"
+      ],
+      "expected_state_fields": [
+        "requirements",
+        "architecture",
+        "backend_code",
+        "frontend_code",
+        "qa_report",
+        "deployment"
+      ],
+      "forbidden_state_fields": []
+    }
+  }
+}

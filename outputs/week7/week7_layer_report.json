@@ -1,0 +1,79 @@
+{
+  "granularity": "layer",
+  "status": "success",
+  "checks": [
+    {
+      "name": "layer_turn_count",
+      "passed": true,
+      "details": "turn_count=3, expected=3"
+    },
+    {
+      "name": "layer_role_order",
+      "passed": true,
+      "details": "roles=['architect', 'backend_dev', 'frontend_dev']"
+    },
+    {
+      "name": "layer_all_turns_success",
+      "passed": true,
+      "details": "all turn results should be success"
+    },
+    {
+      "name": "layer_state_shape",
+      "passed": true,
+      "details": "state shape matches profile constraints"
+    },
+    {
+      "name": "layer_usage_count",
+      "passed": true,
+      "details": "api_calls=3, expected=3, tokens=1810"
+    }
+  ],
+  "turn_results": [
+    {
+      "agent_role": "architect",
+      "success": true,
+      "artifacts_registered": [
+        "architecture:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 520,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "architecture"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "backend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "backend_code:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 680,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "backend_code"
+      ],
+      "stop": false,
+      "error": null
+    },
+    {
+      "agent_role": "frontend_dev",
+      "success": true,
+      "artifacts_registered": [
+        "frontend_code:v1"
+      ],
+      "messages_emitted": 1,
+      "usage_tokens": 610,
+      "usage_api_calls": 1,
+      "updated_fields": [
+        "frontend_code"
+      ],
+      "stop": false,
+      "error": null
+    }
+  ],
+  "state_snapshot": "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_layer_state.json"
+}

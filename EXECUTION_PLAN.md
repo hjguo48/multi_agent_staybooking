@@ -256,5 +256,27 @@ Plan owner: Project execution baseline agreed with user.
 - `tests/test_iterative_feedback_topology.py`
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (28 tests)
 - Week 6 status: COMPLETE
-- Next phase: Week 7 granularity switch implementation.
+- Week 7 implemented:
+- Granularity profile config:
+- `configs/granularity_profiles.json`
+- Granularity loader:
+- `core/granularity.py`
+- `core/__init__.py` exports updated
+- Week 7 smoke and pipeline config:
+- `evaluation/week7_granularity_switch_smoke.py`
+- `configs/experiment_configs/week7_granularity_switch.json`
+- Pipeline entrypoint:
+- `python run_experiment.py --task week7-granularity-switch` => PASS
+- Week 7 evidence:
+- `outputs/week7/week7_granularity_switch_report.json`
+- `outputs/week7/week7_granularity_switch_pipeline_report.json`
+- `outputs/week7/week7_layer_state.json`
+- `outputs/week7/week7_module_state.json`
+- `outputs/week7/week7_feature_state.json`
+- `outputs/week7/week7_granularity_switch_acceptance_matrix.md`
+- Unit tests expanded:
+- `tests/test_granularity_switch.py`
+- `python -m unittest discover -s tests -p "test_*.py"` => PASS (30 tests)
+- Week 7 status: COMPLETE
+- Next phase: Week 8 evaluation pipeline v1 implementation.
 

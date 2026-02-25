@@ -164,6 +164,29 @@ Week 6 artifacts generated:
 - `outputs/week6/week6_iterative_feedback_pipeline_report.json`
 - `outputs/week6/week6_iterative_feedback_acceptance_matrix.md`
 
+## Week 7 Commands
+
+Run Week 7 pipeline (granularity switch: layer/module/feature):
+
+```bash
+python run_experiment.py --task week7-granularity-switch
+```
+
+Run Week 7 smoke only:
+
+```bash
+python evaluation/week7_granularity_switch_smoke.py
+```
+
+Week 7 artifacts generated:
+
+- `outputs/week7/week7_granularity_switch_report.json`
+- `outputs/week7/week7_granularity_switch_pipeline_report.json`
+- `outputs/week7/week7_layer_state.json`
+- `outputs/week7/week7_module_state.json`
+- `outputs/week7/week7_feature_state.json`
+- `outputs/week7/week7_granularity_switch_acceptance_matrix.md`
+
 ## Notes
 
 - Ground truth uses repository reality as source of truth.
