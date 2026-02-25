@@ -32,6 +32,9 @@ DEFAULT_WEEK4_HUB_CONFIG = (
 DEFAULT_WEEK5_PEER_REVIEW_CONFIG = (
     PROJECT_ROOT / "configs" / "experiment_configs" / "week5_peer_review.json"
 )
+DEFAULT_WEEK6_ITERATIVE_FEEDBACK_CONFIG = (
+    PROJECT_ROOT / "configs" / "experiment_configs" / "week6_iterative_feedback.json"
+)
 
 
 @dataclass
@@ -161,6 +164,7 @@ def parse_args() -> argparse.Namespace:
             "week3-step2",
             "week4-hub",
             "week5-peer-review",
+            "week6-iterative-feedback",
             "verify-baseline",
             "extract-ground-truth",
             "validate-prompts"
@@ -213,6 +217,13 @@ def main() -> int:
             resolve_path(args.config)
             if args.config
             else DEFAULT_WEEK5_PEER_REVIEW_CONFIG
+        )
+        return execute_from_config(config_path)
+    if args.task == "week6-iterative-feedback":
+        config_path = (
+            resolve_path(args.config)
+            if args.config
+            else DEFAULT_WEEK6_ITERATIVE_FEEDBACK_CONFIG
         )
         return execute_from_config(config_path)
     if args.task == "week2-smoke":

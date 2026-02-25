@@ -143,6 +143,27 @@ Week 5 artifacts generated:
 - `outputs/week5/week5_peer_review_pipeline_report.json`
 - `outputs/week5/week5_peer_review_acceptance_matrix.md`
 
+## Week 6 Commands
+
+Run Week 6 pipeline (Iterative Feedback topology):
+
+```bash
+python run_experiment.py --task week6-iterative-feedback
+```
+
+Run Week 6 smoke only:
+
+```bash
+python evaluation/week6_iterative_feedback_smoke.py
+```
+
+Week 6 artifacts generated:
+
+- `outputs/week6/week6_iterative_feedback_state.json`
+- `outputs/week6/week6_iterative_feedback_report.json`
+- `outputs/week6/week6_iterative_feedback_pipeline_report.json`
+- `outputs/week6/week6_iterative_feedback_acceptance_matrix.md`
+
 ## Notes
 
 - Ground truth uses repository reality as source of truth.

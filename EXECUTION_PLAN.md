@@ -238,5 +238,23 @@ Plan owner: Project execution baseline agreed with user.
 - `tests/test_peer_review_topology.py`
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (25 tests)
 - Week 5 status: COMPLETE
-- Next phase: Week 6 Iterative Feedback topology implementation.
+- Week 6 implemented:
+- Iterative Feedback topology runtime:
+- `topologies/iterative_feedback.py`
+- `topologies/__init__.py` exports updated
+- Week 6 smoke and pipeline config:
+- `evaluation/week6_iterative_feedback_smoke.py`
+- `configs/experiment_configs/week6_iterative_feedback.json`
+- Pipeline entrypoint:
+- `python run_experiment.py --task week6-iterative-feedback` => PASS
+- Week 6 evidence:
+- `outputs/week6/week6_iterative_feedback_state.json`
+- `outputs/week6/week6_iterative_feedback_report.json`
+- `outputs/week6/week6_iterative_feedback_pipeline_report.json`
+- `outputs/week6/week6_iterative_feedback_acceptance_matrix.md`
+- Unit tests expanded:
+- `tests/test_iterative_feedback_topology.py`
+- `python -m unittest discover -s tests -p "test_*.py"` => PASS (28 tests)
+- Week 6 status: COMPLETE
+- Next phase: Week 7 granularity switch implementation.
 
