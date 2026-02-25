@@ -1,0 +1,34 @@
+{
+  "name": "week9_pilot_pipeline",
+  "description": "Week 9: pilot experiments and stability checks with LLM-ready agents.",
+  "report_path": "outputs/week9/week9_pilot_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "week9_pilot_experiments",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week9_pilot_experiments.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}

@@ -41,6 +41,9 @@ DEFAULT_WEEK7_GRANULARITY_SWITCH_CONFIG = (
 DEFAULT_WEEK8_EVALUATION_V1_CONFIG = (
     PROJECT_ROOT / "configs" / "experiment_configs" / "week8_evaluation_v1.json"
 )
+DEFAULT_WEEK9_PILOT_CONFIG = (
+    PROJECT_ROOT / "configs" / "experiment_configs" / "week9_pilot.json"
+)
 
 
 @dataclass
@@ -173,6 +176,7 @@ def parse_args() -> argparse.Namespace:
             "week6-iterative-feedback",
             "week7-granularity-switch",
             "week8-evaluation-v1",
+            "week9-pilot",
             "verify-baseline",
             "extract-ground-truth",
             "validate-prompts"
@@ -246,6 +250,13 @@ def main() -> int:
             resolve_path(args.config)
             if args.config
             else DEFAULT_WEEK8_EVALUATION_V1_CONFIG
+        )
+        return execute_from_config(config_path)
+    if args.task == "week9-pilot":
+        config_path = (
+            resolve_path(args.config)
+            if args.config
+            else DEFAULT_WEEK9_PILOT_CONFIG
         )
         return execute_from_config(config_path)
     if args.task == "week2-smoke":

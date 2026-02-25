@@ -1,0 +1,44 @@
+{
+  "default": "claude_sonnet_4",
+  "profiles": {
+    "claude_sonnet_4": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-20250514",
+      "enabled": true,
+      "api_key_env": "ANTHROPIC_API_KEY",
+      "temperature": 0.2,
+      "max_output_tokens": 4096,
+      "timeout_seconds": 45.0,
+      "max_retries": 2
+    },
+    "gpt_4o": {
+      "provider": "mock",
+      "model": "gpt-4o",
+      "enabled": false,
+      "api_key_env": "OPENAI_API_KEY",
+      "temperature": 0.2,
+      "max_output_tokens": 4096,
+      "timeout_seconds": 45.0,
+      "max_retries": 2
+    },
+    "deepseek_v3": {
+      "provider": "mock",
+      "model": "deepseek-v3",
+      "enabled": false,
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "temperature": 0.2,
+      "max_output_tokens": 4096,
+      "timeout_seconds": 45.0,
+      "max_retries": 2
+    },
+    "mock_json": {
+      "provider": "mock",
+      "model": "mock-json-model",
+      "enabled": true,
+      "temperature": 0.0,
+      "max_output_tokens": 1024,
+      "timeout_seconds": 5.0,
+      "max_retries": 0
+    }
+  }
+}

@@ -1,0 +1,753 @@
+{
+  "run_id": "53289db49e644c029f9907e5b9d60aa7",
+  "created_at": "2026-02-25T06:12:52.373188+00:00",
+  "updated_at": "2026-02-25T06:22:00.627638+00:00",
+  "requirements": {
+    "artifact_ref": "requirements:v1"
+  },
+  "architecture": {
+    "artifact_ref": "architecture:v1"
+  },
+  "backend_code": {
+    "artifact_ref": "backend_code:v1"
+  },
+  "frontend_code": {
+    "artifact_ref": "frontend_code:v1"
+  },
+  "qa_report": {
+    "artifact_ref": "qa_report:v1"
+  },
+  "deployment": {
+    "artifact_ref": "deployment:v1"
+  },
+  "iteration": 0,
+  "total_tokens": 8370,
+  "total_api_calls": 15,
+  "artifact_store": {
+    "requirements": [
+      {
+        "artifact_id": "requirements-doc",
+        "artifact_type": "requirements",
+        "producer": "pm",
+        "content": {
+          "project_name": "StayBooking",
+          "functional_requirements": [
+            {
+              "id": "FR-001",
+              "user_story": "As a guest, I want to register and login using JWT.",
+              "acceptance_criteria": [
+                "Given valid registration data, user account is created",
+                "Given valid credentials, JWT is returned on login"
+              ],
+              "priority": "Must",
+              "complexity": "Low"
+            }
+          ],
+          "non_functional_requirements": [
+            {
+              "id": "NFR-001",
+              "description": "Token-based authentication required"
+            }
+          ],
+          "api_contracts": [
+            {
+              "endpoint": "/auth/register",
+              "method": "POST",
+              "auth_required": false
+            },
+            {
+              "endpoint": "/auth/login",
+              "method": "POST",
+              "auth_required": false
+            }
+          ],
+          "data_model": {
+            "entities": [
+              "User"
+            ],
+            "relationships": []
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T06:13:26.214126+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      }
+    ],
+    "architecture": [
+      {
+        "artifact_id": "architecture-doc",
+        "artifact_type": "architecture",
+        "producer": "architect",
+        "content": {
+          "tech_stack": {
+            "backend": {
+              "language": "Java 17",
+              "framework": "Spring Boot 3.x"
+            },
+            "frontend": {
+              "framework": "React 18"
+            },
+            "database": {
+              "primary": "PostgreSQL 15"
+            },
+            "infrastructure": {
+              "container": "Docker"
+            }
+          },
+          "modules": [
+            {
+              "name": "auth-module",
+              "responsibility": "User registration, login, and JWT handling",
+              "dependencies": []
+            }
+          ],
+          "database_schema": {
+            "tables": [
+              {
+                "name": "users",
+                "columns": [
+                  "id",
+                  "username",
+                  "password_hash"
+                ]
+              }
+            ]
+          },
+          "openapi_spec": {
+            "paths": {
+              "/auth/register": {
+                "post": {
+                  "summary": "Register user"
+                }
+              },
+              "/auth/login": {
+                "post": {
+                  "summary": "Login user"
+                }
+              }
+            }
+          },
+          "deployment": {
+            "containers": [
+              "backend",
+              "frontend",
+              "postgres"
+            ],
+            "networking": {
+              "mode": "bridge"
+            }
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T06:14:02.003057+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      }
+    ],
+    "backend_code": [
+      {
+        "artifact_id": "backend-auth-module",
+        "artifact_type": "backend_code",
+        "producer": "backend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/main/java/com/example/auth/AuthController.java",
+            "src/main/java/com/example/auth/AuthService.java"
+          ],
+          "code_bundle": {
+            "src/main/java/com/example/auth/AuthController.java": "package com.example.auth;\npublic class AuthController {\n    // Minimal placeholder controller for week3 smoke\n}\n",
+            "src/main/java/com/example/auth/AuthService.java": "package com.example.auth;\npublic class AuthService {\n    // Minimal placeholder service for week3 smoke\n}\n"
+          },
+          "build_notes": {
+            "compile_status": "simulated_pass"
+          },
+          "test_notes": {
+            "unit_tests": "simulated_pending"
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T06:14:42.280971+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "backend-auth-module",
+        "artifact_type": "backend_code",
+        "producer": "backend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/main/java/com/example/auth/AuthController.java",
+            "src/main/java/com/example/auth/AuthService.java"
+          ],
+          "code_bundle": {
+            "src/main/java/com/example/auth/AuthController.java": "package com.example.auth;\npublic class AuthController {\n    // Minimal placeholder controller for week3 smoke\n}\n",
+            "src/main/java/com/example/auth/AuthService.java": "package com.example.auth;\npublic class AuthService {\n    // Minimal placeholder service for week3 smoke\n}\n"
+          },
+          "build_notes": {
+            "compile_status": "simulated_pass"
+          },
+          "test_notes": {
+            "unit_tests": "simulated_pending"
+          }
+        },
+        "version": 2,
+        "created_at": "2026-02-25T06:16:34.794791+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "backend-auth-module",
+        "artifact_type": "backend_code",
+        "producer": "backend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/main/java/com/example/auth/AuthController.java",
+            "src/main/java/com/example/auth/AuthService.java"
+          ],
+          "code_bundle": {
+            "src/main/java/com/example/auth/AuthController.java": "package com.example.auth;\npublic class AuthController {\n    // Minimal placeholder controller for week3 smoke\n}\n",
+            "src/main/java/com/example/auth/AuthService.java": "package com.example.auth;\npublic class AuthService {\n    // Minimal placeholder service for week3 smoke\n}\n"
+          },
+          "build_notes": {
+            "compile_status": "simulated_pass"
+          },
+          "test_notes": {
+            "unit_tests": "simulated_pending"
+          }
+        },
+        "version": 3,
+        "created_at": "2026-02-25T06:18:24.536491+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: <urlopen error [Errno 2] No such file or directory>"
+          }
+        }
+      },
+      {
+        "artifact_id": "backend-auth-module",
+        "artifact_type": "backend_code",
+        "producer": "backend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/main/java/com/example/auth/AuthController.java",
+            "src/main/java/com/example/auth/AuthService.java"
+          ],
+          "code_bundle": {
+            "src/main/java/com/example/auth/AuthController.java": "package com.example.auth;\npublic class AuthController {\n    // Minimal placeholder controller for week3 smoke\n}\n",
+            "src/main/java/com/example/auth/AuthService.java": "package com.example.auth;\npublic class AuthService {\n    // Minimal placeholder service for week3 smoke\n}\n"
+          },
+          "build_notes": {
+            "compile_status": "simulated_pass"
+          },
+          "test_notes": {
+            "unit_tests": "simulated_pending"
+          }
+        },
+        "version": 4,
+        "created_at": "2026-02-25T06:20:16.317715+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      }
+    ],
+    "frontend_code": [
+      {
+        "artifact_id": "frontend-auth-module",
+        "artifact_type": "frontend_code",
+        "producer": "frontend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/pages/LoginPage.jsx",
+            "src/services/authApi.js"
+          ],
+          "code_bundle": {
+            "src/pages/LoginPage.jsx": "export function LoginPage() {\n  return <div>Login Page Placeholder</div>;\n}\n",
+            "src/services/authApi.js": "export async function login(payload) {\n  return { token: 'mock-token', user: payload.username };\n}\n"
+          },
+          "build_notes": {
+            "build_status": "simulated_pass"
+          },
+          "ui_state_notes": {
+            "loading_error_empty": "covered_in_placeholder"
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T06:15:22.258742+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "frontend-auth-module",
+        "artifact_type": "frontend_code",
+        "producer": "frontend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/pages/LoginPage.jsx",
+            "src/services/authApi.js"
+          ],
+          "code_bundle": {
+            "src/pages/LoginPage.jsx": "export function LoginPage() {\n  return <div>Login Page Placeholder</div>;\n}\n",
+            "src/services/authApi.js": "export async function login(payload) {\n  return { token: 'mock-token', user: payload.username };\n}\n"
+          },
+          "build_notes": {
+            "build_status": "simulated_pass"
+          },
+          "ui_state_notes": {
+            "loading_error_empty": "covered_in_placeholder"
+          }
+        },
+        "version": 2,
+        "created_at": "2026-02-25T06:17:09.451698+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "frontend-auth-module",
+        "artifact_type": "frontend_code",
+        "producer": "frontend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/pages/LoginPage.jsx",
+            "src/services/authApi.js"
+          ],
+          "code_bundle": {
+            "src/pages/LoginPage.jsx": "export function LoginPage() {\n  return <div>Login Page Placeholder</div>;\n}\n",
+            "src/services/authApi.js": "export async function login(payload) {\n  return { token: 'mock-token', user: payload.username };\n}\n"
+          },
+          "build_notes": {
+            "build_status": "simulated_pass"
+          },
+          "ui_state_notes": {
+            "loading_error_empty": "covered_in_placeholder"
+          }
+        },
+        "version": 3,
+        "created_at": "2026-02-25T06:19:00.166813+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "frontend-auth-module",
+        "artifact_type": "frontend_code",
+        "producer": "frontend_dev",
+        "content": {
+          "module": "auth",
+          "changed_files": [
+            "src/pages/LoginPage.jsx",
+            "src/services/authApi.js"
+          ],
+          "code_bundle": {
+            "src/pages/LoginPage.jsx": "export function LoginPage() {\n  return <div>Login Page Placeholder</div>;\n}\n",
+            "src/services/authApi.js": "export async function login(payload) {\n  return { token: 'mock-token', user: payload.username };\n}\n"
+          },
+          "build_notes": {
+            "build_status": "simulated_pass"
+          },
+          "ui_state_notes": {
+            "loading_error_empty": "covered_in_placeholder"
+          }
+        },
+        "version": 4,
+        "created_at": "2026-02-25T06:20:51.473029+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      }
+    ],
+    "qa_report": [
+      {
+        "artifact_id": "qa-report-auth",
+        "artifact_type": "qa_report",
+        "producer": "qa",
+        "content": {
+          "summary": {
+            "test_pass_rate": 1.0,
+            "critical_bugs": 0,
+            "major_bugs": 0
+          },
+          "bug_reports": [],
+          "coverage_map": {
+            "FR-001": [
+              "testRegister",
+              "testLogin"
+            ]
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T06:16:01.127523+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "qa-report-auth",
+        "artifact_type": "qa_report",
+        "producer": "qa",
+        "content": {
+          "summary": {
+            "test_pass_rate": 1.0,
+            "critical_bugs": 0,
+            "major_bugs": 0
+          },
+          "bug_reports": [],
+          "coverage_map": {
+            "FR-001": [
+              "testRegister",
+              "testLogin"
+            ]
+          }
+        },
+        "version": 2,
+        "created_at": "2026-02-25T06:17:43.318456+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "qa-report-auth",
+        "artifact_type": "qa_report",
+        "producer": "qa",
+        "content": {
+          "summary": {
+            "test_pass_rate": 1.0,
+            "critical_bugs": 0,
+            "major_bugs": 0
+          },
+          "bug_reports": [],
+          "coverage_map": {
+            "FR-001": [
+              "testRegister",
+              "testLogin"
+            ]
+          }
+        },
+        "version": 3,
+        "created_at": "2026-02-25T06:19:38.037482+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      },
+      {
+        "artifact_id": "qa-report-auth",
+        "artifact_type": "qa_report",
+        "producer": "qa",
+        "content": {
+          "summary": {
+            "test_pass_rate": 1.0,
+            "critical_bugs": 0,
+            "major_bugs": 0
+          },
+          "bug_reports": [],
+          "coverage_map": {
+            "FR-001": [
+              "testRegister",
+              "testLogin"
+            ]
+          }
+        },
+        "version": 4,
+        "created_at": "2026-02-25T06:21:26.713542+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      }
+    ],
+    "deployment": [
+      {
+        "artifact_id": "deployment-report-auth",
+        "artifact_type": "deployment",
+        "producer": "devops",
+        "content": {
+          "status": "success",
+          "mode": "local-simulated",
+          "services": [
+            "backend",
+            "frontend",
+            "postgres"
+          ],
+          "health_checks": {
+            "backend": 200,
+            "frontend": 200
+          },
+          "access_urls": {
+            "frontend": "http://localhost:3000",
+            "backend": "http://localhost:8080"
+          }
+        },
+        "version": 1,
+        "created_at": "2026-02-25T06:22:00.627638+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule_fallback",
+            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+          }
+        }
+      }
+    ]
+  },
+  "message_log": [
+    {
+      "sender": "orchestrator",
+      "receiver": "pm",
+      "content": "[pilot] prelude for module",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T06:12:52.373188+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "pm",
+      "receiver": "architect",
+      "content": "Requirements ready for architecture design.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "requirements-doc:v1"
+      ],
+      "timestamp": "2026-02-25T06:13:26.214126+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "architect",
+      "receiver": "backend_dev",
+      "content": "Architecture ready for backend implementation.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "architecture-doc:v1"
+      ],
+      "timestamp": "2026-02-25T06:14:02.003057+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "orchestrator",
+      "receiver": "backend_dev",
+      "content": "[pilot] module item: authentication",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T06:14:02.003057+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "backend_dev",
+      "receiver": "frontend_dev",
+      "content": "Backend auth module ready for frontend integration.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "backend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:14:42.280971+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "frontend_dev",
+      "receiver": "qa",
+      "content": "Frontend auth module ready for QA validation.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "frontend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:15:22.258742+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "qa",
+      "receiver": "devops",
+      "content": "QA passed. Ready for deployment validation.",
+      "msg_type": "APPROVAL",
+      "artifacts": [
+        "qa-report-auth:v1"
+      ],
+      "timestamp": "2026-02-25T06:16:01.127523+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "orchestrator",
+      "receiver": "backend_dev",
+      "content": "[pilot] module item: listing_mgmt",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T06:16:01.127523+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "backend_dev",
+      "receiver": "frontend_dev",
+      "content": "Backend auth module ready for frontend integration.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "backend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:16:34.794791+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "frontend_dev",
+      "receiver": "qa",
+      "content": "Frontend auth module ready for QA validation.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "frontend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:17:09.451698+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "qa",
+      "receiver": "devops",
+      "content": "QA passed. Ready for deployment validation.",
+      "msg_type": "APPROVAL",
+      "artifacts": [
+        "qa-report-auth:v1"
+      ],
+      "timestamp": "2026-02-25T06:17:43.318456+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "orchestrator",
+      "receiver": "backend_dev",
+      "content": "[pilot] module item: search",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T06:17:43.319000+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "backend_dev",
+      "receiver": "frontend_dev",
+      "content": "Backend auth module ready for frontend integration.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "backend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:18:24.536491+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "frontend_dev",
+      "receiver": "qa",
+      "content": "Frontend auth module ready for QA validation.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "frontend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:19:00.166813+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "qa",
+      "receiver": "devops",
+      "content": "QA passed. Ready for deployment validation.",
+      "msg_type": "APPROVAL",
+      "artifacts": [
+        "qa-report-auth:v1"
+      ],
+      "timestamp": "2026-02-25T06:19:38.038100+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "orchestrator",
+      "receiver": "backend_dev",
+      "content": "[pilot] module item: booking",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T06:19:38.038100+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "backend_dev",
+      "receiver": "frontend_dev",
+      "content": "Backend auth module ready for frontend integration.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "backend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:20:16.317715+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "frontend_dev",
+      "receiver": "qa",
+      "content": "Frontend auth module ready for QA validation.",
+      "msg_type": "TASK",
+      "artifacts": [
+        "frontend-auth-module:v1"
+      ],
+      "timestamp": "2026-02-25T06:20:51.473029+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "qa",
+      "receiver": "devops",
+      "content": "QA passed. Ready for deployment validation.",
+      "msg_type": "APPROVAL",
+      "artifacts": [
+        "qa-report-auth:v1"
+      ],
+      "timestamp": "2026-02-25T06:21:26.713542+00:00",
+      "metadata": {}
+    },
+    {
+      "sender": "orchestrator",
+      "receiver": "devops",
+      "content": "[pilot] finalization for module",
+      "msg_type": "TASK",
+      "artifacts": [],
+      "timestamp": "2026-02-25T06:21:26.713542+00:00",
+      "metadata": {}
+    }
+  ]
+}

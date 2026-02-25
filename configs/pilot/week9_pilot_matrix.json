@@ -1,0 +1,29 @@
+{
+  "llm_profiles_path": "configs/llm_profiles.json",
+  "llm_profile": "claude_sonnet_4",
+  "allow_network_llm": false,
+  "max_attempts_per_case": 2,
+  "disable_llm_on_retry": true,
+  "cases": [
+    {
+      "name": "seq_module",
+      "topology": "sequential",
+      "granularity": "module"
+    },
+    {
+      "name": "hub_module",
+      "topology": "hub_spoke",
+      "granularity": "module"
+    },
+    {
+      "name": "peer_module",
+      "topology": "peer_review",
+      "granularity": "module"
+    },
+    {
+      "name": "iter_module",
+      "topology": "iterative_feedback",
+      "granularity": "module"
+    }
+  ]
+}

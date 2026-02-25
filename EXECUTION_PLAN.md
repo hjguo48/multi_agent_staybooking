@@ -296,5 +296,34 @@ Plan owner: Project execution baseline agreed with user.
 - `tests/test_evaluation_metrics.py`
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (33 tests)
 - Week 8 status: COMPLETE
-- Next phase: Week 9 pilot experiments and stability fixes.
+- Week 9 implemented:
+- LLM runtime integration:
+- `llm/models.py`
+- `llm/client.py`
+- `llm/factory.py`
+- `llm/__init__.py`
+- LLM profiles and pilot matrix config:
+- `configs/llm_profiles.json`
+- `configs/pilot/week9_pilot_matrix.json`
+- Agent runtime upgraded with LLM JSON + fallback behavior:
+- `agents/base_agent.py`
+- `agents/pm_agent.py`
+- `agents/architect_agent.py`
+- `agents/backend_dev_agent.py`
+- `agents/frontend_dev_agent.py`
+- `agents/qa_agent.py`
+- `agents/devops_agent.py`
+- Week 9 pilot and pipeline config:
+- `evaluation/week9_pilot_experiments.py`
+- `configs/experiment_configs/week9_pilot.json`
+- Pipeline entrypoint:
+- `python run_experiment.py --task week9-pilot` => PASS
+- Week 9 evidence:
+- `outputs/week9/week9_pilot_report.json`
+- `outputs/week9/week9_pilot_pipeline_report.json`
+- Unit tests expanded:
+- `tests/test_llm_integration.py`
+- `python -m unittest discover -s tests -p "test_*.py"` => PASS (36 tests)
+- Week 9 status: COMPLETE
+- Next phase: Week 10 primary matrix first batch.
 

@@ -1,0 +1,132 @@
+{
+  "status": "success",
+  "pilot_config": "configs/pilot/week9_pilot_matrix.json",
+  "llm_profile": {
+    "name": "claude_sonnet_4",
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-20250514",
+    "client_available": false,
+    "availability_reason": "network llm disabled by pilot config (provider=anthropic)",
+    "allow_network_llm": false
+  },
+  "summary": {
+    "case_count": 4,
+    "success_count": 4,
+    "success_rate": 1.0,
+    "retry_count": 0
+  },
+  "failure_buckets": {},
+  "cases": [
+    {
+      "name": "seq_module",
+      "topology": "sequential",
+      "granularity": "module",
+      "success": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "llm_enabled": false,
+          "success": true,
+          "turn_count": 15,
+          "error": null,
+          "duration_seconds": 0.0,
+          "total_tokens": 8370,
+          "total_api_calls": 15,
+          "state_snapshot": "outputs/week9/cases/seq_module_attempt1_state.json"
+        }
+      ],
+      "final_error": null,
+      "final_state_snapshot": "outputs/week9/cases/seq_module_attempt1_state.json"
+    },
+    {
+      "name": "hub_module",
+      "topology": "hub_spoke",
+      "granularity": "module",
+      "success": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "llm_enabled": false,
+          "success": true,
+          "turn_count": 12,
+          "error": null,
+          "duration_seconds": 0.0,
+          "total_tokens": 4170,
+          "total_api_calls": 12,
+          "state_snapshot": "outputs/week9/cases/hub_module_attempt1_state.json"
+        }
+      ],
+      "final_error": null,
+      "final_state_snapshot": "outputs/week9/cases/hub_module_attempt1_state.json"
+    },
+    {
+      "name": "peer_module",
+      "topology": "peer_review",
+      "granularity": "module",
+      "success": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "llm_enabled": false,
+          "success": true,
+          "turn_count": 12,
+          "error": null,
+          "duration_seconds": 0.0,
+          "total_tokens": 4380,
+          "total_api_calls": 8,
+          "state_snapshot": "outputs/week9/cases/peer_module_attempt1_state.json"
+        }
+      ],
+      "final_error": null,
+      "final_state_snapshot": "outputs/week9/cases/peer_module_attempt1_state.json"
+    },
+    {
+      "name": "iter_module",
+      "topology": "iterative_feedback",
+      "granularity": "module",
+      "success": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "llm_enabled": false,
+          "success": true,
+          "turn_count": 6,
+          "error": null,
+          "duration_seconds": 0.0,
+          "total_tokens": 3090,
+          "total_api_calls": 6,
+          "state_snapshot": "outputs/week9/cases/iter_module_attempt1_state.json"
+        }
+      ],
+      "final_error": null,
+      "final_state_snapshot": "outputs/week9/cases/iter_module_attempt1_state.json"
+    }
+  ],
+  "checks": [
+    {
+      "name": "pilot_cases_non_empty",
+      "passed": true,
+      "details": "case_count=4"
+    },
+    {
+      "name": "llm_profile_loaded",
+      "passed": true,
+      "details": "profile=claude_sonnet_4, provider=anthropic, llm_available=False, reason=network llm disabled by pilot config (provider=anthropic)"
+    },
+    {
+      "name": "pilot_success_rate",
+      "passed": true,
+      "details": "success_count=4, total=4, success_rate=1.0000"
+    },
+    {
+      "name": "pilot_retry_budget",
+      "passed": true,
+      "details": "max_attempts=2, total_retries=0"
+    },
+    {
+      "name": "pilot_failure_buckets_recorded",
+      "passed": true,
+      "details": "failure_bucket_count=0"
+    }
+  ]
+}

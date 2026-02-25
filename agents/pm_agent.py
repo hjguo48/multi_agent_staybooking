@@ -14,7 +14,7 @@ class ProductManagerAgent(BaseAgent):
     """Generate structured requirements from a project brief."""
 
     def act(self, context: ProjectState) -> dict[str, Any]:
-        requirements = {
+        fallback_requirements = {
             "project_name": "StayBooking",
             "functional_requirements": [
                 {
@@ -40,6 +40,23 @@ class ProductManagerAgent(BaseAgent):
                 "relationships": [],
             },
         }
+        requirements, usage, generation_meta = self._llm_json_or_fallback(
+            context=context,
+            task_instruction=(
+                "Generate requirements for a Java StayBooking auth slice. "
+                "Include functional requirements, non-functional requirements, "
+                "API contracts, and data model."
+            ),
+            fallback_payload=fallback_requirements,
+            fallback_usage={"tokens": 420, "api_calls": 1},
+            required_keys=[
+                "project_name",
+                "functional_requirements",
+                "non_functional_requirements",
+                "api_contracts",
+                "data_model",
+            ],
+        )
         return {
             "state_updates": {"requirements": {"artifact_ref": "requirements:v1"}},
             "artifacts": [
@@ -50,6 +67,7 @@ class ProductManagerAgent(BaseAgent):
                         artifact_type="requirements",
                         producer=self.role,
                         content=requirements,
+                        metadata={"generation": generation_meta},
                     ),
                 }
             ],
@@ -62,5 +80,5 @@ class ProductManagerAgent(BaseAgent):
                     artifacts=["requirements-doc:v1"],
                 )
             ],
-            "usage": {"tokens": 420, "api_calls": 1},
+            "usage": usage,
         }

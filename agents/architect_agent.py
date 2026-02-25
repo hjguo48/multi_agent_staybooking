@@ -14,7 +14,7 @@ class ArchitectAgent(BaseAgent):
     """Generate architecture artifacts from requirements."""
 
     def act(self, context: ProjectState) -> dict[str, Any]:
-        architecture = {
+        fallback_architecture = {
             "tech_stack": {
                 "backend": {"language": "Java 17", "framework": "Spring Boot 3.x"},
                 "frontend": {"framework": "React 18"},
@@ -42,6 +42,22 @@ class ArchitectAgent(BaseAgent):
                 "networking": {"mode": "bridge"},
             },
         }
+        architecture, usage, generation_meta = self._llm_json_or_fallback(
+            context=context,
+            task_instruction=(
+                "Generate architecture design JSON for StayBooking auth-first scope. "
+                "Include tech stack, modules, database schema, OpenAPI paths, and deployment."
+            ),
+            fallback_payload=fallback_architecture,
+            fallback_usage={"tokens": 520, "api_calls": 1},
+            required_keys=[
+                "tech_stack",
+                "modules",
+                "database_schema",
+                "openapi_spec",
+                "deployment",
+            ],
+        )
         return {
             "state_updates": {"architecture": {"artifact_ref": "architecture:v1"}},
             "artifacts": [
@@ -52,6 +68,7 @@ class ArchitectAgent(BaseAgent):
                         artifact_type="architecture",
                         producer=self.role,
                         content=architecture,
+                        metadata={"generation": generation_meta},
                     ),
                 }
             ],
@@ -64,5 +81,5 @@ class ArchitectAgent(BaseAgent):
                     artifacts=["architecture-doc:v1"],
                 )
             ],
-            "usage": {"tokens": 520, "api_calls": 1},
+            "usage": usage,
         }

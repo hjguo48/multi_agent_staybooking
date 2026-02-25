@@ -14,7 +14,7 @@ class QAAgent(BaseAgent):
     """Validate produced artifacts and generate QA report."""
 
     def act(self, context: ProjectState) -> dict[str, Any]:
-        qa_report = {
+        fallback_qa_report = {
             "summary": {
                 "test_pass_rate": 1.0,
                 "critical_bugs": 0,
@@ -23,6 +23,16 @@ class QAAgent(BaseAgent):
             "bug_reports": [],
             "coverage_map": {"FR-001": ["testRegister", "testLogin"]},
         }
+        qa_report, usage, generation_meta = self._llm_json_or_fallback(
+            context=context,
+            task_instruction=(
+                "Generate QA report JSON for current StayBooking artifacts. "
+                "Include summary, bug_reports, and coverage_map."
+            ),
+            fallback_payload=fallback_qa_report,
+            fallback_usage={"tokens": 470, "api_calls": 1},
+            required_keys=["summary", "bug_reports", "coverage_map"],
+        )
         return {
             "state_updates": {"qa_report": {"artifact_ref": "qa_report:v1"}},
             "artifacts": [
@@ -33,6 +43,7 @@ class QAAgent(BaseAgent):
                         artifact_type="qa_report",
                         producer=self.role,
                         content=qa_report,
+                        metadata={"generation": generation_meta},
                     ),
                 }
             ],
@@ -45,5 +56,5 @@ class QAAgent(BaseAgent):
                     artifacts=["qa-report-auth:v1"],
                 )
             ],
-            "usage": {"tokens": 470, "api_calls": 1},
+            "usage": usage,
         }

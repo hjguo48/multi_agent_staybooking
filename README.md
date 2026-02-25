@@ -206,6 +206,29 @@ Week 8 artifacts generated:
 - `outputs/week8/week8_evaluation_report.json`
 - `outputs/week8/week8_evaluation_pipeline_report.json`
 
+## Week 9 Commands
+
+Run Week 9 pipeline (pilot experiments + stability checks):
+
+```bash
+python run_experiment.py --task week9-pilot
+```
+
+Run Week 9 pilot script only:
+
+```bash
+python evaluation/week9_pilot_experiments.py
+```
+
+Week 9 artifacts generated:
+
+- `outputs/week9/week9_pilot_report.json`
+- `outputs/week9/week9_pilot_pipeline_report.json`
+
+Week 9 pilot defaults to offline-safe mode (`allow_network_llm=false` in
+`configs/pilot/week9_pilot_matrix.json`). Set it to `true` to run real Claude
+calls when `ANTHROPIC_API_KEY` is configured.
+
 ## Notes
 
 - Ground truth uses repository reality as source of truth.
