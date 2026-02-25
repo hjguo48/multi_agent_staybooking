@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -19,6 +20,26 @@ def git_value(repo: Path, args: list[str]) -> str:
         text=True,
         stderr=subprocess.STDOUT,
     ).strip()
+
+
+def compute_snapshot_sha256(repo_path: Path) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(repo_path.rglob("*"), key=lambda item: item.as_posix()):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(repo_path)
+        if rel.parts and rel.parts[0] == ".git":
+            continue
+        digest.update(rel.as_posix().encode("utf-8"))
+        digest.update(b"\0")
+        with path.open("rb") as handle:
+            while True:
+                chunk = handle.read(1024 * 1024)
+                if not chunk:
+                    break
+                digest.update(chunk)
+        digest.update(b"\0")
+    return digest.hexdigest()
 
 
 def resolve_path(path_value: str, bases: list[Path]) -> Path:
@@ -41,6 +62,22 @@ def verify_repo(name: str, cfg: dict, lock_dir: Path) -> tuple[bool, str]:
     )
     if not repo_path.exists():
         return False, f"[{name}] missing path: {repo_path}"
+
+    repo_git_dir = repo_path / ".git"
+    if not repo_git_dir.exists():
+        expected_snapshot = cfg.get("snapshot_sha256")
+        if not expected_snapshot:
+            return (
+                False,
+                f"[{name}] missing .git and lock has no snapshot_sha256 for fallback verification",
+            )
+        actual_snapshot = compute_snapshot_sha256(repo_path)
+        if actual_snapshot != expected_snapshot:
+            return (
+                False,
+                f"[{name}] snapshot mismatch expected={expected_snapshot} actual={actual_snapshot}",
+            )
+        return True, f"[{name}] OK snapshot_sha256={actual_snapshot} (no .git fallback)"
 
     try:
         current_commit = git_value(repo_path, ["rev-parse", "HEAD"])

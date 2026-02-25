@@ -1,7 +1,7 @@
 {
-  "run_id": "2c5a1b61811b4abebc86240e1615e546",
-  "created_at": "2026-02-25T05:38:44.961295+00:00",
-  "updated_at": "2026-02-25T05:38:44.961295+00:00",
+  "run_id": "439b000a556c47a59bd8bddc5bde1c76",
+  "created_at": "2026-02-25T09:04:26.802089+00:00",
+  "updated_at": "2026-02-25T09:04:26.803093+00:00",
   "requirements": {
     "artifact_ref": "requirements:v1"
   },
@@ -69,8 +69,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "requirements-doc",
@@ -116,8 +120,12 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "requirements-doc",
@@ -163,8 +171,12 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "architecture": [
@@ -233,8 +245,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "architecture-doc",
@@ -301,8 +317,12 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "architecture-doc",
@@ -369,8 +389,12 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "backend_code": [
@@ -396,8 +420,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "backend-auth-module",
@@ -421,8 +449,12 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "backend-auth-module",
@@ -446,8 +478,12 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "frontend_code": [
@@ -473,8 +509,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "frontend-auth-module",
@@ -498,8 +538,12 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "frontend-auth-module",
@@ -523,8 +567,12 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "qa_report": [
@@ -547,8 +595,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "qa-report-auth",
@@ -569,8 +621,12 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "qa-report-auth",
@@ -591,8 +647,12 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "deployment": [
@@ -618,8 +678,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.802089+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "deployment-report-auth",
@@ -643,8 +707,12 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       },
       {
         "artifact_id": "deployment-report-auth",
@@ -668,8 +736,12 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T05:38:44.961295+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.803093+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ]
   },
@@ -680,7 +752,7 @@
       "content": "[feature] Execute feature work item: user_registration.",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -691,7 +763,7 @@
       "artifacts": [
         "requirements-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -702,7 +774,7 @@
       "artifacts": [
         "architecture-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -713,7 +785,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -724,7 +796,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -735,7 +807,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -744,7 +816,7 @@
       "content": "[feature] Execute feature work item: listing_search.",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -755,7 +827,7 @@
       "artifacts": [
         "requirements-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -766,7 +838,7 @@
       "artifacts": [
         "architecture-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.802089+00:00",
       "metadata": {}
     },
     {
@@ -777,7 +849,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -788,7 +860,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -799,7 +871,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -808,7 +880,7 @@
       "content": "[feature] Execute feature work item: make_booking.",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -819,7 +891,7 @@
       "artifacts": [
         "requirements-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -830,7 +902,7 @@
       "artifacts": [
         "architecture-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -841,7 +913,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -852,7 +924,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     },
     {
@@ -863,7 +935,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.961295+00:00",
+      "timestamp": "2026-02-25T09:04:26.803093+00:00",
       "metadata": {}
     }
   ]

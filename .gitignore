@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+outputs/week8/generated_workspaces/
+outputs/week9/cases/
+
+.tmp_doc_extract.txt
+.tmp_doc_extract_latest.txt

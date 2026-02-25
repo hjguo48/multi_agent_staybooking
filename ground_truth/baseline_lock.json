@@ -9,6 +9,7 @@
       "remote_origin": "https://github.com/hjguo48/staybooking-project.git",
       "branch": "main",
       "commit": "81b85eab7d2d14076eb9b32234522b2f42c66382",
+      "snapshot_sha256": "97940dfa28d4a617890fcf5ef02ca3b5a2eb7772bddc02697caf39c95597ae12",
       "local_path": "ground_truth/staybooking-project"
     },
     "frontend": {
@@ -17,6 +18,7 @@
       "remote_origin": "https://github.com/hjguo48/stayboookingfe.git",
       "branch": "main",
       "commit": "4a7a9551a37d6210c40760b30218b20cb03f8394",
+      "snapshot_sha256": "24269eda0bc8dc01020dfabca524cd8ddb07503af1f16dff309fd11c17ef0bab",
       "local_path": "ground_truth/stayboookingfe"
     }
   },

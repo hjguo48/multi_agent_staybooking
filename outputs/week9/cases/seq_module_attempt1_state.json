@@ -1,7 +1,7 @@
 {
-  "run_id": "53289db49e644c029f9907e5b9d60aa7",
-  "created_at": "2026-02-25T06:12:52.373188+00:00",
-  "updated_at": "2026-02-25T06:22:00.627638+00:00",
+  "run_id": "8480271fad804a7d80881fd7d1ee4509",
+  "created_at": "2026-02-25T09:09:05.840039+00:00",
+  "updated_at": "2026-02-25T09:09:05.841026+00:00",
   "requirements": {
     "artifact_ref": "requirements:v1"
   },
@@ -69,11 +69,10 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T06:13:26.214126+00:00",
+        "created_at": "2026-02-25T09:09:05.840039+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       }
@@ -144,11 +143,10 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T06:14:02.003057+00:00",
+        "created_at": "2026-02-25T09:09:05.840039+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       }
@@ -176,11 +174,10 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T06:14:42.280971+00:00",
+        "created_at": "2026-02-25T09:09:05.840039+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -206,11 +203,10 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T06:16:34.794791+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -236,11 +232,10 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T06:18:24.536491+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: <urlopen error [Errno 2] No such file or directory>"
+            "source": "rule"
           }
         }
       },
@@ -266,11 +261,10 @@
           }
         },
         "version": 4,
-        "created_at": "2026-02-25T06:20:16.317715+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       }
@@ -298,11 +292,10 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T06:15:22.258742+00:00",
+        "created_at": "2026-02-25T09:09:05.840039+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -328,11 +321,10 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T06:17:09.451698+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -358,11 +350,10 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T06:19:00.166813+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -388,11 +379,10 @@
           }
         },
         "version": 4,
-        "created_at": "2026-02-25T06:20:51.473029+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       }
@@ -417,11 +407,10 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T06:16:01.127523+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -444,11 +433,10 @@
           }
         },
         "version": 2,
-        "created_at": "2026-02-25T06:17:43.318456+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -471,11 +459,10 @@
           }
         },
         "version": 3,
-        "created_at": "2026-02-25T06:19:38.037482+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       },
@@ -498,11 +485,10 @@
           }
         },
         "version": 4,
-        "created_at": "2026-02-25T06:21:26.713542+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       }
@@ -530,11 +516,10 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T06:22:00.627638+00:00",
+        "created_at": "2026-02-25T09:09:05.841026+00:00",
         "metadata": {
           "generation": {
-            "source": "rule_fallback",
-            "reason": "llm_error:Anthropic generate failed after 3 attempts: HTTP Error 401: Unauthorized"
+            "source": "rule"
           }
         }
       }
@@ -547,7 +532,7 @@
       "content": "[pilot] prelude for module",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T06:12:52.373188+00:00",
+      "timestamp": "2026-02-25T09:09:05.840039+00:00",
       "metadata": {}
     },
     {
@@ -558,7 +543,7 @@
       "artifacts": [
         "requirements-doc:v1"
       ],
-      "timestamp": "2026-02-25T06:13:26.214126+00:00",
+      "timestamp": "2026-02-25T09:09:05.840039+00:00",
       "metadata": {}
     },
     {
@@ -569,7 +554,7 @@
       "artifacts": [
         "architecture-doc:v1"
       ],
-      "timestamp": "2026-02-25T06:14:02.003057+00:00",
+      "timestamp": "2026-02-25T09:09:05.840039+00:00",
       "metadata": {}
     },
     {
@@ -578,7 +563,7 @@
       "content": "[pilot] module item: authentication",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T06:14:02.003057+00:00",
+      "timestamp": "2026-02-25T09:09:05.840039+00:00",
       "metadata": {}
     },
     {
@@ -589,7 +574,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:14:42.280971+00:00",
+      "timestamp": "2026-02-25T09:09:05.840039+00:00",
       "metadata": {}
     },
     {
@@ -600,7 +585,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:15:22.258742+00:00",
+      "timestamp": "2026-02-25T09:09:05.840039+00:00",
       "metadata": {}
     },
     {
@@ -611,7 +596,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T06:16:01.127523+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -620,7 +605,7 @@
       "content": "[pilot] module item: listing_mgmt",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T06:16:01.127523+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -631,7 +616,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:16:34.794791+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -642,7 +627,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:17:09.451698+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -653,7 +638,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T06:17:43.318456+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -662,7 +647,7 @@
       "content": "[pilot] module item: search",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T06:17:43.319000+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -673,7 +658,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:18:24.536491+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -684,7 +669,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:19:00.166813+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -695,7 +680,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T06:19:38.038100+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -704,7 +689,7 @@
       "content": "[pilot] module item: booking",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T06:19:38.038100+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -715,7 +700,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:20:16.317715+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -726,7 +711,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T06:20:51.473029+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -737,7 +722,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T06:21:26.713542+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     },
     {
@@ -746,7 +731,7 @@
       "content": "[pilot] finalization for module",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T06:21:26.713542+00:00",
+      "timestamp": "2026-02-25T09:09:05.841026+00:00",
       "metadata": {}
     }
   ]

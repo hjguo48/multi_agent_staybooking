@@ -8,13 +8,21 @@ Computes:
 - deployability score
 - efficiency stats and normalized efficiency
 - weighted composite score Q
+
+Also performs runtime-backed validation:
+- materialize generated backend/frontend code bundles to disk
+- execute backend/frontend build+test checks
+- execute lightweight deploy checks
+- fold runtime pass rates into code_quality/deploy_score
 """
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -22,11 +30,18 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 OUTPUT_DIR = PROJECT_ROOT / "outputs" / "week8"
 TARGETS_CONFIG = PROJECT_ROOT / "configs" / "evaluation_targets" / "week8_v1_targets.json"
+MATERIALIZATION_MODE = "pure_generated"  # pure_generated | template_overlay
+STRICT_RUNTIME_SCORING = True
+VALIDATION_TIMEOUT_SECONDS = 180.0
+VALIDATOR_RUN_BACKEND_TESTS = True
+VALIDATOR_RUN_FRONTEND_CHECKS = False
+VALIDATOR_RUN_FRONTEND_TESTS = False
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from core import RunMetrics, ScoreWeights, apply_composite_scores, evaluate_run
+from tools import ArtifactMaterializer, BuildDeployValidator
 
 
 @dataclass
@@ -34,6 +49,10 @@ class CheckResult:
     name: str
     passed: bool
     details: str
+
+
+def clamp01(value: float) -> float:
+    return max(0.0, min(1.0, value))
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -50,6 +69,76 @@ def to_repo_rel(path: Path) -> str:
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def sanitize_run_name(name: str) -> str:
+    token = re.sub(r"[^A-Za-z0-9._-]+", "_", name).strip("_")
+    return token or "run"
+
+
+def resolve_template_path(raw_path: Any) -> Path | None:
+    text = str(raw_path or "").strip()
+    if not text:
+        return None
+    candidate = Path(text)
+    if not candidate.is_absolute():
+        candidate = PROJECT_ROOT / candidate
+    resolved = candidate.resolve()
+    if resolved.exists():
+        return resolved
+    return None
+
+
+def resolve_template_roots(ground_truth: dict[str, Any]) -> tuple[Path | None, Path | None]:
+    sources = ground_truth.get("sources", {})
+    if not isinstance(sources, dict):
+        return None, None
+    backend = sources.get("backend", {})
+    frontend = sources.get("frontend", {})
+    backend_path = backend.get("path") if isinstance(backend, dict) else None
+    frontend_path = frontend.get("path") if isinstance(frontend, dict) else None
+    return resolve_template_path(backend_path), resolve_template_path(frontend_path)
+
+
+def select_templates(
+    ground_truth: dict[str, Any], mode: str
+) -> tuple[Path | None, Path | None, list[CheckResult]]:
+    if mode == "pure_generated":
+        return None, None, [
+            CheckResult(
+                name="backend_template_disabled",
+                passed=True,
+                details="materialization_mode=pure_generated",
+            ),
+            CheckResult(
+                name="frontend_template_disabled",
+                passed=True,
+                details="materialization_mode=pure_generated",
+            ),
+        ]
+
+    if mode != "template_overlay":
+        raise ValueError(
+            f"invalid MATERIALIZATION_MODE={mode}; expected pure_generated or template_overlay"
+        )
+
+    backend_template, frontend_template = resolve_template_roots(ground_truth)
+    return backend_template, frontend_template, [
+        CheckResult(
+            name="backend_template_exists",
+            passed=backend_template is not None,
+            details=to_repo_rel(backend_template)
+            if backend_template
+            else "missing backend template path",
+        ),
+        CheckResult(
+            name="frontend_template_exists",
+            passed=frontend_template is not None,
+            details=to_repo_rel(frontend_template)
+            if frontend_template
+            else "missing frontend template path",
+        ),
+    ]
 
 
 def load_targets(config_path: Path) -> tuple[Path, ScoreWeights, list[dict[str, str]]]:
@@ -79,10 +168,20 @@ def load_targets(config_path: Path) -> tuple[Path, ScoreWeights, list[dict[str, 
 
 
 def evaluate_targets(
-    ground_truth: dict[str, Any], run_targets: list[dict[str, str]]
-) -> tuple[list[RunMetrics], list[CheckResult]]:
+    ground_truth: dict[str, Any],
+    run_targets: list[dict[str, str]],
+    *,
+    backend_template: Path | None,
+    frontend_template: Path | None,
+    materialized_output_root: Path,
+    workspace_run_prefix: str,
+    strict_runtime_scoring: bool,
+    validation_timeout_seconds: float = VALIDATION_TIMEOUT_SECONDS,
+) -> tuple[list[RunMetrics], list[CheckResult], list[dict[str, Any]]]:
     metrics: list[RunMetrics] = []
     checks: list[CheckResult] = []
+    runtime_validation: list[dict[str, Any]] = []
+    materializer = ArtifactMaterializer(materialized_output_root)
 
     for run in run_targets:
         name = run["name"]
@@ -113,7 +212,97 @@ def evaluate_targets(
             )
         )
 
-    return metrics, checks
+        runtime_entry: dict[str, Any] = {"run_name": name, "state_path": to_repo_rel(state_path)}
+        workspace_run_name = f"{workspace_run_prefix}_{sanitize_run_name(name)}"
+
+        try:
+            materialized = materializer.materialize(
+                run_name=workspace_run_name,
+                state_payload=payload,
+                backend_template=backend_template,
+                frontend_template=frontend_template,
+            )
+            runtime_entry["materialization"] = materialized.to_dict()
+
+            files_written = (
+                len(materialized.backend_files_written) + len(materialized.frontend_files_written)
+            )
+            checks.append(
+                CheckResult(
+                    name=f"{name}_materialization_has_files",
+                    passed=files_written > 0,
+                    details=f"files_written={files_written}",
+                )
+            )
+
+            validator = BuildDeployValidator(
+                backend_root=Path(materialized.backend_root),
+                frontend_root=Path(materialized.frontend_root),
+                timeout_seconds=validation_timeout_seconds,
+                run_backend_tests=VALIDATOR_RUN_BACKEND_TESTS,
+                run_frontend_checks=VALIDATOR_RUN_FRONTEND_CHECKS,
+                run_frontend_tests=VALIDATOR_RUN_FRONTEND_TESTS,
+            )
+            validation_result = validator.run(payload)
+            runtime_entry["validation"] = validation_result
+
+            scores = validation_result.get("scores", {})
+            build_pass_rate = float(scores.get("build_test_pass_rate", 0.0))
+            build_executed_steps = int(scores.get("build_test_executed_steps", 0))
+            deploy_pass_rate = float(scores.get("deploy_pass_rate", 0.0))
+            deploy_executed_steps = int(scores.get("deploy_executed_steps", 0))
+            deploy_real_pass_rate = float(scores.get("deploy_real_pass_rate", 0.0))
+            deploy_real_executed_steps = int(scores.get("deploy_real_executed_steps", 0))
+
+            original_code_quality = metric.code_quality
+            original_deploy_score = metric.deploy_score
+
+            if strict_runtime_scoring:
+                metric.code_quality = clamp01(min(metric.code_quality, build_pass_rate))
+                metric.deploy_score = clamp01(min(metric.deploy_score, deploy_real_pass_rate))
+            else:
+                if build_executed_steps > 0:
+                    metric.code_quality = clamp01(min(metric.code_quality, build_pass_rate))
+                if deploy_executed_steps > 0:
+                    metric.deploy_score = clamp01(min(metric.deploy_score, deploy_pass_rate))
+
+            runtime_entry["score_adjustment"] = {
+                "strict_runtime_scoring": strict_runtime_scoring,
+                "original_code_quality": original_code_quality,
+                "runtime_build_pass_rate": build_pass_rate,
+                "adjusted_code_quality": metric.code_quality,
+                "original_deploy_score": original_deploy_score,
+                "runtime_deploy_pass_rate": deploy_pass_rate,
+                "runtime_deploy_real_pass_rate": deploy_real_pass_rate,
+                "adjusted_deploy_score": metric.deploy_score,
+                "build_executed_steps": build_executed_steps,
+                "deploy_executed_steps": deploy_executed_steps,
+                "deploy_real_executed_steps": deploy_real_executed_steps,
+            }
+
+            checks.append(
+                CheckResult(
+                    name=f"{name}_runtime_validation_executed",
+                    passed=True,
+                    details=(
+                        f"build_pass_rate={build_pass_rate:.4f} (steps={build_executed_steps}), "
+                        f"deploy_pass_rate={deploy_pass_rate:.4f} (steps={deploy_executed_steps})"
+                    ),
+                )
+            )
+        except Exception as exc:
+            runtime_entry["error"] = str(exc)
+            checks.append(
+                CheckResult(
+                    name=f"{name}_runtime_validation_executed",
+                    passed=False,
+                    details=f"materialize/validate failed: {exc}",
+                )
+            )
+
+        runtime_validation.append(runtime_entry)
+
+    return metrics, checks, runtime_validation
 
 
 def build_ranking(metrics: list[RunMetrics]) -> list[dict[str, Any]]:
@@ -141,7 +330,20 @@ def run_evaluation() -> tuple[int, list[CheckResult], Path]:
         raise FileNotFoundError(f"Ground truth not found: {ground_truth_path}")
 
     ground_truth = load_json(ground_truth_path)
-    metrics, checks = evaluate_targets(ground_truth, run_targets)
+    backend_template, frontend_template, checks = select_templates(
+        ground_truth, MATERIALIZATION_MODE
+    )
+
+    metrics, eval_checks, runtime_validation = evaluate_targets(
+        ground_truth,
+        run_targets,
+        backend_template=backend_template,
+        frontend_template=frontend_template,
+        materialized_output_root=OUTPUT_DIR / "generated_workspaces",
+        workspace_run_prefix=datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S"),
+        strict_runtime_scoring=STRICT_RUNTIME_SCORING,
+    )
+    checks.extend(eval_checks)
 
     checks.append(
         CheckResult(
@@ -206,7 +408,16 @@ def run_evaluation() -> tuple[int, list[CheckResult], Path]:
             "targets_config": to_repo_rel(TARGETS_CONFIG),
             "ground_truth_path": to_repo_rel(ground_truth_path),
             "weights": asdict(weights),
+            "materialization_mode": MATERIALIZATION_MODE,
+            "strict_runtime_scoring": STRICT_RUNTIME_SCORING,
+            "runtime_validation_options": {
+                "timeout_seconds": VALIDATION_TIMEOUT_SECONDS,
+                "run_backend_tests": VALIDATOR_RUN_BACKEND_TESTS,
+                "run_frontend_checks": VALIDATOR_RUN_FRONTEND_CHECKS,
+                "run_frontend_tests": VALIDATOR_RUN_FRONTEND_TESTS,
+            },
             "runs": [metric.to_dict() for metric in metrics],
+            "runtime_validation": runtime_validation,
             "ranking": ranking,
             "checks": [asdict(check) for check in checks],
         },
@@ -218,7 +429,16 @@ def main() -> int:
     code, checks, report_path = run_evaluation()
     for check in checks:
         marker = "PASS" if check.passed else "FAIL"
-        print(f"[{marker}] {check.name}: {check.details}")
+        line = f"[{marker}] {check.name}: {check.details}"
+        try:
+            print(line)
+        except UnicodeEncodeError:
+            console_encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+            print(
+                line.encode(console_encoding, errors="replace").decode(
+                    console_encoding, errors="replace"
+                )
+            )
     print(f"Evaluation report: {report_path}")
     return code
 

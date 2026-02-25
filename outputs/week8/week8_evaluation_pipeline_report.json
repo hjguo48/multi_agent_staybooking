@@ -1,52 +1,52 @@
 {
   "pipeline": "week8_evaluation_pipeline_v1",
   "config_path": "D:\\CASTGAN_Project\\multi-agent staybooking\\configs\\experiment_configs\\week8_evaluation_v1.json",
-  "executed_at": "2026-02-25T05:38:45.565960+00:00",
+  "executed_at": "2026-02-25T09:04:27.595746+00:00",
   "status": "success",
   "steps": [
     {
       "name": "verify_baseline_lock",
       "command": [
-        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
+        "E:\\Python\\python.exe",
         "evaluation/verify_baseline_lock.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T05:38:44.668199+00:00",
-      "ended_at": "2026-02-25T05:38:44.886757+00:00",
-      "stdout": "[backend] OK commit=81b85eab7d2d14076eb9b32234522b2f42c66382 branch=main origin=https://github.com/hjguo48/staybooking-project.git\n[frontend] OK commit=4a7a9551a37d6210c40760b30218b20cb03f8394 branch=main origin=https://github.com/hjguo48/stayboookingfe.git\nBASELINE_VERIFY: PASS\n",
+      "started_at": "2026-02-25T09:04:26.518766+00:00",
+      "ended_at": "2026-02-25T09:04:26.638003+00:00",
+      "stdout": "[backend] OK snapshot_sha256=97940dfa28d4a617890fcf5ef02ca3b5a2eb7772bddc02697caf39c95597ae12 (no .git fallback)\n[frontend] OK snapshot_sha256=24269eda0bc8dc01020dfabca524cd8ddb07503af1f16dff309fd11c17ef0bab (no .git fallback)\nBASELINE_VERIFY: PASS\n",
       "stderr": ""
     },
     {
       "name": "week7_granularity_switch_smoke",
       "command": [
-        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
+        "E:\\Python\\python.exe",
         "evaluation/week7_granularity_switch_smoke.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T05:38:44.886757+00:00",
-      "ended_at": "2026-02-25T05:38:44.971813+00:00",
+      "started_at": "2026-02-25T09:04:26.638003+00:00",
+      "ended_at": "2026-02-25T09:04:26.817853+00:00",
       "stdout": "[PASS] layer_turn_count: turn_count=6, expected=6\n[PASS] layer_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']\n[PASS] layer_all_turns_success: all turn results should be success\n[PASS] layer_state_shape: state shape matches profile constraints\n[PASS] layer_usage_count: api_calls=6, expected=6, tokens=3090\n[PASS] layer_artifact_versions: artifact versions match expected map: {'requirements': 1, 'architecture': 1, 'backend_code': 1, 'frontend_code': 1, 'qa_report': 1, 'deployment': 1}\n[PASS] module_turn_count: turn_count=15, expected=15\n[PASS] module_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'backend_dev', 'frontend_dev', 'qa', 'devops']\n[PASS] module_all_turns_success: all turn results should be success\n[PASS] module_state_shape: state shape matches profile constraints\n[PASS] module_usage_count: api_calls=15, expected=15, tokens=8370\n[PASS] module_artifact_versions: artifact versions match expected map: {'requirements': 1, 'architecture': 1, 'backend_code': 4, 'frontend_code': 4, 'qa_report': 4, 'deployment': 1}\n[PASS] feature_turn_count: turn_count=18, expected=18\n[PASS] feature_role_order: roles=['pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops', 'pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops', 'pm', 'architect', 'backend_dev', 'frontend_dev', 'qa', 'devops']\n[PASS] feature_all_turns_success: all turn results should be success\n[PASS] feature_state_shape: state shape matches profile constraints\n[PASS] feature_usage_count: api_calls=18, expected=18, tokens=9270\n[PASS] feature_artifact_versions: artifact versions match expected map: {'requirements': 3, 'architecture': 3, 'backend_code': 3, 'frontend_code': 3, 'qa_report': 3, 'deployment': 3}\nSummary report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week7\\week7_granularity_switch_report.json\n",
       "stderr": ""
     },
     {
       "name": "week8_evaluation_pipeline_v1",
       "command": [
-        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
+        "E:\\Python\\python.exe",
         "evaluation/week8_evaluation_pipeline_v1.py"
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T05:38:44.971813+00:00",
-      "ended_at": "2026-02-25T05:38:45.081722+00:00",
-      "stdout": "[PASS] week7-layer_state_exists: loaded outputs/week7/week7_layer_state.json\n[PASS] week7-module_state_exists: loaded outputs/week7/week7_module_state.json\n[PASS] week7-feature_state_exists: loaded outputs/week7/week7_feature_state.json\n[PASS] run_count: evaluated_runs=3\n[PASS] week7-layer_metric_ranges: rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=0.0000, q=0.7642\n[PASS] week7-module_metric_ranges: rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=0.8544, q=0.6787\n[PASS] week7-feature_metric_ranges: rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=1.0000, q=0.6642\n[PASS] ranking_sorted_desc: ranking_size=3\nEvaluation report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week8\\week8_evaluation_report.json\n",
+      "started_at": "2026-02-25T09:04:26.817853+00:00",
+      "ended_at": "2026-02-25T09:04:26.988712+00:00",
+      "stdout": "[PASS] backend_template_disabled: materialization_mode=pure_generated\n[PASS] frontend_template_disabled: materialization_mode=pure_generated\n[PASS] week7-layer_state_exists: loaded outputs/week7/week7_layer_state.json\n[PASS] week7-layer_materialization_has_files: files_written=4\n[PASS] week7-layer_runtime_validation_executed: build_pass_rate=0.0000 (steps=0), deploy_pass_rate=1.0000 (steps=1)\n[PASS] week7-module_state_exists: loaded outputs/week7/week7_module_state.json\n[PASS] week7-module_materialization_has_files: files_written=4\n[PASS] week7-module_runtime_validation_executed: build_pass_rate=0.0000 (steps=0), deploy_pass_rate=1.0000 (steps=1)\n[PASS] week7-feature_state_exists: loaded outputs/week7/week7_feature_state.json\n[PASS] week7-feature_materialization_has_files: files_written=4\n[PASS] week7-feature_runtime_validation_executed: build_pass_rate=0.0000 (steps=0), deploy_pass_rate=1.0000 (steps=1)\n[PASS] run_count: evaluated_runs=3\n[PASS] week7-layer_metric_ranges: rcr=0.5278, code=0.0000, arch=0.5292, deploy=0.0000, norm_eff=0.0000, q=0.3642\n[PASS] week7-module_metric_ranges: rcr=0.5278, code=0.0000, arch=0.5292, deploy=0.0000, norm_eff=0.8544, q=0.2787\n[PASS] week7-feature_metric_ranges: rcr=0.5278, code=0.0000, arch=0.5292, deploy=0.0000, norm_eff=1.0000, q=0.2642\n[PASS] ranking_sorted_desc: ranking_size=3\nEvaluation report: D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week8\\week8_evaluation_report.json\n",
       "stderr": ""
     },
     {
       "name": "unit_tests",
       "command": [
-        "D:\\CASTGAN_Project\\multi-agent staybooking\\.venv\\Scripts\\python.exe",
+        "E:\\Python\\python.exe",
         "-m",
         "unittest",
         "discover",
@@ -57,10 +57,10 @@
       ],
       "returncode": 0,
       "status": "success",
-      "started_at": "2026-02-25T05:38:45.082685+00:00",
-      "ended_at": "2026-02-25T05:38:45.565960+00:00",
+      "started_at": "2026-02-25T09:04:26.988712+00:00",
+      "ended_at": "2026-02-25T09:04:27.595746+00:00",
       "stdout": "",
-      "stderr": ".................................\n----------------------------------------------------------------------\nRan 33 tests in 0.365s\n\nOK\n"
+      "stderr": ".........................................\n----------------------------------------------------------------------\nRan 41 tests in 0.414s\n\nOK\n"
     }
   ]
 }

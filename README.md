@@ -189,7 +189,7 @@ Week 7 artifacts generated:
 
 ## Week 8 Commands
 
-Run Week 8 pipeline (evaluation pipeline v1 + weighted composite score):
+Run Week 8 pipeline (evaluation v1, strict no-leakage mode):
 
 ```bash
 python run_experiment.py --task week8-evaluation-v1
@@ -205,6 +205,7 @@ Week 8 artifacts generated:
 
 - `outputs/week8/week8_evaluation_report.json`
 - `outputs/week8/week8_evaluation_pipeline_report.json`
+- `outputs/week8/generated_workspaces/*` (materialized agent outputs only; no template overlay)
 
 ## Week 9 Commands
 

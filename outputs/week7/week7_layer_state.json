@@ -1,7 +1,7 @@
 {
-  "run_id": "58acc56b819645a39b70acf4e99a67aa",
-  "created_at": "2026-02-25T05:38:44.958292+00:00",
-  "updated_at": "2026-02-25T05:38:44.958292+00:00",
+  "run_id": "3c910cf0761b478e8f8d66b709841e38",
+  "created_at": "2026-02-25T09:04:26.798388+00:00",
+  "updated_at": "2026-02-25T09:04:26.798388+00:00",
   "requirements": {
     "artifact_ref": "requirements:v1"
   },
@@ -69,8 +69,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.958292+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.798388+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "architecture": [
@@ -139,8 +143,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.958292+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.798388+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "backend_code": [
@@ -166,8 +174,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.958292+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.798388+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "frontend_code": [
@@ -193,8 +205,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.958292+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.798388+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "qa_report": [
@@ -217,8 +233,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.958292+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.798388+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ],
     "deployment": [
@@ -244,8 +264,12 @@
           }
         },
         "version": 1,
-        "created_at": "2026-02-25T05:38:44.958292+00:00",
-        "metadata": {}
+        "created_at": "2026-02-25T09:04:26.798388+00:00",
+        "metadata": {
+          "generation": {
+            "source": "rule"
+          }
+        }
       }
     ]
   },
@@ -256,7 +280,7 @@
       "content": "[layer] Prelude planning for layer-level execution.",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     },
     {
@@ -267,7 +291,7 @@
       "artifacts": [
         "requirements-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     },
     {
@@ -278,7 +302,7 @@
       "artifacts": [
         "architecture-doc:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     },
     {
@@ -287,7 +311,7 @@
       "content": "[layer] Execute layer work item: full_stack_delivery.",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     },
     {
@@ -298,7 +322,7 @@
       "artifacts": [
         "backend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     },
     {
@@ -309,7 +333,7 @@
       "artifacts": [
         "frontend-auth-module:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     },
     {
@@ -318,7 +342,7 @@
       "content": "[layer] Finalization after 1 layer work items.",
       "msg_type": "TASK",
       "artifacts": [],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     },
     {
@@ -329,7 +353,7 @@
       "artifacts": [
         "qa-report-auth:v1"
       ],
-      "timestamp": "2026-02-25T05:38:44.958292+00:00",
+      "timestamp": "2026-02-25T09:04:26.798388+00:00",
       "metadata": {}
     }
   ]

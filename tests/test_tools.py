@@ -25,6 +25,17 @@ class ToolWrapperTests(unittest.TestCase):
             self.assertEqual(0, result.returncode)
             self.assertIn("ok", result.stdout)
 
+    def test_code_executor_timeout_sets_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            executor = CodeExecutor(root)
+            result = executor.run(
+                [sys.executable, "-c", "import time; time.sleep(0.3)"],
+                timeout_seconds=0.05,
+            )
+            self.assertTrue(result.timed_out)
+            self.assertEqual(124, result.returncode)
+
     def test_test_runner_command_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             runner = TestRunner(Path(tmpdir))

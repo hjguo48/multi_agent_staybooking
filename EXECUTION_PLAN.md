@@ -13,7 +13,7 @@ Plan owner: Project execution baseline agreed with user.
 ## Methodology Sync Check (2026-02-24)
 
 - Source document: `C:/Users/29019/Downloads/Multi_Agent_Methodology.docx`
-- Extract snapshot: `.tmp_doc_extract_latest.txt` (616 paragraphs)
+- Extract snapshot: methodology paragraph dump (616 paragraphs, local temp artifact)
 - Result: no section-level or requirement-level text differences from prior extracted version.
 - Decision: keep 14-week schedule unchanged.
 - Clarification updates applied:
@@ -282,6 +282,14 @@ Plan owner: Project execution baseline agreed with user.
 - Metric calculation core:
 - `core/evaluation_metrics.py`
 - `core/__init__.py` exports updated
+- Strict no-leakage evaluation mode:
+- `materialization_mode = pure_generated` (no ground-truth template overlay)
+- runtime-backed score adjustment uses actual executable checks
+- Runtime validation tools:
+- `tools/artifact_materializer.py`
+- `tools/build_deploy_validator.py`
+- `tools/code_executor.py`
+- `tools/__init__.py` exports updated
 - Evaluation target config:
 - `configs/evaluation_targets/week8_v1_targets.json`
 - Week 8 smoke and pipeline config:
@@ -292,9 +300,13 @@ Plan owner: Project execution baseline agreed with user.
 - Week 8 evidence:
 - `outputs/week8/week8_evaluation_report.json`
 - `outputs/week8/week8_evaluation_pipeline_report.json`
+- `outputs/week8/generated_workspaces/*`
 - Unit tests expanded:
 - `tests/test_evaluation_metrics.py`
-- `python -m unittest discover -s tests -p "test_*.py"` => PASS (33 tests)
+- `tests/test_artifact_materializer.py`
+- `tests/test_build_deploy_validator.py`
+- `tests/test_tools.py` (timeout path)
+- `python -m unittest discover -s tests -p "test_*.py"` => PASS (41 tests)
 - Week 8 status: COMPLETE
 - Week 9 implemented:
 - LLM runtime integration:

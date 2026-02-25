@@ -9,6 +9,14 @@
     "deploy_score": 0.2,
     "efficiency": 0.1
   },
+  "materialization_mode": "pure_generated",
+  "strict_runtime_scoring": true,
+  "runtime_validation_options": {
+    "timeout_seconds": 180.0,
+    "run_backend_tests": true,
+    "run_frontend_checks": false,
+    "run_frontend_tests": false
+  },
   "runs": [
     {
       "run_name": "week7-layer",
@@ -17,21 +25,21 @@
       "api_coverage": 0.25,
       "entity_coverage": 0.3333333333333333,
       "rcr": 0.5277777777777778,
-      "code_quality": 1.0,
+      "code_quality": 0.0,
       "arch_score": 0.5291666666666667,
-      "deploy_score": 1.0,
+      "deploy_score": 0.0,
       "total_tokens": 3090,
       "total_api_calls": 6,
       "iteration_count": 0,
       "wall_clock_seconds": 0.0,
       "norm_efficiency": 0.0,
-      "composite_score": 0.7641666666666667,
+      "composite_score": 0.36416666666666664,
       "percentages": {
         "rcr": 52.77777777777778,
-        "code_quality": 100.0,
+        "code_quality": 0.0,
         "arch_score": 52.916666666666664,
-        "deploy_score": 100.0,
-        "composite_score": 76.41666666666667
+        "deploy_score": 0.0,
+        "composite_score": 36.416666666666664
       }
     },
     {
@@ -41,21 +49,21 @@
       "api_coverage": 0.25,
       "entity_coverage": 0.3333333333333333,
       "rcr": 0.5277777777777778,
-      "code_quality": 1.0,
+      "code_quality": 0.0,
       "arch_score": 0.5291666666666667,
-      "deploy_score": 1.0,
+      "deploy_score": 0.0,
       "total_tokens": 8370,
       "total_api_calls": 15,
       "iteration_count": 0,
-      "wall_clock_seconds": 0.001002,
+      "wall_clock_seconds": 0.001172,
       "norm_efficiency": 0.8543689320388349,
-      "composite_score": 0.6787297734627832,
+      "composite_score": 0.27872977346278316,
       "percentages": {
         "rcr": 52.77777777777778,
-        "code_quality": 100.0,
+        "code_quality": 0.0,
         "arch_score": 52.916666666666664,
-        "deploy_score": 100.0,
-        "composite_score": 67.87297734627832
+        "deploy_score": 0.0,
+        "composite_score": 27.872977346278315
       }
     },
     {
@@ -65,21 +73,308 @@
       "api_coverage": 0.25,
       "entity_coverage": 0.3333333333333333,
       "rcr": 0.5277777777777778,
-      "code_quality": 1.0,
+      "code_quality": 0.0,
       "arch_score": 0.5291666666666667,
-      "deploy_score": 1.0,
+      "deploy_score": 0.0,
       "total_tokens": 9270,
       "total_api_calls": 18,
       "iteration_count": 0,
-      "wall_clock_seconds": 0.0,
+      "wall_clock_seconds": 0.001004,
       "norm_efficiency": 1.0,
-      "composite_score": 0.6641666666666667,
+      "composite_score": 0.26416666666666666,
       "percentages": {
         "rcr": 52.77777777777778,
-        "code_quality": 100.0,
+        "code_quality": 0.0,
         "arch_score": 52.916666666666664,
-        "deploy_score": 100.0,
-        "composite_score": 66.41666666666667
+        "deploy_score": 0.0,
+        "composite_score": 26.416666666666664
+      }
+    }
+  ],
+  "runtime_validation": [
+    {
+      "run_name": "week7-layer",
+      "state_path": "outputs/week7/week7_layer_state.json",
+      "materialization": {
+        "run_name": "20260225T090426_week7-layer",
+        "workspace_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-layer",
+        "backend_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-layer/backend",
+        "frontend_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-layer/frontend",
+        "backend_files_written": [
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-layer/backend/src/main/java/com/example/auth/AuthController.java",
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-layer/backend/src/main/java/com/example/auth/AuthService.java"
+        ],
+        "frontend_files_written": [
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-layer/frontend/src/pages/LoginPage.jsx",
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-layer/frontend/src/services/authApi.js"
+        ],
+        "backend_template_used": null,
+        "frontend_template_used": null
+      },
+      "validation": {
+        "backend": [
+          {
+            "name": "backend_build",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "no gradle wrapper found",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          }
+        ],
+        "frontend": [
+          {
+            "name": "frontend_build",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "disabled by validator config",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          }
+        ],
+        "deploy": [
+          {
+            "name": "deploy_docker_compose_config",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "docker-compose.yml missing",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          },
+          {
+            "name": "deploy_artifact_health",
+            "executed": true,
+            "passed": true,
+            "command": [],
+            "returncode": 0,
+            "timed_out": false,
+            "skipped_reason": null,
+            "stdout_tail": "status=success, health={'backend': 200, 'frontend': 200}",
+            "stderr_tail": ""
+          }
+        ],
+        "scores": {
+          "build_test_pass_rate": 0.0,
+          "build_test_executed_steps": 0,
+          "build_real_pass_rate": 0.0,
+          "build_real_executed_steps": 0,
+          "deploy_pass_rate": 1.0,
+          "deploy_executed_steps": 1,
+          "deploy_real_pass_rate": 0.0,
+          "deploy_real_executed_steps": 0
+        }
+      },
+      "score_adjustment": {
+        "strict_runtime_scoring": true,
+        "original_code_quality": 1.0,
+        "runtime_build_pass_rate": 0.0,
+        "adjusted_code_quality": 0.0,
+        "original_deploy_score": 1.0,
+        "runtime_deploy_pass_rate": 1.0,
+        "runtime_deploy_real_pass_rate": 0.0,
+        "adjusted_deploy_score": 0.0,
+        "build_executed_steps": 0,
+        "deploy_executed_steps": 1,
+        "deploy_real_executed_steps": 0
+      }
+    },
+    {
+      "run_name": "week7-module",
+      "state_path": "outputs/week7/week7_module_state.json",
+      "materialization": {
+        "run_name": "20260225T090426_week7-module",
+        "workspace_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-module",
+        "backend_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-module/backend",
+        "frontend_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-module/frontend",
+        "backend_files_written": [
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-module/backend/src/main/java/com/example/auth/AuthController.java",
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-module/backend/src/main/java/com/example/auth/AuthService.java"
+        ],
+        "frontend_files_written": [
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-module/frontend/src/pages/LoginPage.jsx",
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-module/frontend/src/services/authApi.js"
+        ],
+        "backend_template_used": null,
+        "frontend_template_used": null
+      },
+      "validation": {
+        "backend": [
+          {
+            "name": "backend_build",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "no gradle wrapper found",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          }
+        ],
+        "frontend": [
+          {
+            "name": "frontend_build",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "disabled by validator config",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          }
+        ],
+        "deploy": [
+          {
+            "name": "deploy_docker_compose_config",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "docker-compose.yml missing",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          },
+          {
+            "name": "deploy_artifact_health",
+            "executed": true,
+            "passed": true,
+            "command": [],
+            "returncode": 0,
+            "timed_out": false,
+            "skipped_reason": null,
+            "stdout_tail": "status=success, health={'backend': 200, 'frontend': 200}",
+            "stderr_tail": ""
+          }
+        ],
+        "scores": {
+          "build_test_pass_rate": 0.0,
+          "build_test_executed_steps": 0,
+          "build_real_pass_rate": 0.0,
+          "build_real_executed_steps": 0,
+          "deploy_pass_rate": 1.0,
+          "deploy_executed_steps": 1,
+          "deploy_real_pass_rate": 0.0,
+          "deploy_real_executed_steps": 0
+        }
+      },
+      "score_adjustment": {
+        "strict_runtime_scoring": true,
+        "original_code_quality": 1.0,
+        "runtime_build_pass_rate": 0.0,
+        "adjusted_code_quality": 0.0,
+        "original_deploy_score": 1.0,
+        "runtime_deploy_pass_rate": 1.0,
+        "runtime_deploy_real_pass_rate": 0.0,
+        "adjusted_deploy_score": 0.0,
+        "build_executed_steps": 0,
+        "deploy_executed_steps": 1,
+        "deploy_real_executed_steps": 0
+      }
+    },
+    {
+      "run_name": "week7-feature",
+      "state_path": "outputs/week7/week7_feature_state.json",
+      "materialization": {
+        "run_name": "20260225T090426_week7-feature",
+        "workspace_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-feature",
+        "backend_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-feature/backend",
+        "frontend_root": "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-feature/frontend",
+        "backend_files_written": [
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-feature/backend/src/main/java/com/example/auth/AuthController.java",
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-feature/backend/src/main/java/com/example/auth/AuthService.java"
+        ],
+        "frontend_files_written": [
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-feature/frontend/src/pages/LoginPage.jsx",
+          "D:/CASTGAN_Project/multi-agent staybooking/outputs/week8/generated_workspaces/20260225T090426_week7-feature/frontend/src/services/authApi.js"
+        ],
+        "backend_template_used": null,
+        "frontend_template_used": null
+      },
+      "validation": {
+        "backend": [
+          {
+            "name": "backend_build",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "no gradle wrapper found",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          }
+        ],
+        "frontend": [
+          {
+            "name": "frontend_build",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "disabled by validator config",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          }
+        ],
+        "deploy": [
+          {
+            "name": "deploy_docker_compose_config",
+            "executed": false,
+            "passed": false,
+            "command": [],
+            "returncode": null,
+            "timed_out": false,
+            "skipped_reason": "docker-compose.yml missing",
+            "stdout_tail": "",
+            "stderr_tail": ""
+          },
+          {
+            "name": "deploy_artifact_health",
+            "executed": true,
+            "passed": true,
+            "command": [],
+            "returncode": 0,
+            "timed_out": false,
+            "skipped_reason": null,
+            "stdout_tail": "status=success, health={'backend': 200, 'frontend': 200}",
+            "stderr_tail": ""
+          }
+        ],
+        "scores": {
+          "build_test_pass_rate": 0.0,
+          "build_test_executed_steps": 0,
+          "build_real_pass_rate": 0.0,
+          "build_real_executed_steps": 0,
+          "deploy_pass_rate": 1.0,
+          "deploy_executed_steps": 1,
+          "deploy_real_pass_rate": 0.0,
+          "deploy_real_executed_steps": 0
+        }
+      },
+      "score_adjustment": {
+        "strict_runtime_scoring": true,
+        "original_code_quality": 1.0,
+        "runtime_build_pass_rate": 0.0,
+        "adjusted_code_quality": 0.0,
+        "original_deploy_score": 1.0,
+        "runtime_deploy_pass_rate": 1.0,
+        "runtime_deploy_real_pass_rate": 0.0,
+        "adjusted_deploy_score": 0.0,
+        "build_executed_steps": 0,
+        "deploy_executed_steps": 1,
+        "deploy_real_executed_steps": 0
       }
     }
   ],
@@ -87,33 +382,53 @@
     {
       "rank": 1,
       "run_name": "week7-layer",
-      "composite_score": 0.7641666666666667,
-      "composite_score_pct": 76.41666666666667,
+      "composite_score": 0.36416666666666664,
+      "composite_score_pct": 36.416666666666664,
       "total_tokens": 3090,
       "norm_efficiency": 0.0
     },
     {
       "rank": 2,
       "run_name": "week7-module",
-      "composite_score": 0.6787297734627832,
-      "composite_score_pct": 67.87297734627832,
+      "composite_score": 0.27872977346278316,
+      "composite_score_pct": 27.872977346278315,
       "total_tokens": 8370,
       "norm_efficiency": 0.8543689320388349
     },
     {
       "rank": 3,
       "run_name": "week7-feature",
-      "composite_score": 0.6641666666666667,
-      "composite_score_pct": 66.41666666666667,
+      "composite_score": 0.26416666666666666,
+      "composite_score_pct": 26.416666666666664,
       "total_tokens": 9270,
       "norm_efficiency": 1.0
     }
   ],
   "checks": [
     {
+      "name": "backend_template_disabled",
+      "passed": true,
+      "details": "materialization_mode=pure_generated"
+    },
+    {
+      "name": "frontend_template_disabled",
+      "passed": true,
+      "details": "materialization_mode=pure_generated"
+    },
+    {
       "name": "week7-layer_state_exists",
       "passed": true,
       "details": "loaded outputs/week7/week7_layer_state.json"
+    },
+    {
+      "name": "week7-layer_materialization_has_files",
+      "passed": true,
+      "details": "files_written=4"
+    },
+    {
+      "name": "week7-layer_runtime_validation_executed",
+      "passed": true,
+      "details": "build_pass_rate=0.0000 (steps=0), deploy_pass_rate=1.0000 (steps=1)"
     },
     {
       "name": "week7-module_state_exists",
@@ -121,9 +436,29 @@
       "details": "loaded outputs/week7/week7_module_state.json"
     },
     {
+      "name": "week7-module_materialization_has_files",
+      "passed": true,
+      "details": "files_written=4"
+    },
+    {
+      "name": "week7-module_runtime_validation_executed",
+      "passed": true,
+      "details": "build_pass_rate=0.0000 (steps=0), deploy_pass_rate=1.0000 (steps=1)"
+    },
+    {
       "name": "week7-feature_state_exists",
       "passed": true,
       "details": "loaded outputs/week7/week7_feature_state.json"
+    },
+    {
+      "name": "week7-feature_materialization_has_files",
+      "passed": true,
+      "details": "files_written=4"
+    },
+    {
+      "name": "week7-feature_runtime_validation_executed",
+      "passed": true,
+      "details": "build_pass_rate=0.0000 (steps=0), deploy_pass_rate=1.0000 (steps=1)"
     },
     {
       "name": "run_count",
@@ -133,17 +468,17 @@
     {
       "name": "week7-layer_metric_ranges",
       "passed": true,
-      "details": "rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=0.0000, q=0.7642"
+      "details": "rcr=0.5278, code=0.0000, arch=0.5292, deploy=0.0000, norm_eff=0.0000, q=0.3642"
     },
     {
       "name": "week7-module_metric_ranges",
       "passed": true,
-      "details": "rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=0.8544, q=0.6787"
+      "details": "rcr=0.5278, code=0.0000, arch=0.5292, deploy=0.0000, norm_eff=0.8544, q=0.2787"
     },
     {
       "name": "week7-feature_metric_ranges",
       "passed": true,
-      "details": "rcr=0.5278, code=1.0000, arch=0.5292, deploy=1.0000, norm_eff=1.0000, q=0.6642"
+      "details": "rcr=0.5278, code=0.0000, arch=0.5292, deploy=0.0000, norm_eff=1.0000, q=0.2642"
     },
     {
       "name": "ranking_sorted_desc",
