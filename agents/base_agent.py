@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from core import AgentMessage, Artifact, MessageLog, ProjectState, ReviewResult, ReviewStatus
-from llm import BaseLLMClient, LLMProfile, LLMRequest
+from llm import BaseLLMClient, LLMProfile, LLMRequest, LLMResponse
 
 
 class BaseAgent(ABC):
@@ -118,54 +118,129 @@ class BaseAgent(ABC):
         fallback_payload: dict[str, Any],
         fallback_usage: dict[str, int],
         required_keys: list[str],
+        extra_output_constraints: list[str] | None = None,
+        retry_on_invalid_json: bool = False,
+        json_retry_attempts: int = 1,
+        max_output_tokens_override: int | None = None,
     ) -> tuple[dict[str, Any], dict[str, int], dict[str, Any]]:
         if self.llm_client is None or self.llm_profile is None:
             return copy.deepcopy(fallback_payload), dict(fallback_usage), {"source": "rule"}
 
         snapshot = self._context_snapshot(context)
+        max_output_tokens = (
+            max_output_tokens_override
+            if max_output_tokens_override is not None
+            else self.llm_profile.max_output_tokens
+        )
+        constraints = [
+            "- Return ONLY one JSON object.",
+            "- Do not wrap in markdown fences.",
+            f"- Required top-level keys: {required_keys}",
+        ]
+        if extra_output_constraints:
+            constraints.extend(extra_output_constraints)
+
         user_prompt = (
             f"Task:\n{task_instruction}\n\n"
             "Context snapshot:\n"
             f"{json.dumps(snapshot, ensure_ascii=True)}\n\n"
             "Output constraints:\n"
-            "- Return ONLY one JSON object.\n"
-            "- Do not wrap in markdown fences.\n"
-            f"- Required top-level keys: {required_keys}\n"
+            + "\n".join(constraints)
+            + "\n"
         )
         request = LLMRequest(
             system_prompt=self.system_prompt,
             user_prompt=user_prompt,
             model=self.llm_profile.model,
             temperature=self.llm_profile.temperature,
-            max_output_tokens=self.llm_profile.max_output_tokens,
+            max_output_tokens=max_output_tokens,
             response_format="json_object",
             metadata={"role": self.role, "task": task_instruction},
         )
 
-        try:
-            response = self.llm_client.generate(request)
-        except Exception as exc:
+        usage = {"tokens": 0, "api_calls": 0}
+
+        def _call_llm(req: LLMRequest) -> tuple[LLMResponse | None, Exception | None]:
+            try:
+                resp = self.llm_client.generate(req)
+            except Exception as exc:
+                return None, exc
+            usage["tokens"] += max(resp.total_tokens, 0)
+            usage["api_calls"] += 1
+            return resp, None
+
+        def _fallback(reason: str) -> tuple[dict[str, Any], dict[str, int], dict[str, Any]]:
+            fallback_usage_payload = (
+                dict(usage) if usage["api_calls"] > 0 else dict(fallback_usage)
+            )
             return (
                 copy.deepcopy(fallback_payload),
-                dict(fallback_usage),
-                {"source": "rule_fallback", "reason": f"llm_error:{exc}"},
+                fallback_usage_payload,
+                {"source": "rule_fallback", "reason": reason},
             )
 
-        parsed = self._extract_json_payload(response.content)
-        usage = {"tokens": max(response.total_tokens, 0), "api_calls": 1}
-        if parsed is None:
-            return (
-                copy.deepcopy(fallback_payload),
-                usage,
-                {"source": "rule_fallback", "reason": "invalid_json"},
-            )
+        def _validate_payload(resp: LLMResponse) -> tuple[dict[str, Any] | None, str | None]:
+            parsed_payload = self._extract_json_payload(resp.content)
+            if parsed_payload is None:
+                if resp.output_tokens >= max_output_tokens:
+                    return None, "invalid_json_truncated_output"
+                return None, "invalid_json"
+            missing_keys = [key for key in required_keys if key not in parsed_payload]
+            if missing_keys:
+                return None, f"missing_keys:{missing_keys}"
+            return parsed_payload, None
 
-        missing = [key for key in required_keys if key not in parsed]
-        if missing:
-            return (
-                copy.deepcopy(fallback_payload),
-                usage,
-                {"source": "rule_fallback", "reason": f"missing_keys:{missing}"},
-            )
+        response, error = _call_llm(request)
+        if error is not None:
+            return _fallback(f"llm_error:{error}")
+        assert response is not None
 
-        return parsed, usage, {"source": "llm", "provider": response.provider, "model": response.model}
+        parsed, failure_reason = _validate_payload(response)
+        if parsed is not None:
+            return parsed, dict(usage), {
+                "source": "llm",
+                "provider": response.provider,
+                "model": response.model,
+            }
+
+        if retry_on_invalid_json:
+            retry_count = max(int(json_retry_attempts), 1)
+            for retry_index in range(1, retry_count + 1):
+                retry_prompt = (
+                    f"Task:\n{task_instruction}\n\n"
+                    f"The previous response failed validation ({failure_reason or 'invalid_json'}).\n"
+                    "Return a compact JSON object that strictly follows the constraints.\n\n"
+                    "Output constraints:\n"
+                    + "\n".join(constraints)
+                    + "\n"
+                    "- Keep output concise to avoid truncation.\n"
+                    "- Keep code_bundle small and minimal.\n"
+                )
+                retry_request = LLMRequest(
+                    system_prompt=self.system_prompt,
+                    user_prompt=retry_prompt,
+                    model=self.llm_profile.model,
+                    temperature=self.llm_profile.temperature,
+                    max_output_tokens=max_output_tokens,
+                    response_format="json_object",
+                    metadata={
+                        "role": self.role,
+                        "task": task_instruction,
+                        "retry": retry_index,
+                    },
+                )
+                retry_response, retry_error = _call_llm(retry_request)
+                if retry_error is not None:
+                    return _fallback(f"llm_error_retry:{retry_error}")
+                assert retry_response is not None
+                parsed, failure_reason = _validate_payload(retry_response)
+                if parsed is not None:
+                    return parsed, dict(usage), {
+                        "source": "llm",
+                        "provider": retry_response.provider,
+                        "model": retry_response.model,
+                        "retry_count": retry_index,
+                    }
+            return _fallback(f"{failure_reason or 'invalid_json'}_after_retry")
+
+        return _fallback(failure_reason or "invalid_json")

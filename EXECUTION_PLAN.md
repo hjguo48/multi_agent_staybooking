@@ -1,4 +1,4 @@
-﻿# Multi-Agent StayBooking Execution Plan (Baseline)
+# Multi-Agent StayBooking Execution Plan (Research + Productization)
 
 Last updated: 2026-02-25
 Plan owner: Project execution baseline agreed with user.
@@ -9,6 +9,21 @@ Plan owner: Project execution baseline agreed with user.
 2. All future progress updates must map to one week item below.
 3. No timeline or scope change is allowed without explicit user approval.
 4. Every progress report must include: date, week number, completed tasks, evidence files/outputs.
+
+## Scope Extension Approval (2026-02-25)
+
+- User-approved extension: integrate productization landing work into the existing week plan.
+- Constraint: keep Week 1-9 methodology milestones unchanged; add productization tasks to Week 10-14.
+- Resulting plan mode: dual-track execution (Research track + Productization track).
+
+## Functional Scope Baseline (Ground-Truth Anchored, 2026-02-25)
+
+- Backend baseline source: `ground_truth/staybooking-project` @ `81b85eab7d2d14076eb9b32234522b2f42c66382`.
+- Frontend baseline source: `ground_truth/stayboookingfe` @ `4a7a9551a37d6210c40760b30218b20cb03f8394`.
+- Ground-truth benchmark: `ground_truth/benchmark/staybooking_ground_truth.json`.
+- MVP reproduction scope lock (user-approved): `auth`, `listing`, `search`, `booking`.
+- Explicitly out of current MVP scope: `payment`, `review`.
+- Scope lock applies to Week 10-14 productization work and does not change Week 1-9 methodology milestones.
 
 ## Methodology Sync Check (2026-02-24)
 
@@ -69,24 +84,70 @@ Plan owner: Project execution baseline agreed with user.
 - Deliverable: stable pre-production experiment workflow.
 
 ### Week 10 (2026-04-27 ~ 2026-05-03)
-- Run primary matrix (Level 1/2 first batch).
-- Deliverable: raw experiment results batch 1.
+- Research track: run primary matrix (Level 1/2 first batch).
+- Productization track:
+- Freeze target scope for MVP StayBooking (auth, listing, search, booking).
+- Week 10 Step 1 (priority hardening):
+- Connect `week9` pipeline to automatic materialization (aligned with `week8` runtime materialization behavior).
+- Enforce hard gate: backend/frontend must be valid LLM outputs; fallback-generated code is not allowed to pass.
+- Enforce post-landing build/test gate: backend build + unit tests, frontend build + test/lint.
+- Week 10 Step 2:
+- Define artifact-to-repo landing contract (path map, overwrite policy, branch strategy, commit policy).
+- Implement repository materialization pipeline from agent `code_bundle` to backend/frontend working trees.
+- Deliverable:
+- Research: raw experiment results batch 1.
+- Productization: runnable repo-landing pipeline v1 with materialize + LLM-output hard gate + build/test gate.
 
 ### Week 11 (2026-05-04 ~ 2026-05-10)
-- Complete primary matrix runs and aggregate results.
-- Deliverable: full matrix dataset (automated metrics).
+- Research track: complete primary matrix runs and aggregate results.
+- Productization track:
+- Complete auth slice landing into repos with deterministic file writes.
+- Add real build/test gates for landed code (backend build + unit tests, frontend build + test/lint).
+- Add CI execution entrypoint for landing validation.
+- Deliverable:
+- Research: full matrix dataset (automated metrics).
+- Productization: MVP auth code landed + CI gates passing.
 
 ### Week 12 (2026-05-11 ~ 2026-05-17)
-- Run ablations (A1-A6) and Level 3 incremental feature tests.
-- Deliverable: ablation + regression result set.
+- Research track: run ablations (A1-A6) and Level 3 incremental feature tests.
+- Productization track:
+- Expand landed modules to listing/search/booking flows.
+- Add integration tests (API contract tests + frontend-backend integration smoke).
+- Add seeded demo dataset and environment bootstrapping scripts.
+- Deliverable:
+- Research: ablation + regression result set.
+- Productization: end-to-end MVP feature slice runnable locally (`auth + listing + search + booking`).
 
 ### Week 13 (2026-05-18 ~ 2026-05-24)
-- Conduct architecture human evaluation and statistical analysis.
-- Deliverable: inter-rater and significance outputs.
+- Research track: conduct architecture human evaluation and statistical analysis.
+- Productization track:
+- Prepare cloud deployment baseline (container build, service manifests, secret/env contract).
+- Add staging deployment pipeline with health checks, rollback script, and smoke tests.
+- Run security/config hardening pass (credential handling, CORS/auth settings, basic rate-limit checks).
+- Deliverable:
+- Research: inter-rater and significance outputs.
+- Productization: staging-ready deployment pipeline.
 
 ### Week 14 (2026-05-25 ~ 2026-05-31)
-- Finalize paper-ready tables, figures, and reproducibility docs.
-- Deliverable: submission-ready package.
+- Research track: finalize paper-ready tables, figures, and reproducibility docs.
+- Productization track:
+- Execute first real cloud deployment run (staging -> production promotion checklist).
+- Publish runbook (deploy, rollback, incident triage, cost guardrails).
+- Freeze release candidate and handoff package (repo state, configs, validation evidence).
+- Deliverable:
+- Research: submission-ready package.
+- Productization: production-deployable MVP package.
+
+## Week 10-14 Sequencing Optimization (User-Approved, 2026-02-25)
+
+- Optimization objective: maximize reliability of landed code before feature expansion.
+- Ordered execution for unfinished work:
+1. Week 10 Step 1 hardening first: materialize + valid-LLM-output hard gate + build/test gate.
+2. Week 10 Step 2 landing contract and deterministic repo write policy.
+3. Week 11 auth slice landing and CI entrypoint on top of Step 1/2 gates.
+4. Week 12 listing/search/booking integration after auth slice is stable.
+5. Week 13-14 cloud deployment and release packaging only after local E2E stability is proven.
+- Gating rule: if any hard gate fails, do not advance to the next step/week deliverable.
 
 ## Current Status Snapshot (as of 2026-02-25)
 
@@ -337,5 +398,10 @@ Plan owner: Project execution baseline agreed with user.
 - `tests/test_llm_integration.py`
 - `python -m unittest discover -s tests -p "test_*.py"` => PASS (36 tests)
 - Week 9 status: COMPLETE
-- Next phase: Week 10 primary matrix first batch.
+- Week 10 kickoff gap snapshot (to close in Step 1):
+- `week9-pilot` default run saves state but does not materialize backend/frontend workspaces.
+- backend/frontend code generation has frequent `rule_fallback: invalid_json`; code artifacts are unstable.
+- current "deploy success" is local-simulated artifact validation, not real cloud deployment.
+- hard-gated landing (`materialize + no-fallback pass + build/test`) is not yet enforced.
+- Next phase: Week 10 dual-track kickoff (research matrix + productization repo-landing pipeline).
 

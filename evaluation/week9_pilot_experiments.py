@@ -7,6 +7,7 @@ import json
 import sys
 import time
 from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -36,6 +37,16 @@ from topologies.hub_spoke import HubAndSpokeTopology
 from topologies.iterative_feedback import IterativeFeedbackTopology
 from topologies.peer_review import PeerReviewTopology
 from topologies.sequential import SequentialTopology
+from tools import ArtifactMaterializer, BuildDeployValidator
+
+GENERATED_WORKSPACES_DIR = OUTPUT_DIR / "generated_workspaces"
+VALIDATION_TIMEOUT_SECONDS = 240.0
+VALIDATOR_RUN_BACKEND_TESTS = True
+VALIDATOR_RUN_FRONTEND_CHECKS = True
+VALIDATOR_RUN_FRONTEND_TESTS = True
+VALIDATOR_RUN_FRONTEND_LINT = True
+REQUIRE_LLM_CODE_OUTPUTS = True
+ENFORCE_BUILD_TEST_GATE = True
 
 
 @dataclass
@@ -56,6 +67,11 @@ class CaseAttempt:
     total_tokens: int
     total_api_calls: int
     state_snapshot: str
+    llm_output_gate_passed: bool
+    llm_output_gate: dict[str, Any]
+    materialization: dict[str, Any] | None
+    build_test_gate_passed: bool
+    build_test_gate: dict[str, Any] | None
 
 
 @dataclass
@@ -83,6 +99,149 @@ def _repo_rel(path: Path) -> str:
         return path.resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
     except ValueError:
         return path.as_posix()
+
+
+def _latest_artifact(state_payload: dict[str, Any], key: str) -> dict[str, Any] | None:
+    artifact_store = state_payload.get("artifact_store", {})
+    if not isinstance(artifact_store, dict):
+        return None
+    versions = artifact_store.get(key, [])
+    if not isinstance(versions, list) or not versions:
+        return None
+    latest = versions[-1]
+    if not isinstance(latest, dict):
+        return None
+    return latest
+
+
+def _llm_code_output_check(state_payload: dict[str, Any], key: str) -> tuple[bool, dict[str, Any]]:
+    latest = _latest_artifact(state_payload, key)
+    if latest is None:
+        return False, {
+            "artifact_key": key,
+            "artifact_present": False,
+            "passed": False,
+            "reason": "artifact_missing",
+        }
+
+    metadata = latest.get("metadata", {})
+    if not isinstance(metadata, dict):
+        metadata = {}
+    generation = metadata.get("generation", {})
+    if not isinstance(generation, dict):
+        generation = {}
+    source = str(generation.get("source", "")).strip()
+    reason = str(generation.get("reason", "")).strip()
+
+    content = latest.get("content", {})
+    if not isinstance(content, dict):
+        content = {}
+    code_bundle = content.get("code_bundle", {})
+    if not isinstance(code_bundle, dict):
+        code_bundle = {}
+
+    non_empty_files = [
+        file_path
+        for file_path, file_content in code_bundle.items()
+        if isinstance(file_content, str) and file_content.strip()
+    ]
+
+    passed = source == "llm" and len(non_empty_files) > 0
+    fail_reason = ""
+    if source != "llm":
+        fail_reason = f"generation_source={source or 'unknown'}"
+    elif not non_empty_files:
+        fail_reason = "empty_code_bundle"
+
+    return passed, {
+        "artifact_key": key,
+        "artifact_present": True,
+        "generation_source": source,
+        "generation_reason": reason,
+        "code_bundle_file_count": len(code_bundle),
+        "code_bundle_non_empty_file_count": len(non_empty_files),
+        "passed": passed,
+        "reason": fail_reason,
+    }
+
+
+def _evaluate_llm_output_gate(state_payload: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
+    backend_ok, backend_details = _llm_code_output_check(state_payload, "backend_code")
+    frontend_ok, frontend_details = _llm_code_output_check(state_payload, "frontend_code")
+    passed = backend_ok and frontend_ok
+    return passed, {
+        "passed": passed,
+        "backend": backend_details,
+        "frontend": frontend_details,
+    }
+
+
+def _step_status(checks: list[dict[str, Any]], step_name: str) -> dict[str, Any]:
+    for check in checks:
+        if str(check.get("name", "")).strip() == step_name:
+            return {
+                "present": True,
+                "executed": bool(check.get("executed", False)),
+                "passed": bool(check.get("passed", False)),
+                "skipped_reason": check.get("skipped_reason"),
+            }
+    return {
+        "present": False,
+        "executed": False,
+        "passed": False,
+        "skipped_reason": "missing_step",
+    }
+
+
+def _evaluate_build_test_gate(validation: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
+    backend_checks = validation.get("backend", [])
+    frontend_checks = validation.get("frontend", [])
+    if not isinstance(backend_checks, list):
+        backend_checks = []
+    if not isinstance(frontend_checks, list):
+        frontend_checks = []
+
+    backend_build = _step_status(backend_checks, "backend_build")
+    backend_test = _step_status(backend_checks, "backend_test")
+    frontend_build = _step_status(frontend_checks, "frontend_build")
+    frontend_test = _step_status(frontend_checks, "frontend_test")
+    frontend_lint = _step_status(frontend_checks, "frontend_lint")
+
+    backend_gate_ok = backend_build["executed"] and backend_build["passed"]
+    if VALIDATOR_RUN_BACKEND_TESTS:
+        backend_gate_ok = backend_gate_ok and backend_test["executed"] and backend_test["passed"]
+
+    frontend_gate_ok = frontend_build["executed"] and frontend_build["passed"]
+    frontend_quality_steps = [step for step in [frontend_test, frontend_lint] if step["executed"]]
+    frontend_quality_ok = bool(frontend_quality_steps) and all(
+        step["passed"] for step in frontend_quality_steps
+    )
+    if VALIDATOR_RUN_FRONTEND_CHECKS:
+        frontend_gate_ok = frontend_gate_ok and frontend_quality_ok
+
+    passed = backend_gate_ok and frontend_gate_ok
+    scores = validation.get("scores", {})
+    if not isinstance(scores, dict):
+        scores = {}
+
+    return passed, {
+        "passed": passed,
+        "backend": {
+            "backend_build": backend_build,
+            "backend_test": backend_test,
+            "gate_ok": backend_gate_ok,
+        },
+        "frontend": {
+            "frontend_build": frontend_build,
+            "frontend_test": frontend_test,
+            "frontend_lint": frontend_lint,
+            "quality_steps_executed": len(frontend_quality_steps),
+            "quality_gate_ok": frontend_quality_ok,
+            "gate_ok": frontend_gate_ok,
+        },
+        "scores": scores,
+        "validation": validation,
+    }
 
 
 def _register_standard_agents(
@@ -212,8 +371,10 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
     llm_profile_name = str(config.get("llm_profile", "")).strip()
     allow_network_llm = bool(config.get("allow_network_llm", False))
     max_attempts = int(config.get("max_attempts_per_case", 1))
-    disable_llm_on_retry = bool(config.get("disable_llm_on_retry", True))
+    disable_llm_on_retry_config = bool(config.get("disable_llm_on_retry", True))
+    disable_llm_on_retry = disable_llm_on_retry_config and not REQUIRE_LLM_CODE_OUTPUTS
     cases = config.get("cases", [])
+    materializer = ArtifactMaterializer(GENERATED_WORKSPACES_DIR)
 
     registry = load_llm_registry(llm_profiles_path)
     primary_client, primary_profile, llm_reason = create_llm_client(
@@ -244,9 +405,26 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
             ),
         )
     )
+    checks.append(
+        CheckResult(
+            name="week10_step1_hard_gates_config",
+            passed=True,
+            details=(
+                f"require_llm_code_outputs={REQUIRE_LLM_CODE_OUTPUTS}, "
+                f"enforce_build_test_gate={ENFORCE_BUILD_TEST_GATE}, "
+                f"disable_llm_on_retry_config={disable_llm_on_retry_config}, "
+                f"disable_llm_on_retry_effective={disable_llm_on_retry}"
+            ),
+        )
+    )
 
     case_results: list[CaseResult] = []
     failure_buckets: dict[str, int] = {}
+    total_attempt_count = 0
+    llm_gate_pass_count = 0
+    materialization_pass_count = 0
+    build_gate_pass_count = 0
+    materialization_executed_count = 0
 
     if not isinstance(cases, list):
         raise ValueError("cases must be a list")
@@ -264,6 +442,7 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
         final_state_snapshot = ""
 
         for attempt in range(1, max_attempts + 1):
+            total_attempt_count += 1
             llm_enabled = primary_client is not None
             llm_client = primary_client
             llm_profile = primary_profile
@@ -276,6 +455,9 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
             error_text: str | None = None
             turn_results: list[TurnResult] = []
             state = ProjectState()
+            state_payload: dict[str, Any] = {}
+            run_ok = False
+            run_reason = "run_not_executed"
             try:
                 turn_results, state = _execute_case(
                     topology=topology,
@@ -284,10 +466,100 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
                     llm_profile=llm_profile,
                 )
                 run_ok, run_reason = _case_success(turn_results, state)
-                if not run_ok:
-                    error_text = run_reason
             except Exception as exc:
-                error_text = str(exc)
+                run_ok = False
+                run_reason = f"execution_error:{exc}"
+
+            state_payload = state.to_dict()
+
+            llm_gate_passed = True
+            llm_gate: dict[str, Any] = {"passed": True, "disabled": True}
+            if REQUIRE_LLM_CODE_OUTPUTS:
+                llm_gate_passed, llm_gate = _evaluate_llm_output_gate(state_payload)
+            if llm_gate_passed:
+                llm_gate_pass_count += 1
+
+            materialization_report: dict[str, Any] | None = None
+            build_test_gate_passed = not ENFORCE_BUILD_TEST_GATE
+            build_test_gate: dict[str, Any] | None = None
+
+            try:
+                workspace_suffix = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+                workspace_name = f"{case_name}_attempt{attempt}_{workspace_suffix}"
+                materialized = materializer.materialize(
+                    run_name=workspace_name,
+                    state_payload=state_payload,
+                    backend_template=None,
+                    frontend_template=None,
+                )
+                materialization_executed_count += 1
+                backend_files = len(materialized.backend_files_written)
+                frontend_files = len(materialized.frontend_files_written)
+                materialization_passed = backend_files > 0 and frontend_files > 0
+                if materialization_passed:
+                    materialization_pass_count += 1
+
+                materialization_report = {
+                    "passed": materialization_passed,
+                    "workspace_root": _repo_rel(Path(materialized.workspace_root)),
+                    "backend_root": _repo_rel(Path(materialized.backend_root)),
+                    "frontend_root": _repo_rel(Path(materialized.frontend_root)),
+                    "backend_files_written_count": backend_files,
+                    "frontend_files_written_count": frontend_files,
+                    "backend_files_written": [
+                        _repo_rel(Path(path)) for path in materialized.backend_files_written
+                    ],
+                    "frontend_files_written": [
+                        _repo_rel(Path(path)) for path in materialized.frontend_files_written
+                    ],
+                }
+
+                validation_result: dict[str, Any] = {}
+                if ENFORCE_BUILD_TEST_GATE:
+                    validator = BuildDeployValidator(
+                        backend_root=Path(materialized.backend_root),
+                        frontend_root=Path(materialized.frontend_root),
+                        timeout_seconds=VALIDATION_TIMEOUT_SECONDS,
+                        run_backend_tests=VALIDATOR_RUN_BACKEND_TESTS,
+                        run_frontend_checks=VALIDATOR_RUN_FRONTEND_CHECKS,
+                        run_frontend_tests=VALIDATOR_RUN_FRONTEND_TESTS,
+                        run_frontend_lint=VALIDATOR_RUN_FRONTEND_LINT,
+                    )
+                    validation_result = validator.run(state_payload)
+                    build_test_gate_passed, build_test_gate = _evaluate_build_test_gate(
+                        validation_result
+                    )
+                    if build_test_gate_passed:
+                        build_gate_pass_count += 1
+                else:
+                    build_test_gate = {
+                        "passed": True,
+                        "disabled": True,
+                        "validation": validation_result,
+                    }
+            except Exception as exc:
+                materialization_report = {
+                    "passed": False,
+                    "error": str(exc),
+                }
+                build_test_gate_passed = False
+                build_test_gate = {
+                    "passed": False,
+                    "error": f"materialize_or_validate_error:{exc}",
+                }
+
+            failure_reasons: list[str] = []
+            if not run_ok:
+                failure_reasons.append(run_reason)
+            if REQUIRE_LLM_CODE_OUTPUTS and not llm_gate_passed:
+                failure_reasons.append("llm_output_gate_failed")
+            if materialization_report is None or not bool(materialization_report.get("passed", False)):
+                failure_reasons.append("materialization_failed")
+            if ENFORCE_BUILD_TEST_GATE and not build_test_gate_passed:
+                failure_reasons.append("build_test_gate_failed")
+
+            if failure_reasons:
+                error_text = "; ".join(failure_reasons)
 
             duration = max(time.monotonic() - started, 0.0)
             state_path = OUTPUT_DIR / "cases" / f"{case_name}_attempt{attempt}_state.json"
@@ -306,6 +578,11 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
                     total_tokens=state.total_tokens,
                     total_api_calls=state.total_api_calls,
                     state_snapshot=_repo_rel(state_path),
+                    llm_output_gate_passed=llm_gate_passed,
+                    llm_output_gate=llm_gate,
+                    materialization=materialization_report,
+                    build_test_gate_passed=build_test_gate_passed,
+                    build_test_gate=build_test_gate,
                 )
             )
 
@@ -355,6 +632,36 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
             details=f"failure_bucket_count={len(failure_buckets)}",
         )
     )
+    checks.append(
+        CheckResult(
+            name="week10_step1_materialization_executed",
+            passed=materialization_executed_count == total_attempt_count and total_attempt_count > 0,
+            details=(
+                f"materialization_executed_count={materialization_executed_count}, "
+                f"total_attempt_count={total_attempt_count}"
+            ),
+        )
+    )
+    checks.append(
+        CheckResult(
+            name="week10_step1_llm_output_gate_observed",
+            passed=llm_gate_pass_count > 0,
+            details=(
+                f"llm_gate_pass_count={llm_gate_pass_count}, "
+                f"total_attempt_count={total_attempt_count}"
+            ),
+        )
+    )
+    checks.append(
+        CheckResult(
+            name="week10_step1_build_test_gate_observed",
+            passed=build_gate_pass_count > 0,
+            details=(
+                f"build_gate_pass_count={build_gate_pass_count}, "
+                f"total_attempt_count={total_attempt_count}"
+            ),
+        )
+    )
 
     status = "success" if all(item.passed for item in checks) else "failed"
     report_path = OUTPUT_DIR / "week9_pilot_report.json"
@@ -370,12 +677,30 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
                 "client_available": primary_client is not None,
                 "availability_reason": llm_reason,
                 "allow_network_llm": allow_network_llm,
+                "disable_llm_on_retry_config": disable_llm_on_retry_config,
+                "disable_llm_on_retry_effective": disable_llm_on_retry,
+            },
+            "week10_step1_hard_gates": {
+                "require_llm_code_outputs": REQUIRE_LLM_CODE_OUTPUTS,
+                "enforce_build_test_gate": ENFORCE_BUILD_TEST_GATE,
+                "generated_workspaces_root": _repo_rel(GENERATED_WORKSPACES_DIR),
+                "validation_timeout_seconds": VALIDATION_TIMEOUT_SECONDS,
+                "validator_options": {
+                    "run_backend_tests": VALIDATOR_RUN_BACKEND_TESTS,
+                    "run_frontend_checks": VALIDATOR_RUN_FRONTEND_CHECKS,
+                    "run_frontend_tests": VALIDATOR_RUN_FRONTEND_TESTS,
+                    "run_frontend_lint": VALIDATOR_RUN_FRONTEND_LINT,
+                },
             },
             "summary": {
                 "case_count": len(case_results),
                 "success_count": success_count,
                 "success_rate": success_rate,
                 "retry_count": retry_count,
+                "total_attempt_count": total_attempt_count,
+                "llm_gate_pass_count": llm_gate_pass_count,
+                "materialization_pass_count": materialization_pass_count,
+                "build_gate_pass_count": build_gate_pass_count,
             },
             "failure_buckets": failure_buckets,
             "cases": [

@@ -64,8 +64,11 @@ class AnthropicClaudeClient(BaseLLMClient):
                 }
             ],
         }
+        if request.response_format == "json_object":
+            payload["response_format"] = {"type": "json_object"}
 
         last_error: Exception | None = None
+        retried_without_json_mode = False
         for attempt in range(self.max_retries + 1):
             try:
                 response_payload = self._post(payload)
@@ -77,6 +80,10 @@ class AnthropicClaudeClient(BaseLLMClient):
                             continue
                         if item.get("type") == "text":
                             text_chunks.append(str(item.get("text", "")))
+                        elif item.get("type") in {"output_json", "json"}:
+                            json_payload = item.get("json")
+                            if isinstance(json_payload, (dict, list)):
+                                text_chunks.append(json.dumps(json_payload, ensure_ascii=True))
                 usage = response_payload.get("usage", {})
                 input_tokens = int(usage.get("input_tokens", 0))
                 output_tokens = int(usage.get("output_tokens", 0))
@@ -90,6 +97,17 @@ class AnthropicClaudeClient(BaseLLMClient):
                 )
             except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
                 last_error = exc
+                if (
+                    isinstance(exc, HTTPError)
+                    and exc.code == 400
+                    and request.response_format == "json_object"
+                    and "response_format" in payload
+                    and not retried_without_json_mode
+                ):
+                    payload = dict(payload)
+                    payload.pop("response_format", None)
+                    retried_without_json_mode = True
+                    continue
                 if attempt >= self.max_retries:
                     break
                 backoff = min(2 ** attempt, 4)

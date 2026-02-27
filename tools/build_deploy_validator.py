@@ -108,6 +108,7 @@ class BuildDeployValidator:
         run_backend_tests: bool = True,
         run_frontend_checks: bool = True,
         run_frontend_tests: bool = False,
+        run_frontend_lint: bool = True,
     ) -> None:
         self.backend_root = backend_root.resolve()
         self.frontend_root = frontend_root.resolve()
@@ -115,6 +116,7 @@ class BuildDeployValidator:
         self.run_backend_tests = run_backend_tests
         self.run_frontend_checks = run_frontend_checks
         self.run_frontend_tests = run_frontend_tests
+        self.run_frontend_lint = run_frontend_lint
 
     def _backend_checks(self) -> list[StepCheck]:
         checks: list[StepCheck] = []
@@ -244,6 +246,20 @@ class BuildDeployValidator:
             checks.append(_skipped("frontend_test", "disabled by validator config"))
         else:
             checks.append(_skipped("frontend_test", "npm test script missing"))
+
+        if "lint" in scripts and self.run_frontend_lint:
+            checks.append(
+                _run_step(
+                    name="frontend_lint",
+                    executor=executor,
+                    command=[npm_bin, "run", "lint"],
+                    timeout_seconds=self.timeout_seconds,
+                )
+            )
+        elif "lint" in scripts and not self.run_frontend_lint:
+            checks.append(_skipped("frontend_lint", "disabled by validator config"))
+        else:
+            checks.append(_skipped("frontend_lint", "npm lint script missing"))
 
         return checks
 
