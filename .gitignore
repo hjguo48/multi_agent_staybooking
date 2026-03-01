@@ -1,11 +1,26 @@
+.env
 .venv/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
+# npm packages — never commit
+node_modules/
+
+# generated workspaces (materialized during runs)
 outputs/week8/generated_workspaces/
+outputs/week9/generated_workspaces/
 outputs/week9/cases/
+
+# temp/debug scripts
+_tmp_*.py
+outputs/week9/_tmp_*
+
+# cloud credentials — never commit
+**/credentials.json
+**/credentials.yaml
+**/service-account*.json
 
 .tmp_doc_extract.txt
 .tmp_doc_extract_latest.txt

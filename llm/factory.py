@@ -11,6 +11,26 @@ from typing import Any
 from .client import AnthropicClaudeClient, BaseLLMClient, MockLLMClient
 
 
+def _load_dotenv(env_path: Path | None = None) -> None:
+    """Load key=value pairs from a .env file into os.environ (no-op if missing)."""
+    candidates = [env_path] if env_path else [
+        Path.cwd() / ".env",
+        Path(__file__).parent.parent / ".env",
+    ]
+    for path in candidates:
+        if path and path.is_file():
+            for line in path.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, value = line.partition("=")
+                key = key.strip()
+                value = value.strip()
+                if key:
+                    os.environ[key] = value
+            break
+
+
 @dataclass(frozen=True)
 class LLMProfile:
     """Serializable LLM runtime profile."""
@@ -41,6 +61,7 @@ class LLMRegistry:
 
 
 def load_llm_registry(path: Path) -> LLMRegistry:
+    _load_dotenv()
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise ValueError("LLM config root must be an object")

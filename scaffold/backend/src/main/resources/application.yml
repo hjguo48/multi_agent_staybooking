@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_URL:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:staybooking}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:secret}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+staybooking:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY:changeme-replace-in-production}

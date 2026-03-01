@@ -58,18 +58,15 @@ class BackendDeveloperAgent(BaseAgent):
                 }
 
         fallback_code_bundle = {
-            "src/main/java/com/example/auth/AuthController.java": (
-                "package com.example.auth;\n"
-                "public class AuthController {\n"
-                "    // Minimal placeholder controller for week3 smoke\n"
+            "src/main/java/com/staybooking/auth/UserAlreadyExistsException.java": (
+                "package com.staybooking.auth;\n"
+                "\n"
+                "public class UserAlreadyExistsException extends RuntimeException {\n"
+                "    public UserAlreadyExistsException(String username) {\n"
+                "        super(\"User already exists: \" + username);\n"
+                "    }\n"
                 "}\n"
-            ),
-            "src/main/java/com/example/auth/AuthService.java": (
-                "package com.example.auth;\n"
-                "public class AuthService {\n"
-                "    // Minimal placeholder service for week3 smoke\n"
-                "}\n"
-            ),
+            )
         }
         fallback_backend_artifact = {
             "module": "auth",
@@ -81,8 +78,33 @@ class BackendDeveloperAgent(BaseAgent):
         backend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
-                "Generate a minimal backend code artifact JSON for StayBooking auth module. "
-                "Return concise Java/Spring-compatible stubs suitable for landing validation."
+                "Generate a backend auth module code_bundle JSON for the StayBooking project using scaffold-overlay mode.\n"
+                "\n"
+                "SCAFFOLD CONTEXT:\n"
+                "- Spring Boot 3.4.1, Gradle, Java 17\n"
+                "- Root package: com.staybooking (StaybookingApplication.java already exists there)\n"
+                "- Available dependencies: spring-boot-starter-web, spring-boot-starter-data-jpa,\n"
+                "  spring-boot-starter-security, jjwt-api:0.11.5 (+jjwt-impl +jjwt-jackson), postgresql\n"
+                "- NO existing entity, repository, service, or controller classes — design everything from scratch.\n"
+                "\n"
+                "FUNCTIONAL REQUIREMENTS:\n"
+                "- POST /authenticate/register — register user with BCrypt-hashed password\n"
+                "- POST /authenticate/login — validate credentials, return signed JWT\n"
+                "- Spring Security config: disable CSRF, permit /authenticate/**, require auth elsewhere\n"
+                "- Implement UserDetailsService loading from JPA repository\n"
+                "\n"
+                "YOUR DESIGN DECISIONS:\n"
+                "- Choose sub-package names under com.staybooking (e.g., com.staybooking.auth, com.staybooking.model)\n"
+                "- Choose entity field names, DTO structure, exception names\n"
+                "- Choose JWT implementation approach (key format, claims, expiry)\n"
+                "\n"
+                "FILE RULES:\n"
+                "- Generate 4-6 Java files; every file you reference must be in code_bundle\n"
+                "- Every file MUST start with: package com.staybooking.<subpackage>;\n"
+                "- Every file MUST include all necessary import statements\n"
+                "- Every referenced class must be defined in the bundle OR be a standard Spring/Java library class\n"
+                "- Use constructor injection only (NO @Autowired field injection)\n"
+                "- Do NOT add new Gradle dependencies\n"
             ),
             fallback_payload=fallback_backend_artifact,
             fallback_usage={"tokens": 680, "api_calls": 1},
@@ -94,13 +116,19 @@ class BackendDeveloperAgent(BaseAgent):
                 "test_notes",
             ],
             extra_output_constraints=[
-                "- Limit changed_files to at most 3 files.",
+                "- Generate 4-6 files; limit changed_files accordingly.",
                 "- code_bundle keys must exactly match changed_files.",
-                "- Keep each file concise (<= 120 lines).",
-                "- Avoid markdown and explanations; JSON data only.",
+                "- Every file path must be under src/main/java/com/staybooking/<subpackage>/.",
+                "- Every Java file MUST begin with 'package com.staybooking.<subpackage>;'.",
+                "- Every Java file MUST include complete import statements before the class declaration.",
+                "- Every class referenced must be defined in the bundle OR imported from Spring/Java stdlib.",
+                "- Do NOT use field injection (@Autowired on fields); use constructor injection only.",
+                "- Do NOT add new Gradle dependencies.",
+                "- Return JSON only, no markdown fences or explanations.",
             ],
             retry_on_invalid_json=True,
-            max_output_tokens_override=1800,
+            json_retry_attempts=2,
+            max_output_tokens_override=6000,
         )
         return {
             "state_updates": {"backend_code": {"artifact_ref": "backend_code:v1"}},

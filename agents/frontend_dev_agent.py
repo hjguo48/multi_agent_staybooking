@@ -58,29 +58,85 @@ class FrontendDeveloperAgent(BaseAgent):
                 }
 
         fallback_code_bundle = {
-            "src/pages/LoginPage.jsx": (
-                "export function LoginPage() {\n"
-                "  return <div>Login Page Placeholder</div>;\n"
+            "src/App.js": (
+                "import React, { useState } from 'react';\n"
+                "\n"
+                "function App() {\n"
+                "  const [token, setToken] = useState(localStorage.getItem('token'));\n"
+                "  const [username, setUsername] = useState('');\n"
+                "  const [password, setPassword] = useState('');\n"
+                "  const [error, setError] = useState('');\n"
+                "\n"
+                "  const handleLogin = async (e) => {\n"
+                "    e.preventDefault();\n"
+                "    try {\n"
+                "      const res = await fetch('http://localhost:8080/authenticate/login', {\n"
+                "        method: 'POST',\n"
+                "        headers: { 'Content-Type': 'application/json' },\n"
+                "        body: JSON.stringify({ username, password }),\n"
+                "      });\n"
+                "      if (!res.ok) throw new Error('Login failed');\n"
+                "      const data = await res.json();\n"
+                "      localStorage.setItem('token', data.token);\n"
+                "      setToken(data.token);\n"
+                "    } catch (err) {\n"
+                "      setError(err.message);\n"
+                "    }\n"
+                "  };\n"
+                "\n"
+                "  if (token) return <div><h1>Welcome!</h1><button onClick={() => { localStorage.removeItem('token'); setToken(null); }}>Logout</button></div>;\n"
+                "\n"
+                "  return (\n"
+                "    <div>\n"
+                "      <h1>StayBooking Login</h1>\n"
+                "      {error && <p style={{color:'red'}}>{error}</p>}\n"
+                "      <form onSubmit={handleLogin}>\n"
+                "        <input placeholder='Username' value={username} onChange={e => setUsername(e.target.value)} />\n"
+                "        <input type='password' placeholder='Password' value={password} onChange={e => setPassword(e.target.value)} />\n"
+                "        <button type='submit'>Login</button>\n"
+                "      </form>\n"
+                "    </div>\n"
+                "  );\n"
                 "}\n"
-            ),
-            "src/services/authApi.js": (
-                "export async function login(payload) {\n"
-                "  return { token: 'mock-token', user: payload.username };\n"
-                "}\n"
-            ),
+                "\n"
+                "export default App;\n"
+            )
         }
         fallback_frontend_artifact = {
             "module": "auth",
             "changed_files": list(fallback_code_bundle.keys()),
             "code_bundle": fallback_code_bundle,
             "build_notes": {"build_status": "simulated_pass"},
-            "ui_state_notes": {"loading_error_empty": "covered_in_placeholder"},
+            "ui_state_notes": {"loading_error_empty": "covered_in_fallback"},
         }
         frontend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
-                "Generate a minimal frontend code artifact JSON for StayBooking auth pages. "
-                "Return concise React-compatible stubs suitable for landing validation."
+                "Generate a frontend auth module code_bundle JSON for the StayBooking project using scaffold-overlay mode.\n"
+                "\n"
+                "SCAFFOLD CONTEXT:\n"
+                "- React 18, Create React App 5.0.1\n"
+                "- Entry: src/index.js renders <App /> — you MUST override src/App.js\n"
+                "- Available packages: react, react-dom, react-scripts, web-vitals (no other packages)\n"
+                "- NO pre-existing application components — design everything from scratch\n"
+                "\n"
+                "FUNCTIONAL REQUIREMENTS:\n"
+                "- Login page: POST /authenticate/login with {username, password}, store JWT, show main content\n"
+                "- Register page: POST /authenticate/register with {username, password, role}, role = GUEST or HOST\n"
+                "- Route protection: unauthenticated users see Login/Register, authenticated users see main content\n"
+                "- Backend base URL: http://localhost:8080\n"
+                "\n"
+                "YOUR DESIGN DECISIONS:\n"
+                "- Component names, file structure, state management approach\n"
+                "- Routing approach (React Router or conditional rendering)\n"
+                "- Styling approach (inline styles, CSS classes, etc.)\n"
+                "\n"
+                "FILE RULES:\n"
+                "- Generate 2-5 files, all under src/\n"
+                "- MANDATORY: include src/App.js in code_bundle\n"
+                "- Every import must be a package from package.json or a relative file in the bundle\n"
+                "- Use functional components and React hooks only\n"
+                "- Handle loading states and error messages for API calls\n"
             ),
             fallback_payload=fallback_frontend_artifact,
             fallback_usage={"tokens": 610, "api_calls": 1},
@@ -92,14 +148,18 @@ class FrontendDeveloperAgent(BaseAgent):
                 "ui_state_notes",
             ],
             extra_output_constraints=[
-                "- Limit changed_files to at most 2 files.",
+                "- Generate 2-5 files; all paths must start with src/.",
                 "- code_bundle keys must exactly match changed_files.",
-                "- Keep each file concise (<= 40 lines).",
+                "- MANDATORY: src/App.js must be included in code_bundle.",
+                "- Every import must resolve to a package in package.json or a relative file in the bundle.",
+                "- Do NOT import packages not in the scaffold (no antd, no axios, no react-router unless in package.json).",
+                "- Use functional components and hooks only; no class components.",
+                "- Use plain JavaScript files (.js) compatible with react-scripts.",
                 "- Avoid markdown and explanations; JSON data only.",
             ],
             retry_on_invalid_json=True,
-            json_retry_attempts=3,
-            max_output_tokens_override=900,
+            json_retry_attempts=2,
+            max_output_tokens_override=3000,
         )
         return {
             "state_updates": {"frontend_code": {"artifact_ref": "frontend_code:v1"}},

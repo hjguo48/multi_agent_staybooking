@@ -132,7 +132,7 @@ class BuildDeployValidator:
                 _run_step(
                     name="backend_build",
                     executor=executor,
-                    command=["cmd", "/c", "gradlew.bat", "build", "-x", "test", "--no-daemon"],
+                    command=["cmd", "/c", str(gradlew_bat), "build", "-x", "test", "--no-daemon"],
                     timeout_seconds=self.timeout_seconds,
                 )
             )
@@ -141,7 +141,7 @@ class BuildDeployValidator:
                     _run_step(
                         name="backend_test",
                         executor=executor,
-                        command=["cmd", "/c", "gradlew.bat", "test", "--no-daemon"],
+                        command=["cmd", "/c", str(gradlew_bat), "test", "--no-daemon"],
                         timeout_seconds=self.timeout_seconds,
                     )
                 )
@@ -200,7 +200,7 @@ class BuildDeployValidator:
                 _run_step(
                     name="frontend_install",
                     executor=executor,
-                    command=[npm_bin, "ci", "--no-audit", "--no-fund"],
+                    command=[npm_bin, "install", "--no-audit", "--no-fund"],
                     timeout_seconds=self.timeout_seconds,
                 )
             )
@@ -289,11 +289,20 @@ class BuildDeployValidator:
             if isinstance(latest, dict) and isinstance(latest.get("content"), dict):
                 deployment_content = latest["content"]
 
-        status_ok = str(deployment_content.get("status", "")).strip().lower() == "success"
+        status_ok = str(deployment_content.get("status", "")).strip().lower() in ("success", "deployed")
         health_checks = deployment_content.get("health_checks", {})
         health_ok = False
         if isinstance(health_checks, dict) and health_checks:
-            health_ok = all(int(code) == 200 for code in health_checks.values())
+            def _health_value_ok(value: Any) -> bool:
+                if isinstance(value, int):
+                    return value == 200
+                if isinstance(value, dict):
+                    return str(value.get("status", "")).lower() in ("healthy", "ok", "up")
+                try:
+                    return int(value) == 200
+                except (TypeError, ValueError):
+                    return False
+            health_ok = all(_health_value_ok(v) for v in health_checks.values())
 
         checks.append(
             StepCheck(

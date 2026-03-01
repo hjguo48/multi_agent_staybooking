@@ -1,9 +1,14 @@
 {
   "llm_profiles_path": "configs/llm_profiles.json",
   "llm_profile": "claude_sonnet_4",
-  "allow_network_llm": false,
+  "allow_network_llm": true,
   "max_attempts_per_case": 2,
-  "disable_llm_on_retry": true,
+  "disable_llm_on_retry": false,
+  "repo_landing": {
+    "materialization_mode": "scaffold_overlay",
+    "backend_template": "scaffold/backend",
+    "frontend_template": "scaffold/frontend"
+  },
   "cases": [
     {
       "name": "seq_module",

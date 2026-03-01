@@ -8,7 +8,7 @@
       "api_key_env": "ANTHROPIC_API_KEY",
       "temperature": 0.2,
       "max_output_tokens": 4096,
-      "timeout_seconds": 45.0,
+      "timeout_seconds": 90.0,
       "max_retries": 2
     },
     "gpt_4o": {
