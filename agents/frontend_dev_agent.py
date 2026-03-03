@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from typing import Any
 
 from core.models import AgentMessage, Artifact, MessageType
@@ -109,6 +110,32 @@ class FrontendDeveloperAgent(BaseAgent):
             "build_notes": {"build_status": "simulated_pass"},
             "ui_state_notes": {"loading_error_empty": "covered_in_fallback"},
         }
+        # Inject api_contract and backend file list from upstream agents.
+        api_contract_art = context.get_latest_artifact("api_contract")
+        api_contract = api_contract_art.content if api_contract_art is not None else {}
+        endpoints = api_contract.get("endpoints", [])
+        base_url = api_contract.get("base_url", "http://localhost:8080")
+
+        api_section = ""
+        if endpoints:
+            api_section = (
+                "\nBACKEND API CONTRACT (you MUST call these exact paths with these exact field names):\n"
+                + json.dumps(endpoints, indent=2)
+                + f"\nBase URL: {base_url}\n"
+                "CRITICAL: Use the path, method, request_fields, and response_fields above exactly.\n"
+                "Do NOT invent different endpoint paths or field names.\n"
+            )
+
+        backend_art = context.get_latest_artifact("backend_code")
+        backend_files_section = ""
+        if backend_art is not None and isinstance(backend_art.content, dict):
+            bfiles = list(backend_art.content.get("code_bundle", {}).keys())
+            if bfiles:
+                backend_files_section = (
+                    f"\nBACKEND FILES PRODUCED BY BACKEND AGENT: {bfiles}\n"
+                    "These files are the backend implementation. Your frontend must align to the same API contract.\n"
+                )
+
         frontend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
@@ -119,12 +146,13 @@ class FrontendDeveloperAgent(BaseAgent):
                 "- Entry: src/index.js renders <App /> — you MUST override src/App.js\n"
                 "- Available packages: react, react-dom, react-scripts, web-vitals (no other packages)\n"
                 "- NO pre-existing application components — design everything from scratch\n"
-                "\n"
+                + api_section
+                + backend_files_section
+                + "\n"
                 "FUNCTIONAL REQUIREMENTS:\n"
-                "- Login page: POST /authenticate/login with {username, password}, store JWT, show main content\n"
-                "- Register page: POST /authenticate/register with {username, password, role}, role = GUEST or HOST\n"
+                "- Login page: POST to the login endpoint in api_contract, store JWT, show main content\n"
+                "- Register page: POST to the register endpoint in api_contract, role = GUEST or HOST\n"
                 "- Route protection: unauthenticated users see Login/Register, authenticated users see main content\n"
-                "- Backend base URL: http://localhost:8080\n"
                 "\n"
                 "YOUR DESIGN DECISIONS:\n"
                 "- Component names, file structure, state management approach\n"

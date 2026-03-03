@@ -57,29 +57,49 @@ class BaseAgent(ABC):
         }
 
     def _context_snapshot(self, context: ProjectState) -> dict[str, Any]:
-        artifact_versions = {
-            key: len(items)
-            for key, items in context.artifact_store.artifact_versions.items()
-        }
-        return {
+        snap: dict[str, Any] = {
             "role": self.role,
-            "state_fields_present": {
-                "requirements": context.requirements is not None,
-                "architecture": context.architecture is not None,
-                "backend_code": context.backend_code is not None,
-                "frontend_code": context.frontend_code is not None,
-                "qa_report": context.qa_report is not None,
-                "deployment": context.deployment is not None,
-            },
-            "artifact_versions": artifact_versions,
             "iteration": context.iteration,
             "message_count": len(context.message_log.messages),
-            "latest_message": (
-                context.message_log.messages[-1].to_dict()
-                if context.message_log.messages
-                else None
-            ),
         }
+
+        # Include actual upstream artifact content so agents can truly collaborate.
+        # Requirements and architecture are compact JSON — safe to embed directly.
+        if context.requirements is not None:
+            snap["requirements"] = context.requirements
+        if context.architecture is not None:
+            snap["architecture"] = context.architecture
+        if context.qa_report is not None:
+            snap["qa_report"] = context.qa_report
+
+        # API contract: structured endpoint list produced by architect, consumed by frontend.
+        api_contract_art = context.get_latest_artifact("api_contract")
+        if api_contract_art is not None and isinstance(api_contract_art.content, dict):
+            snap["api_contract"] = api_contract_art.content
+
+        # Code files: names only in snapshot; full content injected by QA agent directly.
+        backend_art = context.get_latest_artifact("backend_code")
+        if backend_art is not None and isinstance(backend_art.content, dict):
+            snap["backend_code_files"] = list(
+                backend_art.content.get("code_bundle", {}).keys()
+            )
+
+        frontend_art = context.get_latest_artifact("frontend_code")
+        if frontend_art is not None and isinstance(frontend_art.content, dict):
+            snap["frontend_code_files"] = list(
+                frontend_art.content.get("code_bundle", {}).keys()
+            )
+
+        # Latest message for routing context (truncated).
+        if context.message_log.messages:
+            msg = context.message_log.messages[-1]
+            snap["latest_message"] = {
+                "sender": msg.sender,
+                "receiver": msg.receiver,
+                "content": msg.content[:400],
+            }
+
+        return snap
 
     @staticmethod
     def _extract_json_payload(raw_text: str) -> dict[str, Any] | None:

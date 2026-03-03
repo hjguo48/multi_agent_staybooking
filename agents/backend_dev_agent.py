@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from typing import Any
 
 from core.models import AgentMessage, Artifact, MessageType
@@ -75,6 +76,28 @@ class BackendDeveloperAgent(BaseAgent):
             "build_notes": {"compile_status": "simulated_pass"},
             "test_notes": {"unit_tests": "simulated_pending"},
         }
+        # Inject architecture and api_contract from upstream agents into the prompt.
+        api_contract_art = context.get_latest_artifact("api_contract")
+        api_contract = api_contract_art.content if api_contract_art is not None else {}
+        endpoints = api_contract.get("endpoints", [])
+        api_section = (
+            "\nAPI CONTRACT FROM ARCHITECT (implement these exact endpoints):\n"
+            + json.dumps(endpoints, indent=2)
+            + "\n"
+            if endpoints
+            else ""
+        )
+
+        arch = context.architecture or {}
+        db_schema = arch.get("database_schema", {})
+        arch_section = (
+            "\nDATABASE SCHEMA FROM ARCHITECT:\n"
+            + json.dumps(db_schema, indent=2)
+            + "\n"
+            if db_schema
+            else ""
+        )
+
         backend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
@@ -86,7 +109,9 @@ class BackendDeveloperAgent(BaseAgent):
                 "- Available dependencies: spring-boot-starter-web, spring-boot-starter-data-jpa,\n"
                 "  spring-boot-starter-security, jjwt-api:0.11.5 (+jjwt-impl +jjwt-jackson), postgresql\n"
                 "- NO existing entity, repository, service, or controller classes — design everything from scratch.\n"
-                "\n"
+                + api_section
+                + arch_section
+                + "\n"
                 "FUNCTIONAL REQUIREMENTS:\n"
                 "- POST /authenticate/register — register user with BCrypt-hashed password\n"
                 "- POST /authenticate/login — validate credentials, return signed JWT\n"
