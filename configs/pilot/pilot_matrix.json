@@ -4,6 +4,7 @@
   "allow_network_llm": true,
   "max_attempts_per_case": 2,
   "disable_llm_on_retry": false,
+  "project_config": "configs/projects/staybooking.json",
   "repo_landing": {
     "materialization_mode": "scaffold_overlay",
     "backend_template": "scaffold/backend",
@@ -13,22 +14,26 @@
     {
       "name": "seq_module",
       "topology": "sequential",
-      "granularity": "module"
+      "granularity": "module",
+      "module_config": "configs/modules/auth.json"
     },
     {
       "name": "hub_module",
       "topology": "hub_spoke",
-      "granularity": "module"
+      "granularity": "module",
+      "module_config": "configs/modules/auth.json"
     },
     {
       "name": "peer_module",
       "topology": "peer_review",
-      "granularity": "module"
+      "granularity": "module",
+      "module_config": "configs/modules/auth.json"
     },
     {
       "name": "iter_module",
       "topology": "iterative_feedback",
-      "granularity": "module"
+      "granularity": "module",
+      "module_config": "configs/modules/auth.json"
     }
   ]
 }

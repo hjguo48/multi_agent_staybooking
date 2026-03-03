@@ -14,7 +14,7 @@ from typing import Any
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 OUTPUT_DIR = PROJECT_ROOT / "outputs" / "week9"
-PILOT_CONFIG = PROJECT_ROOT / "configs" / "pilot" / "week9_pilot_matrix.json"
+PILOT_CONFIG = PROJECT_ROOT / "configs" / "pilot" / "pilot_matrix.json"
 GRANULARITY_CONFIG = PROJECT_ROOT / "configs" / "granularity_profiles.json"
 PROMPTS_DIR = PROJECT_ROOT / "configs" / "prompts"
 
@@ -309,6 +309,8 @@ def _register_standard_agents(
 def _run_sequential_with_granularity(
     orchestrator: Orchestrator,
     granularity: str,
+    *,
+    work_item_module_map: dict[str, dict[str, Any]] | None = None,
 ) -> list[TurnResult]:
     registry = load_granularity_registry(GRANULARITY_CONFIG)
     profile = registry.get_profile(granularity)
@@ -322,6 +324,14 @@ def _run_sequential_with_granularity(
         )
 
     for work_item in profile.work_items:
+        # Update module_config and current_module_id for this work_item when a
+        # per-item mapping is provided.  This ensures backend/frontend agents
+        # see the correct module context for each module in a multi-module run.
+        if work_item_module_map and work_item in work_item_module_map:
+            item_cfg = work_item_module_map[work_item]
+            orchestrator.state.module_config = item_cfg
+            orchestrator.state.current_module_id = item_cfg.get("module_id")
+
         all_results.extend(
             SequentialTopology(orchestrator=orchestrator, roles=profile.per_item_roles).run(
                 f"[pilot] {granularity} item: {work_item}"
@@ -343,8 +353,17 @@ def _execute_case(
     granularity: str,
     llm_client: BaseLLMClient | None,
     llm_profile: LLMProfile | None,
+    project_config: dict[str, Any] | None = None,
+    module_config: dict[str, Any] | None = None,
+    work_item_module_map: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[list[TurnResult], ProjectState]:
     orchestrator = Orchestrator()
+    # Inject config-driven project/module specs into state before agents run.
+    if project_config is not None:
+        orchestrator.state.project_config = project_config
+    if module_config is not None:
+        orchestrator.state.module_config = module_config
+        orchestrator.state.current_module_id = module_config.get("module_id")
     _register_standard_agents(
         orchestrator,
         llm_client=llm_client,
@@ -353,7 +372,11 @@ def _execute_case(
     )
 
     if topology == "sequential":
-        results = _run_sequential_with_granularity(orchestrator, granularity=granularity)
+        results = _run_sequential_with_granularity(
+            orchestrator,
+            granularity=granularity,
+            work_item_module_map=work_item_module_map,
+        )
         return results, orchestrator.state
     if topology == "hub_spoke":
         topology_runtime = HubAndSpokeTopology(orchestrator=orchestrator, max_cycles=32)
@@ -395,6 +418,19 @@ def _case_success(turn_results: list[TurnResult], state: ProjectState) -> tuple[
     return True, "stable run"
 
 
+def _load_config_file(path_text: Any) -> dict[str, Any] | None:
+    """Load a JSON config file relative to PROJECT_ROOT; return None if not set/found."""
+    text = str(path_text or "").strip()
+    if not text:
+        return None
+    candidate = Path(text)
+    if not candidate.is_absolute():
+        candidate = PROJECT_ROOT / candidate
+    if not candidate.exists():
+        return None
+    return _read_json(candidate)
+
+
 def run_pilot() -> tuple[int, list[CheckResult], Path]:
     config = _read_json(PILOT_CONFIG)
     llm_profiles_path = PROJECT_ROOT / config["llm_profiles_path"]
@@ -405,6 +441,10 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
     disable_llm_on_retry = disable_llm_on_retry_config and not REQUIRE_LLM_CODE_OUTPUTS
     cases = config.get("cases", [])
     repo_landing = config.get("repo_landing", {})
+
+    # Load project-level and default module-level config files.
+    project_config = _load_config_file(config.get("project_config"))
+    default_module_config = _load_config_file(config.get("module_config"))
     if not isinstance(repo_landing, dict):
         repo_landing = {}
     materialization_mode = str(repo_landing.get("materialization_mode", "pure_generated")).strip().lower()
@@ -483,6 +523,20 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
         topology = str(case.get("topology", "")).strip().lower()
         granularity = str(case.get("granularity", "module")).strip().lower()
 
+        # Per-case module config (overrides top-level default if present).
+        case_module_config = _load_config_file(case.get("module_config")) or default_module_config
+
+        # Per-case work_item → module_config mapping (for multi-module sequential runs).
+        # Format in pilot matrix: {"work_item_name": "configs/modules/<id>.json", ...}
+        raw_wimc = case.get("work_item_module_configs")
+        work_item_module_map: dict[str, dict[str, Any]] | None = None
+        if isinstance(raw_wimc, dict):
+            work_item_module_map = {}
+            for wi, cfg_path in raw_wimc.items():
+                cfg = _load_config_file(cfg_path)
+                if cfg is not None:
+                    work_item_module_map[str(wi)] = cfg
+
         attempts: list[CaseAttempt] = []
         final_error: str | None = None
         final_state_snapshot = ""
@@ -510,6 +564,9 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
                     granularity=granularity,
                     llm_client=llm_client,
                     llm_profile=llm_profile,
+                    project_config=project_config,
+                    module_config=case_module_config,
+                    work_item_module_map=work_item_module_map,
                 )
                 run_ok, run_reason = _case_success(turn_results, state)
             except Exception as exc:
