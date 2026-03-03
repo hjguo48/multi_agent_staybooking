@@ -1,0 +1,15 @@
+{
+  "$schema_version": "1.1",
+  "module_id": "booking",
+  "module_name": "Booking",
+  "description": "Guests book listings for date ranges and can view or cancel their bookings. Double-booking is prevented via atomic conflict detection. Booking status transitions: CONFIRMED → CANCELLED.",
+  "functional_requirements": [
+    "As a guest, I can book a listing for a specific date range; conflicting dates return 409",
+    "As a guest, I can view all my bookings",
+    "As a guest, I can cancel a booking I made; another user attempting to cancel my booking receives 403"
+  ],
+  "non_functional_requirements": [
+    "All booking endpoints require JWT authentication",
+    "Booking creation must prevent double-booking via atomic check-and-insert"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "$schema_version": "1.0",
+  "project_id": "staybooking",
+  "project_name": "StayBooking",
+  "description": "Home-stay booking platform connecting guests and hosts.",
+
+  "backend": {
+    "language": "Java",
+    "language_version": "17",
+    "framework": "Spring Boot",
+    "framework_version": "3.4.1",
+    "build_tool": "Gradle",
+    "root_package": "com.staybooking",
+    "main_class": "StaybookingApplication",
+    "base_url": "http://localhost:8080",
+    "src_root": "src/main/java",
+    "dependencies": [
+      "spring-boot-starter-web",
+      "spring-boot-starter-data-jpa",
+      "spring-boot-starter-security",
+      "io.jsonwebtoken:jjwt-api:0.11.5",
+      "io.jsonwebtoken:jjwt-impl:0.11.5",
+      "io.jsonwebtoken:jjwt-jackson:0.11.5",
+      "org.postgresql:postgresql"
+    ]
+  },
+
+  "frontend": {
+    "framework": "React",
+    "framework_version": "18",
+    "scaffolding_tool": "Create React App",
+    "scaffolding_version": "5.0.1",
+    "entry_file": "src/index.js",
+    "app_root_file": "src/App.js",
+    "src_root": "src",
+    "base_url": "http://localhost:8080",
+    "dev_server_port": 3000,
+    "dependencies": [
+      "react@^18.2.0",
+      "react-dom@^18.2.0",
+      "react-scripts@5.0.1",
+      "web-vitals@^2.1.4"
+    ]
+  },
+
+  "database": {
+    "engine": "PostgreSQL",
+    "version": "15",
+    "default_port": 5432
+  },
+
+  "infrastructure": {
+    "containerization": "Docker",
+    "services": ["backend", "frontend", "postgres"],
+    "health_check_urls": {
+      "backend": "http://localhost:8080/actuator/health",
+      "frontend": "http://localhost:3000"
+    }
+  },
+
+  "user_roles": ["GUEST", "HOST"]
+}

@@ -63,6 +63,14 @@ class BaseAgent(ABC):
             "message_count": len(context.message_log.messages),
         }
 
+        # Expose project and module config so agents are config-driven, not hardcoded.
+        if context.project_config is not None:
+            snap["project_config"] = context.project_config
+        if context.module_config is not None:
+            snap["module_config"] = context.module_config
+        if context.current_module_id is not None:
+            snap["current_module_id"] = context.current_module_id
+
         # Include actual upstream artifact content so agents can truly collaborate.
         # Requirements and architecture are compact JSON — safe to embed directly.
         if context.requirements is not None:

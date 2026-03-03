@@ -1,0 +1,14 @@
+{
+  "$schema_version": "1.1",
+  "module_id": "search",
+  "module_name": "Listing Search",
+  "description": "Guests search available listings by location, date range, and price. Results are paginated and exclude listings with conflicting bookings.",
+  "functional_requirements": [
+    "As a guest, I can search available listings by location and date range; unavailable listings are excluded from results",
+    "Search results are paginated with a configurable page size"
+  ],
+  "non_functional_requirements": [
+    "Search endpoint is publicly accessible (no authentication required)",
+    "Results are paginated; default page size is 20"
+  ]
+}

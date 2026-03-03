@@ -21,6 +21,12 @@ class ProjectState:
     created_at: str = field(default_factory=utc_now)
     updated_at: str = field(default_factory=utc_now)
 
+    # Config-driven: loaded from configs/projects/<id>.json and configs/modules/<id>.json.
+    # Agents read these instead of having business constants hardcoded.
+    project_config: dict[str, Any] | None = None
+    module_config: dict[str, Any] | None = None
+    current_module_id: str | None = None
+
     requirements: dict[str, Any] | None = None
     architecture: dict[str, Any] | None = None
     backend_code: dict[str, Any] | None = None
@@ -64,6 +70,9 @@ class ProjectState:
             "run_id": self.run_id,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "project_config": self.project_config,
+            "module_config": self.module_config,
+            "current_module_id": self.current_module_id,
             "requirements": self.requirements,
             "architecture": self.architecture,
             "backend_code": self.backend_code,
@@ -83,6 +92,9 @@ class ProjectState:
             run_id=data.get("run_id", uuid4().hex),
             created_at=data.get("created_at", utc_now()),
             updated_at=data.get("updated_at", utc_now()),
+            project_config=data.get("project_config"),
+            module_config=data.get("module_config"),
+            current_module_id=data.get("current_module_id"),
             requirements=data.get("requirements"),
             architecture=data.get("architecture"),
             backend_code=data.get("backend_code"),

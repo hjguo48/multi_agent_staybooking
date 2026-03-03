@@ -5,15 +5,36 @@
     "name": "claude_sonnet_4",
     "provider": "anthropic",
     "model": "claude-sonnet-4-20250514",
-    "client_available": false,
-    "availability_reason": "network llm disabled by pilot config (provider=anthropic)",
-    "allow_network_llm": false
+    "client_available": true,
+    "availability_reason": "anthropic client ready",
+    "allow_network_llm": true,
+    "disable_llm_on_retry_config": false,
+    "disable_llm_on_retry_effective": false
+  },
+  "week10_step1_hard_gates": {
+    "require_llm_code_outputs": true,
+    "enforce_build_test_gate": true,
+    "generated_workspaces_root": "outputs/week9/generated_workspaces",
+    "validation_timeout_seconds": 240.0,
+    "validator_options": {
+      "run_backend_tests": false,
+      "run_frontend_checks": true,
+      "run_frontend_tests": false,
+      "run_frontend_lint": true
+    },
+    "materialization_mode": "scaffold_overlay",
+    "backend_template": "scaffold/backend",
+    "frontend_template": "scaffold/frontend"
   },
   "summary": {
     "case_count": 4,
     "success_count": 4,
     "success_rate": 1.0,
-    "retry_count": 0
+    "retry_count": 0,
+    "total_attempt_count": 4,
+    "llm_gate_pass_count": 4,
+    "materialization_pass_count": 4,
+    "build_gate_pass_count": 4
   },
   "failure_buckets": {},
   "cases": [
@@ -25,14 +46,247 @@
       "attempts": [
         {
           "attempt": 1,
-          "llm_enabled": false,
+          "llm_enabled": true,
           "success": true,
           "turn_count": 15,
           "error": null,
-          "duration_seconds": 0.0,
-          "total_tokens": 8370,
-          "total_api_calls": 15,
-          "state_snapshot": "outputs/week9/cases/seq_module_attempt1_state.json"
+          "duration_seconds": 398.56200000003446,
+          "total_tokens": 46832,
+          "total_api_calls": 10,
+          "state_snapshot": "outputs/week9/cases/seq_module_attempt1_state.json",
+          "llm_output_gate_passed": true,
+          "llm_output_gate": {
+            "passed": true,
+            "backend": {
+              "artifact_key": "backend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 9,
+              "code_bundle_non_empty_file_count": 9,
+              "passed": true,
+              "reason": ""
+            },
+            "frontend": {
+              "artifact_key": "frontend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 4,
+              "code_bundle_non_empty_file_count": 4,
+              "passed": true,
+              "reason": ""
+            }
+          },
+          "materialization": {
+            "passed": true,
+            "workspace_root": "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z",
+            "backend_root": "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend",
+            "frontend_root": "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/frontend",
+            "backend_files_written_count": 9,
+            "frontend_files_written_count": 4,
+            "materialization_mode": "scaffold_overlay",
+            "backend_template_used": "scaffold/backend",
+            "frontend_template_used": "scaffold/frontend",
+            "backend_files_written": [
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/entity/User.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/repository/UserRepository.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/dto/RegisterRequest.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/dto/LoginRequest.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/dto/AuthResponse.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/service/AuthService.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/controller/AuthController.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/config/SecurityConfig.java",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/src/main/java/com/staybooking/auth/util/JwtUtil.java"
+            ],
+            "frontend_files_written": [
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/frontend/src/App.js",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/frontend/src/AuthContext.js",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/frontend/src/LoginForm.js",
+              "outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/frontend/src/RegisterForm.js"
+            ]
+          },
+          "build_test_gate_passed": true,
+          "build_test_gate": {
+            "passed": true,
+            "backend": {
+              "backend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "backend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "gate_ok": true
+            },
+            "frontend": {
+              "frontend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "frontend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "frontend_lint": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "npm lint script missing"
+              },
+              "quality_steps_executed": 0,
+              "quality_gate_ok": true,
+              "gate_ok": true
+            },
+            "scores": {
+              "build_test_pass_rate": 1.0,
+              "build_test_executed_steps": 3,
+              "build_real_pass_rate": 1.0,
+              "build_real_executed_steps": 3,
+              "deploy_pass_rate": 0.5,
+              "deploy_executed_steps": 2,
+              "deploy_real_pass_rate": 1.0,
+              "deploy_real_executed_steps": 1
+            },
+            "validation": {
+              "backend": [
+                {
+                  "name": "backend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "cmd",
+                    "/c",
+                    "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week9\\generated_workspaces\\seq_module_attempt1_20260303T091754621244Z\\backend\\gradlew.bat",
+                    "build",
+                    "-x",
+                    "test",
+                    "--no-daemon"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.\nDaemon will be stopped at the end of the build \n> Task :compileJava\n> Task :processResources\n> Task :classes\n> Task :resolveMainClassName\n> Task :bootJar\n> Task :jar\n> Task :assemble\n> Task :check\n> Task :build\n\nBUILD SUCCESSFUL in 11s\n5 actionable tasks: 5 executed\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "backend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "frontend": [
+                {
+                  "name": "frontend_install",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "install",
+                    "--no-audit",
+                    "--no-fund"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\nadded 1297 packages in 12s\n",
+                  "stderr_tail": "his bet against the odds. Be excellent to each other.\nnpm warn deprecated\nnpm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)\nnpm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead\nnpm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead\nnpm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead\nnpm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.\nnpm warn deprecated source-map@0.8.0-beta.0: The work that was done in this beta branch won't be included in future versions\nnpm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0\nnpm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained\nnpm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.\nnpm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.\n"
+                },
+                {
+                  "name": "frontend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "run",
+                    "build"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\n> staybooking-generated@0.1.0 build\n> react-scripts build\n\nCreating an optimized production build...\nCompiled successfully.\n\nFile sizes after gzip:\n\n  46.34 kB  build\\static\\js\\main.b0cc1057.js\n  20 B      build\\static\\css\\main.31d6cfe0.css\n\nThe project was built assuming it is hosted at /.\nYou can control this with the homepage field in your package.json.\n\nThe build folder is ready to be deployed.\nYou may serve it with a static server:\n\n  npm install -g serve\n  serve -s build\n\nFind out more about deployment here:\n\n  https://cra.link/deployment\n\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_lint",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "npm lint script missing",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "deploy": [
+                {
+                  "name": "deploy_docker_compose_config",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+                    "compose",
+                    "-f",
+                    "D:/CASTGAN_Project/multi-agent staybooking/outputs/week9/generated_workspaces/seq_module_attempt1_20260303T091754621244Z/backend/docker-compose.yml",
+                    "config"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "name: backend\nservices:\n  postgres:\n    environment:\n      POSTGRES_DB: staybooking\n      POSTGRES_PASSWORD: secret\n      POSTGRES_USER: postgres\n    image: postgres:15\n    networks:\n      default: null\n    ports:\n      - mode: ingress\n        target: 5432\n        published: \"5432\"\n        protocol: tcp\n    volumes:\n      - type: volume\n        source: postgres_data\n        target: /var/lib/postgresql/data\n        volume: {}\nnetworks:\n  default:\n    name: backend_default\nvolumes:\n  postgres_data:\n    name: backend_postgres_data\n",
+                  "stderr_tail": "time=\"2026-03-03T17:21:01+08:00\" level=warning msg=\"D:\\\\CASTGAN_Project\\\\multi-agent staybooking\\\\outputs\\\\week9\\\\generated_workspaces\\\\seq_module_attempt1_20260303T091754621244Z\\\\backend\\\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\n"
+                },
+                {
+                  "name": "deploy_artifact_health",
+                  "executed": true,
+                  "passed": false,
+                  "command": [],
+                  "returncode": 1,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "status=success, health=[{'service': 'postgres', 'endpoint': 'tcp://localhost:5432', 'status': 'healthy', 'response_time_ms': 12, 'last_checked': '2024-12-19T10:30:00Z'}, {'service': 'backend', 'endpoint': 'http://localhost:8080/actuator/health', 'status': 'healthy', 'response_time_ms': 45, 'last_checked': '2024-12-19T10:30:05Z', 'response_body': {'status': 'UP', 'components': {'db': {'status': 'UP'}}}}, {'service': 'frontend', 'endpoint': 'http://localhost:3000', 'status': 'healthy', 'response_time_ms': 23, 'last_checked': '2024-12-19T10:30:10Z'}]",
+                  "stderr_tail": ""
+                }
+              ],
+              "scores": {
+                "build_test_pass_rate": 1.0,
+                "build_test_executed_steps": 3,
+                "build_real_pass_rate": 1.0,
+                "build_real_executed_steps": 3,
+                "deploy_pass_rate": 0.5,
+                "deploy_executed_steps": 2,
+                "deploy_real_pass_rate": 1.0,
+                "deploy_real_executed_steps": 1
+              }
+            }
+          }
         }
       ],
       "final_error": null,
@@ -46,14 +300,247 @@
       "attempts": [
         {
           "attempt": 1,
-          "llm_enabled": false,
+          "llm_enabled": true,
           "success": true,
           "turn_count": 12,
           "error": null,
-          "duration_seconds": 0.0,
-          "total_tokens": 4170,
-          "total_api_calls": 12,
-          "state_snapshot": "outputs/week9/cases/hub_module_attempt1_state.json"
+          "duration_seconds": 344.59399999992456,
+          "total_tokens": 32362,
+          "total_api_calls": 13,
+          "state_snapshot": "outputs/week9/cases/hub_module_attempt1_state.json",
+          "llm_output_gate_passed": true,
+          "llm_output_gate": {
+            "passed": true,
+            "backend": {
+              "artifact_key": "backend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 9,
+              "code_bundle_non_empty_file_count": 9,
+              "passed": true,
+              "reason": ""
+            },
+            "frontend": {
+              "artifact_key": "frontend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 4,
+              "code_bundle_non_empty_file_count": 4,
+              "passed": true,
+              "reason": ""
+            }
+          },
+          "materialization": {
+            "passed": true,
+            "workspace_root": "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z",
+            "backend_root": "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend",
+            "frontend_root": "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/frontend",
+            "backend_files_written_count": 9,
+            "frontend_files_written_count": 4,
+            "materialization_mode": "scaffold_overlay",
+            "backend_template_used": "scaffold/backend",
+            "frontend_template_used": "scaffold/frontend",
+            "backend_files_written": [
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/entity/User.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/repository/UserRepository.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/dto/RegisterRequest.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/dto/LoginRequest.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/dto/AuthResponse.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/service/AuthService.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/controller/AuthController.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/config/SecurityConfig.java",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/src/main/java/com/staybooking/auth/util/JwtUtil.java"
+            ],
+            "frontend_files_written": [
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/frontend/src/App.js",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/frontend/src/AuthContext.js",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/frontend/src/LoginForm.js",
+              "outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/frontend/src/RegisterForm.js"
+            ]
+          },
+          "build_test_gate_passed": true,
+          "build_test_gate": {
+            "passed": true,
+            "backend": {
+              "backend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "backend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "gate_ok": true
+            },
+            "frontend": {
+              "frontend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "frontend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "frontend_lint": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "npm lint script missing"
+              },
+              "quality_steps_executed": 0,
+              "quality_gate_ok": true,
+              "gate_ok": true
+            },
+            "scores": {
+              "build_test_pass_rate": 1.0,
+              "build_test_executed_steps": 3,
+              "build_real_pass_rate": 1.0,
+              "build_real_executed_steps": 3,
+              "deploy_pass_rate": 0.5,
+              "deploy_executed_steps": 2,
+              "deploy_real_pass_rate": 1.0,
+              "deploy_real_executed_steps": 1
+            },
+            "validation": {
+              "backend": [
+                {
+                  "name": "backend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "cmd",
+                    "/c",
+                    "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week9\\generated_workspaces\\hub_module_attempt1_20260303T092342695492Z\\backend\\gradlew.bat",
+                    "build",
+                    "-x",
+                    "test",
+                    "--no-daemon"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.\nDaemon will be stopped at the end of the build \n> Task :compileJava\n> Task :processResources\n> Task :classes\n> Task :resolveMainClassName\n> Task :bootJar\n> Task :jar\n> Task :assemble\n> Task :check\n> Task :build\n\nBUILD SUCCESSFUL in 12s\n5 actionable tasks: 5 executed\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "backend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "frontend": [
+                {
+                  "name": "frontend_install",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "install",
+                    "--no-audit",
+                    "--no-fund"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\nadded 1297 packages in 11s\n",
+                  "stderr_tail": "his bet against the odds. Be excellent to each other.\nnpm warn deprecated\nnpm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)\nnpm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead\nnpm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead\nnpm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead\nnpm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.\nnpm warn deprecated source-map@0.8.0-beta.0: The work that was done in this beta branch won't be included in future versions\nnpm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0\nnpm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained\nnpm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.\nnpm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.\n"
+                },
+                {
+                  "name": "frontend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "run",
+                    "build"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\n> staybooking-generated@0.1.0 build\n> react-scripts build\n\nCreating an optimized production build...\nCompiled successfully.\n\nFile sizes after gzip:\n\n  46.32 kB  build\\static\\js\\main.927f1d80.js\n  20 B      build\\static\\css\\main.31d6cfe0.css\n\nThe project was built assuming it is hosted at /.\nYou can control this with the homepage field in your package.json.\n\nThe build folder is ready to be deployed.\nYou may serve it with a static server:\n\n  npm install -g serve\n  serve -s build\n\nFind out more about deployment here:\n\n  https://cra.link/deployment\n\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_lint",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "npm lint script missing",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "deploy": [
+                {
+                  "name": "deploy_docker_compose_config",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+                    "compose",
+                    "-f",
+                    "D:/CASTGAN_Project/multi-agent staybooking/outputs/week9/generated_workspaces/hub_module_attempt1_20260303T092342695492Z/backend/docker-compose.yml",
+                    "config"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "name: backend\nservices:\n  postgres:\n    environment:\n      POSTGRES_DB: staybooking\n      POSTGRES_PASSWORD: secret\n      POSTGRES_USER: postgres\n    image: postgres:15\n    networks:\n      default: null\n    ports:\n      - mode: ingress\n        target: 5432\n        published: \"5432\"\n        protocol: tcp\n    volumes:\n      - type: volume\n        source: postgres_data\n        target: /var/lib/postgresql/data\n        volume: {}\nnetworks:\n  default:\n    name: backend_default\nvolumes:\n  postgres_data:\n    name: backend_postgres_data\n",
+                  "stderr_tail": "time=\"2026-03-03T17:26:45+08:00\" level=warning msg=\"D:\\\\CASTGAN_Project\\\\multi-agent staybooking\\\\outputs\\\\week9\\\\generated_workspaces\\\\hub_module_attempt1_20260303T092342695492Z\\\\backend\\\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\n"
+                },
+                {
+                  "name": "deploy_artifact_health",
+                  "executed": true,
+                  "passed": false,
+                  "command": [],
+                  "returncode": 1,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "status=deployed, health=[{'service': 'postgres', 'endpoint': 'tcp://localhost:5432', 'status': 'healthy', 'response_time_ms': 12, 'last_checked': '2024-12-19T10:30:45Z'}, {'service': 'backend', 'endpoint': 'http://localhost:8080/actuator/health', 'status': 'healthy', 'response_time_ms': 156, 'last_checked': '2024-12-19T10:30:47Z', 'response_body': {'status': 'UP', 'components': {'db': {'status': 'UP'}}}}, {'service': 'frontend', 'endpoint': 'http://localhost:3000', 'status': 'healthy', 'response_time_ms': 89, 'last_checked': '2024-12-19T10:30:48Z'}]",
+                  "stderr_tail": ""
+                }
+              ],
+              "scores": {
+                "build_test_pass_rate": 1.0,
+                "build_test_executed_steps": 3,
+                "build_real_pass_rate": 1.0,
+                "build_real_executed_steps": 3,
+                "deploy_pass_rate": 0.5,
+                "deploy_executed_steps": 2,
+                "deploy_real_pass_rate": 1.0,
+                "deploy_real_executed_steps": 1
+              }
+            }
+          }
         }
       ],
       "final_error": null,
@@ -67,14 +554,247 @@
       "attempts": [
         {
           "attempt": 1,
-          "llm_enabled": false,
+          "llm_enabled": true,
           "success": true,
           "turn_count": 12,
           "error": null,
-          "duration_seconds": 0.0,
-          "total_tokens": 4380,
-          "total_api_calls": 8,
-          "state_snapshot": "outputs/week9/cases/peer_module_attempt1_state.json"
+          "duration_seconds": 344.23400000005495,
+          "total_tokens": 31641,
+          "total_api_calls": 7,
+          "state_snapshot": "outputs/week9/cases/peer_module_attempt1_state.json",
+          "llm_output_gate_passed": true,
+          "llm_output_gate": {
+            "passed": true,
+            "backend": {
+              "artifact_key": "backend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 9,
+              "code_bundle_non_empty_file_count": 9,
+              "passed": true,
+              "reason": ""
+            },
+            "frontend": {
+              "artifact_key": "frontend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 4,
+              "code_bundle_non_empty_file_count": 4,
+              "passed": true,
+              "reason": ""
+            }
+          },
+          "materialization": {
+            "passed": true,
+            "workspace_root": "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z",
+            "backend_root": "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend",
+            "frontend_root": "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/frontend",
+            "backend_files_written_count": 9,
+            "frontend_files_written_count": 4,
+            "materialization_mode": "scaffold_overlay",
+            "backend_template_used": "scaffold/backend",
+            "frontend_template_used": "scaffold/frontend",
+            "backend_files_written": [
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/entity/User.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/repository/UserRepository.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/dto/RegisterRequest.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/dto/LoginRequest.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/dto/AuthResponse.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/service/AuthService.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/controller/AuthController.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/config/SecurityConfig.java",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/src/main/java/com/staybooking/auth/util/JwtUtil.java"
+            ],
+            "frontend_files_written": [
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/frontend/src/App.js",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/frontend/src/AuthContext.js",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/frontend/src/LoginForm.js",
+              "outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/frontend/src/RegisterForm.js"
+            ]
+          },
+          "build_test_gate_passed": true,
+          "build_test_gate": {
+            "passed": true,
+            "backend": {
+              "backend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "backend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "gate_ok": true
+            },
+            "frontend": {
+              "frontend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "frontend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "frontend_lint": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "npm lint script missing"
+              },
+              "quality_steps_executed": 0,
+              "quality_gate_ok": true,
+              "gate_ok": true
+            },
+            "scores": {
+              "build_test_pass_rate": 1.0,
+              "build_test_executed_steps": 3,
+              "build_real_pass_rate": 1.0,
+              "build_real_executed_steps": 3,
+              "deploy_pass_rate": 0.5,
+              "deploy_executed_steps": 2,
+              "deploy_real_pass_rate": 1.0,
+              "deploy_real_executed_steps": 1
+            },
+            "validation": {
+              "backend": [
+                {
+                  "name": "backend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "cmd",
+                    "/c",
+                    "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week9\\generated_workspaces\\peer_module_attempt1_20260303T092935443865Z\\backend\\gradlew.bat",
+                    "build",
+                    "-x",
+                    "test",
+                    "--no-daemon"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.\nDaemon will be stopped at the end of the build \n> Task :compileJava\n> Task :processResources\n> Task :classes\n> Task :resolveMainClassName\n> Task :bootJar\n> Task :jar\n> Task :assemble\n> Task :check\n> Task :build\n\nBUILD SUCCESSFUL in 11s\n5 actionable tasks: 5 executed\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "backend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "frontend": [
+                {
+                  "name": "frontend_install",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "install",
+                    "--no-audit",
+                    "--no-fund"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\nadded 1297 packages in 13s\n",
+                  "stderr_tail": "his bet against the odds. Be excellent to each other.\nnpm warn deprecated\nnpm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)\nnpm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead\nnpm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead\nnpm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead\nnpm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.\nnpm warn deprecated source-map@0.8.0-beta.0: The work that was done in this beta branch won't be included in future versions\nnpm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0\nnpm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained\nnpm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.\nnpm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.\n"
+                },
+                {
+                  "name": "frontend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "run",
+                    "build"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\n> staybooking-generated@0.1.0 build\n> react-scripts build\n\nCreating an optimized production build...\nCompiled successfully.\n\nFile sizes after gzip:\n\n  46.52 kB  build\\static\\js\\main.5d56872b.js\n  20 B      build\\static\\css\\main.31d6cfe0.css\n\nThe project was built assuming it is hosted at /.\nYou can control this with the homepage field in your package.json.\n\nThe build folder is ready to be deployed.\nYou may serve it with a static server:\n\n  npm install -g serve\n  serve -s build\n\nFind out more about deployment here:\n\n  https://cra.link/deployment\n\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_lint",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "npm lint script missing",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "deploy": [
+                {
+                  "name": "deploy_docker_compose_config",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+                    "compose",
+                    "-f",
+                    "D:/CASTGAN_Project/multi-agent staybooking/outputs/week9/generated_workspaces/peer_module_attempt1_20260303T092935443865Z/backend/docker-compose.yml",
+                    "config"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "name: backend\nservices:\n  postgres:\n    environment:\n      POSTGRES_DB: staybooking\n      POSTGRES_PASSWORD: secret\n      POSTGRES_USER: postgres\n    image: postgres:15\n    networks:\n      default: null\n    ports:\n      - mode: ingress\n        target: 5432\n        published: \"5432\"\n        protocol: tcp\n    volumes:\n      - type: volume\n        source: postgres_data\n        target: /var/lib/postgresql/data\n        volume: {}\nnetworks:\n  default:\n    name: backend_default\nvolumes:\n  postgres_data:\n    name: backend_postgres_data\n",
+                  "stderr_tail": "time=\"2026-03-03T17:32:29+08:00\" level=warning msg=\"D:\\\\CASTGAN_Project\\\\multi-agent staybooking\\\\outputs\\\\week9\\\\generated_workspaces\\\\peer_module_attempt1_20260303T092935443865Z\\\\backend\\\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\n"
+                },
+                {
+                  "name": "deploy_artifact_health",
+                  "executed": true,
+                  "passed": false,
+                  "command": [],
+                  "returncode": 1,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "status=ready, health={'postgres': {'url': 'postgresql://localhost:5432/staybooking', 'method': 'pg_isready', 'expected_status': 'accepting connections'}, 'backend': {'url': 'http://localhost:8080/actuator/health', 'method': 'GET', 'expected_status': 200, 'expected_response': {'status': 'UP'}}, 'frontend': {'url': 'http://localhost:3000', 'method': 'GET', 'expected_status': 200, 'expected_content': 'StayBooking'}}",
+                  "stderr_tail": ""
+                }
+              ],
+              "scores": {
+                "build_test_pass_rate": 1.0,
+                "build_test_executed_steps": 3,
+                "build_real_pass_rate": 1.0,
+                "build_real_executed_steps": 3,
+                "deploy_pass_rate": 0.5,
+                "deploy_executed_steps": 2,
+                "deploy_real_pass_rate": 1.0,
+                "deploy_real_executed_steps": 1
+              }
+            }
+          }
         }
       ],
       "final_error": null,
@@ -88,14 +808,244 @@
       "attempts": [
         {
           "attempt": 1,
-          "llm_enabled": false,
+          "llm_enabled": true,
           "success": true,
           "turn_count": 6,
           "error": null,
-          "duration_seconds": 0.0,
-          "total_tokens": 3090,
-          "total_api_calls": 6,
-          "state_snapshot": "outputs/week9/cases/iter_module_attempt1_state.json"
+          "duration_seconds": 333.2970000000205,
+          "total_tokens": 30713,
+          "total_api_calls": 7,
+          "state_snapshot": "outputs/week9/cases/iter_module_attempt1_state.json",
+          "llm_output_gate_passed": true,
+          "llm_output_gate": {
+            "passed": true,
+            "backend": {
+              "artifact_key": "backend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 6,
+              "code_bundle_non_empty_file_count": 6,
+              "passed": true,
+              "reason": ""
+            },
+            "frontend": {
+              "artifact_key": "frontend_code",
+              "artifact_present": true,
+              "generation_source": "llm",
+              "generation_reason": "",
+              "code_bundle_file_count": 4,
+              "code_bundle_non_empty_file_count": 4,
+              "passed": true,
+              "reason": ""
+            }
+          },
+          "materialization": {
+            "passed": true,
+            "workspace_root": "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z",
+            "backend_root": "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend",
+            "frontend_root": "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/frontend",
+            "backend_files_written_count": 6,
+            "frontend_files_written_count": 4,
+            "materialization_mode": "scaffold_overlay",
+            "backend_template_used": "scaffold/backend",
+            "frontend_template_used": "scaffold/frontend",
+            "backend_files_written": [
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend/src/main/java/com/staybooking/auth/entity/User.java",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend/src/main/java/com/staybooking/auth/repository/UserRepository.java",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend/src/main/java/com/staybooking/auth/dto/RegisterRequest.java",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend/src/main/java/com/staybooking/auth/dto/LoginRequest.java",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend/src/main/java/com/staybooking/auth/service/AuthService.java",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend/src/main/java/com/staybooking/auth/controller/AuthController.java"
+            ],
+            "frontend_files_written": [
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/frontend/src/App.js",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/frontend/src/AuthContext.js",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/frontend/src/LoginForm.js",
+              "outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/frontend/src/RegisterForm.js"
+            ]
+          },
+          "build_test_gate_passed": true,
+          "build_test_gate": {
+            "passed": true,
+            "backend": {
+              "backend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "backend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "gate_ok": true
+            },
+            "frontend": {
+              "frontend_build": {
+                "present": true,
+                "executed": true,
+                "passed": true,
+                "skipped_reason": null
+              },
+              "frontend_test": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "disabled by validator config"
+              },
+              "frontend_lint": {
+                "present": true,
+                "executed": false,
+                "passed": false,
+                "skipped_reason": "npm lint script missing"
+              },
+              "quality_steps_executed": 0,
+              "quality_gate_ok": true,
+              "gate_ok": true
+            },
+            "scores": {
+              "build_test_pass_rate": 1.0,
+              "build_test_executed_steps": 3,
+              "build_real_pass_rate": 1.0,
+              "build_real_executed_steps": 3,
+              "deploy_pass_rate": 0.5,
+              "deploy_executed_steps": 2,
+              "deploy_real_pass_rate": 1.0,
+              "deploy_real_executed_steps": 1
+            },
+            "validation": {
+              "backend": [
+                {
+                  "name": "backend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "cmd",
+                    "/c",
+                    "D:\\CASTGAN_Project\\multi-agent staybooking\\outputs\\week9\\generated_workspaces\\iter_module_attempt1_20260303T093505890549Z\\backend\\gradlew.bat",
+                    "build",
+                    "-x",
+                    "test",
+                    "--no-daemon"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.\nDaemon will be stopped at the end of the build \n> Task :compileJava\n> Task :processResources\n> Task :classes\n> Task :resolveMainClassName\n> Task :bootJar\n> Task :jar\n> Task :assemble\n> Task :check\n> Task :build\n\nBUILD SUCCESSFUL in 11s\n5 actionable tasks: 5 executed\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "backend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "frontend": [
+                {
+                  "name": "frontend_install",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "install",
+                    "--no-audit",
+                    "--no-fund"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\nadded 1297 packages in 14s\n",
+                  "stderr_tail": "his bet against the odds. Be excellent to each other.\nnpm warn deprecated\nnpm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)\nnpm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead\nnpm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead\nnpm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead\nnpm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.\nnpm warn deprecated source-map@0.8.0-beta.0: The work that was done in this beta branch won't be included in future versions\nnpm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0\nnpm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained\nnpm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.\nnpm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.\n"
+                },
+                {
+                  "name": "frontend_build",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "D:\\nodejs\\npm.cmd",
+                    "run",
+                    "build"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "\n> staybooking-generated@0.1.0 build\n> react-scripts build\n\nCreating an optimized production build...\nCompiled successfully.\n\nFile sizes after gzip:\n\n  46.44 kB  build\\static\\js\\main.d2fecb79.js\n  20 B      build\\static\\css\\main.31d6cfe0.css\n\nThe project was built assuming it is hosted at /.\nYou can control this with the homepage field in your package.json.\n\nThe build folder is ready to be deployed.\nYou may serve it with a static server:\n\n  npm install -g serve\n  serve -s build\n\nFind out more about deployment here:\n\n  https://cra.link/deployment\n\n",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_test",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "disabled by validator config",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                },
+                {
+                  "name": "frontend_lint",
+                  "executed": false,
+                  "passed": false,
+                  "command": [],
+                  "returncode": null,
+                  "timed_out": false,
+                  "skipped_reason": "npm lint script missing",
+                  "stdout_tail": "",
+                  "stderr_tail": ""
+                }
+              ],
+              "deploy": [
+                {
+                  "name": "deploy_docker_compose_config",
+                  "executed": true,
+                  "passed": true,
+                  "command": [
+                    "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+                    "compose",
+                    "-f",
+                    "D:/CASTGAN_Project/multi-agent staybooking/outputs/week9/generated_workspaces/iter_module_attempt1_20260303T093505890549Z/backend/docker-compose.yml",
+                    "config"
+                  ],
+                  "returncode": 0,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "name: backend\nservices:\n  postgres:\n    environment:\n      POSTGRES_DB: staybooking\n      POSTGRES_PASSWORD: secret\n      POSTGRES_USER: postgres\n    image: postgres:15\n    networks:\n      default: null\n    ports:\n      - mode: ingress\n        target: 5432\n        published: \"5432\"\n        protocol: tcp\n    volumes:\n      - type: volume\n        source: postgres_data\n        target: /var/lib/postgresql/data\n        volume: {}\nnetworks:\n  default:\n    name: backend_default\nvolumes:\n  postgres_data:\n    name: backend_postgres_data\n",
+                  "stderr_tail": "time=\"2026-03-03T17:38:03+08:00\" level=warning msg=\"D:\\\\CASTGAN_Project\\\\multi-agent staybooking\\\\outputs\\\\week9\\\\generated_workspaces\\\\iter_module_attempt1_20260303T093505890549Z\\\\backend\\\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion\"\n"
+                },
+                {
+                  "name": "deploy_artifact_health",
+                  "executed": true,
+                  "passed": false,
+                  "command": [],
+                  "returncode": 1,
+                  "timed_out": false,
+                  "skipped_reason": null,
+                  "stdout_tail": "status=ready, health=[{'service': 'postgres', 'url': 'postgres://localhost:5432/staybooking', 'method': 'connection_test', 'expected_status': 'connected'}, {'service': 'backend', 'url': 'http://localhost:8080/actuator/health', 'method': 'GET', 'expected_status': 200}, {'service': 'frontend', 'url': 'http://localhost:3000', 'method': 'GET', 'expected_status': 200}]",
+                  "stderr_tail": ""
+                }
+              ],
+              "scores": {
+                "build_test_pass_rate": 1.0,
+                "build_test_executed_steps": 3,
+                "build_real_pass_rate": 1.0,
+                "build_real_executed_steps": 3,
+                "deploy_pass_rate": 0.5,
+                "deploy_executed_steps": 2,
+                "deploy_real_pass_rate": 1.0,
+                "deploy_real_executed_steps": 1
+              }
+            }
+          }
         }
       ],
       "final_error": null,
@@ -111,7 +1061,12 @@
     {
       "name": "llm_profile_loaded",
       "passed": true,
-      "details": "profile=claude_sonnet_4, provider=anthropic, llm_available=False, reason=network llm disabled by pilot config (provider=anthropic)"
+      "details": "profile=claude_sonnet_4, provider=anthropic, llm_available=True, reason=anthropic client ready"
+    },
+    {
+      "name": "week10_step1_hard_gates_config",
+      "passed": true,
+      "details": "require_llm_code_outputs=True, enforce_build_test_gate=True, disable_llm_on_retry_config=False, disable_llm_on_retry_effective=False, materialization_mode=scaffold_overlay"
     },
     {
       "name": "pilot_success_rate",
@@ -127,6 +1082,21 @@
       "name": "pilot_failure_buckets_recorded",
       "passed": true,
       "details": "failure_bucket_count=0"
+    },
+    {
+      "name": "week10_step1_materialization_executed",
+      "passed": true,
+      "details": "materialization_executed_count=4, total_attempt_count=4"
+    },
+    {
+      "name": "week10_step1_llm_output_gate_observed",
+      "passed": true,
+      "details": "llm_gate_pass_count=4, total_attempt_count=4"
+    },
+    {
+      "name": "week10_step1_build_test_gate_observed",
+      "passed": true,
+      "details": "build_gate_pass_count=4, total_attempt_count=4"
     }
   ]
 }

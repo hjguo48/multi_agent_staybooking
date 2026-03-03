@@ -13,13 +13,43 @@ from .base_agent import BaseAgent
 
 
 class FrontendDeveloperAgent(BaseAgent):
-    """Generate frontend code artifact for auth flows."""
+    """Generate frontend code artifact for the current module."""
 
     def act(self, context: ProjectState) -> dict[str, Any]:
+        proj = context.project_config or {}
+        mod = context.module_config or {}
+
+        fe = proj.get("frontend", {})
+
+        module_id = mod.get("module_id", "module")
+        module_name = mod.get("module_name", module_id)
+        app_root = fe.get("app_root_file", "src/App.js")
+        entry_file = fe.get("entry_file", "src/index.js")
+        deps_str = "\n  - ".join(fe.get("dependencies", []))
+        min_files, max_files = 2, 5
+
+        project_name = proj.get("project_name", "App")
+
+        # Functional requirements from module config (plain strings)
+        fr_raw = mod.get("functional_requirements", [])
+        fr_lines = "\n".join(
+            f"- {fr}" if isinstance(fr, str) else f"- {fr.get('user_story', str(fr))}"
+            for fr in fr_raw
+        ) if fr_raw else f"Implement the {module_name} UI."
+
         latest_frontend_artifact = context.get_latest_artifact("frontend_code")
         if latest_frontend_artifact is not None:
+            cached_module = (
+                latest_frontend_artifact.content.get("module", "")
+                if isinstance(latest_frontend_artifact.content, dict)
+                else ""
+            )
             generation = latest_frontend_artifact.metadata.get("generation", {})
-            if isinstance(generation, dict) and generation.get("source") == "llm":
+            if (
+                isinstance(generation, dict)
+                and generation.get("source") == "llm"
+                and cached_module == module_id
+            ):
                 cached_content = (
                     copy.deepcopy(latest_frontend_artifact.content)
                     if isinstance(latest_frontend_artifact.content, dict)
@@ -31,7 +61,7 @@ class FrontendDeveloperAgent(BaseAgent):
                         {
                             "store_key": "frontend_code",
                             "artifact": Artifact(
-                                artifact_id="frontend-auth-module",
+                                artifact_id=f"frontend-{module_id}-module",
                                 artifact_type="frontend_code",
                                 producer=self.role,
                                 content=cached_content,
@@ -50,16 +80,26 @@ class FrontendDeveloperAgent(BaseAgent):
                         AgentMessage(
                             sender=self.role,
                             receiver="qa",
-                            content="Frontend auth module ready for QA validation.",
+                            content=f"Frontend {module_name} module ready for QA validation.",
                             msg_type=MessageType.TASK,
-                            artifacts=["frontend-auth-module:v1"],
+                            artifacts=[f"frontend-{module_id}-module:v1"],
                         )
                     ],
                     "usage": {"tokens": 0, "api_calls": 0},
                 }
 
+        # Inject api_contract from upstream architect agent.
+        api_contract_art = context.get_latest_artifact("api_contract")
+        api_contract = api_contract_art.content if api_contract_art is not None else {}
+        endpoints = api_contract.get("endpoints", [])
+        base_url = api_contract.get("base_url", fe.get("base_url", "http://localhost:8080"))
+
+        # Determine a generic login URL hint from architect's contract (if relevant to module)
+        login_ep = next((e for e in endpoints if "login" in e.get("path", "").lower()), None)
+        login_url = f"{base_url}{login_ep['path']}" if login_ep else f"{base_url}/api/login"
+
         fallback_code_bundle = {
-            "src/App.js": (
+            app_root: (
                 "import React, { useState } from 'react';\n"
                 "\n"
                 "function App() {\n"
@@ -71,7 +111,7 @@ class FrontendDeveloperAgent(BaseAgent):
                 "  const handleLogin = async (e) => {\n"
                 "    e.preventDefault();\n"
                 "    try {\n"
-                "      const res = await fetch('http://localhost:8080/authenticate/login', {\n"
+                f"      const res = await fetch('{login_url}', {{\n"
                 "        method: 'POST',\n"
                 "        headers: { 'Content-Type': 'application/json' },\n"
                 "        body: JSON.stringify({ username, password }),\n"
@@ -89,7 +129,7 @@ class FrontendDeveloperAgent(BaseAgent):
                 "\n"
                 "  return (\n"
                 "    <div>\n"
-                "      <h1>StayBooking Login</h1>\n"
+                f"      <h1>{project_name}</h1>\n"
                 "      {error && <p style={{color:'red'}}>{error}</p>}\n"
                 "      <form onSubmit={handleLogin}>\n"
                 "        <input placeholder='Username' value={username} onChange={e => setUsername(e.target.value)} />\n"
@@ -104,17 +144,12 @@ class FrontendDeveloperAgent(BaseAgent):
             )
         }
         fallback_frontend_artifact = {
-            "module": "auth",
+            "module": module_id,
             "changed_files": list(fallback_code_bundle.keys()),
             "code_bundle": fallback_code_bundle,
             "build_notes": {"build_status": "simulated_pass"},
             "ui_state_notes": {"loading_error_empty": "covered_in_fallback"},
         }
-        # Inject api_contract and backend file list from upstream agents.
-        api_contract_art = context.get_latest_artifact("api_contract")
-        api_contract = api_contract_art.content if api_contract_art is not None else {}
-        endpoints = api_contract.get("endpoints", [])
-        base_url = api_contract.get("base_url", "http://localhost:8080")
 
         api_section = ""
         if endpoints:
@@ -124,6 +159,11 @@ class FrontendDeveloperAgent(BaseAgent):
                 + f"\nBase URL: {base_url}\n"
                 "CRITICAL: Use the path, method, request_fields, and response_fields above exactly.\n"
                 "Do NOT invent different endpoint paths or field names.\n"
+            )
+        else:
+            api_section = (
+                "\n(No API contract from Architect yet — infer endpoints from functional requirements "
+                "and architecture context. Use reasonable REST conventions.)\n"
             )
 
         backend_art = context.get_latest_artifact("backend_code")
@@ -136,32 +176,38 @@ class FrontendDeveloperAgent(BaseAgent):
                     "These files are the backend implementation. Your frontend must align to the same API contract.\n"
                 )
 
+        fe_framework_line = (
+            f"{fe.get('framework', 'React')} {fe.get('framework_version', '')}, "
+            f"{fe.get('scaffolding_tool', 'Create React App')} {fe.get('scaffolding_version', '')}"
+        ).strip(", ")
+
         frontend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
-                "Generate a frontend auth module code_bundle JSON for the StayBooking project using scaffold-overlay mode.\n"
+                f"Generate a frontend {module_id} module code_bundle JSON for the "
+                f"{project_name} project using scaffold-overlay mode.\n"
                 "\n"
                 "SCAFFOLD CONTEXT:\n"
-                "- React 18, Create React App 5.0.1\n"
-                "- Entry: src/index.js renders <App /> — you MUST override src/App.js\n"
-                "- Available packages: react, react-dom, react-scripts, web-vitals (no other packages)\n"
+                f"- {fe_framework_line}\n"
+                f"- Entry: {entry_file} renders <App /> — you MUST override {app_root}\n"
+                f"- Available packages:\n  - {deps_str}\n"
                 "- NO pre-existing application components — design everything from scratch\n"
                 + api_section
                 + backend_files_section
                 + "\n"
                 "FUNCTIONAL REQUIREMENTS:\n"
-                "- Login page: POST to the login endpoint in api_contract, store JWT, show main content\n"
-                "- Register page: POST to the register endpoint in api_contract, role = GUEST or HOST\n"
-                "- Route protection: unauthenticated users see Login/Register, authenticated users see main content\n"
+                + fr_lines
+                + "\n"
                 "\n"
                 "YOUR DESIGN DECISIONS:\n"
-                "- Component names, file structure, state management approach\n"
+                "- Component names, file structure, page/view organization\n"
+                "- State management approach (local state, React Context, etc.)\n"
                 "- Routing approach (React Router or conditional rendering)\n"
                 "- Styling approach (inline styles, CSS classes, etc.)\n"
                 "\n"
                 "FILE RULES:\n"
-                "- Generate 2-5 files, all under src/\n"
-                "- MANDATORY: include src/App.js in code_bundle\n"
+                f"- Generate {min_files}-{max_files} files, all under src/\n"
+                f"- MANDATORY: include {app_root} in code_bundle\n"
                 "- Every import must be a package from package.json or a relative file in the bundle\n"
                 "- Use functional components and React hooks only\n"
                 "- Handle loading states and error messages for API calls\n"
@@ -176,9 +222,9 @@ class FrontendDeveloperAgent(BaseAgent):
                 "ui_state_notes",
             ],
             extra_output_constraints=[
-                "- Generate 2-5 files; all paths must start with src/.",
+                f"- Generate {min_files}-{max_files} files; all paths must start with src/.",
                 "- code_bundle keys must exactly match changed_files.",
-                "- MANDATORY: src/App.js must be included in code_bundle.",
+                f"- MANDATORY: {app_root} must be included in code_bundle.",
                 "- Every import must resolve to a package in package.json or a relative file in the bundle.",
                 "- Do NOT import packages not in the scaffold (no antd, no axios, no react-router unless in package.json).",
                 "- Use functional components and hooks only; no class components.",
@@ -195,7 +241,7 @@ class FrontendDeveloperAgent(BaseAgent):
                 {
                     "store_key": "frontend_code",
                     "artifact": Artifact(
-                        artifact_id="frontend-auth-module",
+                        artifact_id=f"frontend-{module_id}-module",
                         artifact_type="frontend_code",
                         producer=self.role,
                         content=frontend_artifact,
@@ -207,9 +253,9 @@ class FrontendDeveloperAgent(BaseAgent):
                 AgentMessage(
                     sender=self.role,
                     receiver="qa",
-                    content="Frontend auth module ready for QA validation.",
+                    content=f"Frontend {module_name} module ready for QA validation.",
                     msg_type=MessageType.TASK,
-                    artifacts=["frontend-auth-module:v1"],
+                    artifacts=[f"frontend-{module_id}-module:v1"],
                 )
             ],
             "usage": usage,

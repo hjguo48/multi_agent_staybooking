@@ -1,0 +1,15 @@
+{
+  "$schema_version": "1.1",
+  "module_id": "listing",
+  "module_name": "Listing Management",
+  "description": "Hosts create, edit, and manage property listings. Listings include title, description, location, price, and availability dates. Only the host who created a listing can modify or delete it.",
+  "functional_requirements": [
+    "As a host, I can create a new property listing with title, description, location, price, and availability dates",
+    "As a host, I can edit or delete my own listings; other users receive a 403 if they attempt to modify my listing",
+    "As any user, I can view the details of a specific listing by its ID"
+  ],
+  "non_functional_requirements": [
+    "Create, update, and delete listing endpoints require JWT authentication",
+    "Only the host who created a listing can modify or delete it"
+  ]
+}

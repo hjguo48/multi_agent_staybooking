@@ -92,7 +92,9 @@ class LLMIntegrationTests(unittest.TestCase):
             llm_profile=llm_profile,
         )
 
-        result = agent.act(ProjectState())
+        state = ProjectState()
+        state.project_config = {"project_name": "StayBooking"}
+        result = agent.act(state)
         artifact = result["artifacts"][0]["artifact"]
         generation = artifact.metadata.get("generation", {})
 

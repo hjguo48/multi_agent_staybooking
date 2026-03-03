@@ -13,13 +13,41 @@ from .base_agent import BaseAgent
 
 
 class BackendDeveloperAgent(BaseAgent):
-    """Generate backend code artifact for auth module."""
+    """Generate backend code artifact for the current module."""
 
     def act(self, context: ProjectState) -> dict[str, Any]:
+        proj = context.project_config or {}
+        mod = context.module_config or {}
+
+        be = proj.get("backend", {})
+
+        module_id = mod.get("module_id", "module")
+        module_name = mod.get("module_name", module_id)
+        pkg_root = be.get("root_package", "com.example")
+        subpkg = module_id  # LLM chooses actual sub-package; this is just a default hint
+        deps_str = "\n  - ".join(be.get("dependencies", []))
+        min_files, max_files = 4, 6
+
+        # Functional requirements from module config (plain strings)
+        fr_raw = mod.get("functional_requirements", [])
+        fr_lines = "\n".join(
+            f"- {fr}" if isinstance(fr, str) else f"- {fr.get('user_story', str(fr))}"
+            for fr in fr_raw
+        ) if fr_raw else f"Implement the {module_name} module."
+
         latest_backend_artifact = context.get_latest_artifact("backend_code")
         if latest_backend_artifact is not None:
+            cached_module = (
+                latest_backend_artifact.content.get("module", "")
+                if isinstance(latest_backend_artifact.content, dict)
+                else ""
+            )
             generation = latest_backend_artifact.metadata.get("generation", {})
-            if isinstance(generation, dict) and generation.get("source") == "llm":
+            if (
+                isinstance(generation, dict)
+                and generation.get("source") == "llm"
+                and cached_module == module_id
+            ):
                 cached_content = (
                     copy.deepcopy(latest_backend_artifact.content)
                     if isinstance(latest_backend_artifact.content, dict)
@@ -31,7 +59,7 @@ class BackendDeveloperAgent(BaseAgent):
                         {
                             "store_key": "backend_code",
                             "artifact": Artifact(
-                                artifact_id="backend-auth-module",
+                                artifact_id=f"backend-{module_id}-module",
                                 artifact_type="backend_code",
                                 producer=self.role,
                                 content=cached_content,
@@ -50,32 +78,37 @@ class BackendDeveloperAgent(BaseAgent):
                         AgentMessage(
                             sender=self.role,
                             receiver="frontend_dev",
-                            content="Backend auth module ready for frontend integration.",
+                            content=f"Backend {module_name} module ready for frontend integration.",
                             msg_type=MessageType.TASK,
-                            artifacts=["backend-auth-module:v1"],
+                            artifacts=[f"backend-{module_id}-module:v1"],
                         )
                     ],
                     "usage": {"tokens": 0, "api_calls": 0},
                 }
 
+        pkg_path = pkg_root.replace(".", "/")
+        fallback_file_key = (
+            f"{be.get('src_root', 'src/main/java')}/{pkg_path}/{subpkg}/ModuleException.java"
+        )
         fallback_code_bundle = {
-            "src/main/java/com/staybooking/auth/UserAlreadyExistsException.java": (
-                "package com.staybooking.auth;\n"
+            fallback_file_key: (
+                f"package {pkg_root}.{subpkg};\n"
                 "\n"
-                "public class UserAlreadyExistsException extends RuntimeException {\n"
-                "    public UserAlreadyExistsException(String username) {\n"
-                "        super(\"User already exists: \" + username);\n"
+                "public class ModuleException extends RuntimeException {\n"
+                "    public ModuleException(String message) {\n"
+                "        super(message);\n"
                 "    }\n"
                 "}\n"
             )
         }
         fallback_backend_artifact = {
-            "module": "auth",
+            "module": module_id,
             "changed_files": list(fallback_code_bundle.keys()),
             "code_bundle": fallback_code_bundle,
             "build_notes": {"compile_status": "simulated_pass"},
             "test_notes": {"unit_tests": "simulated_pending"},
         }
+
         # Inject architecture and api_contract from upstream agents into the prompt.
         api_contract_art = context.get_latest_artifact("api_contract")
         api_contract = api_contract_art.content if api_contract_art is not None else {}
@@ -85,7 +118,7 @@ class BackendDeveloperAgent(BaseAgent):
             + json.dumps(endpoints, indent=2)
             + "\n"
             if endpoints
-            else ""
+            else "\n(No API contract yet — infer endpoints from functional requirements and architecture.)\n"
         )
 
         arch = context.architecture or {}
@@ -98,34 +131,40 @@ class BackendDeveloperAgent(BaseAgent):
             else ""
         )
 
+        src_root = be.get("src_root", "src/main/java")
+        framework_line = (
+            f"{be.get('framework', 'Spring Boot')} {be.get('framework_version', '')}, "
+            f"{be.get('build_tool', 'Gradle')}, "
+            f"{be.get('language', 'Java')} {be.get('language_version', '')}"
+        ).strip(", ")
+
         backend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
-                "Generate a backend auth module code_bundle JSON for the StayBooking project using scaffold-overlay mode.\n"
+                f"Generate a backend {module_id} module code_bundle JSON for the "
+                f"{proj.get('project_name', 'project')} project using scaffold-overlay mode.\n"
                 "\n"
                 "SCAFFOLD CONTEXT:\n"
-                "- Spring Boot 3.4.1, Gradle, Java 17\n"
-                "- Root package: com.staybooking (StaybookingApplication.java already exists there)\n"
-                "- Available dependencies: spring-boot-starter-web, spring-boot-starter-data-jpa,\n"
-                "  spring-boot-starter-security, jjwt-api:0.11.5 (+jjwt-impl +jjwt-jackson), postgresql\n"
+                f"- {framework_line}\n"
+                f"- Root package: {pkg_root} ({be.get('main_class', 'Application')}.java already exists there)\n"
+                f"- Available dependencies:\n  - {deps_str}\n"
                 "- NO existing entity, repository, service, or controller classes — design everything from scratch.\n"
                 + api_section
                 + arch_section
                 + "\n"
                 "FUNCTIONAL REQUIREMENTS:\n"
-                "- POST /authenticate/register — register user with BCrypt-hashed password\n"
-                "- POST /authenticate/login — validate credentials, return signed JWT\n"
-                "- Spring Security config: disable CSRF, permit /authenticate/**, require auth elsewhere\n"
-                "- Implement UserDetailsService loading from JPA repository\n"
+                + fr_lines
+                + "\n"
                 "\n"
                 "YOUR DESIGN DECISIONS:\n"
-                "- Choose sub-package names under com.staybooking (e.g., com.staybooking.auth, com.staybooking.model)\n"
+                f"- Choose sub-package names under {pkg_root} (suggested: {pkg_root}.{subpkg})\n"
                 "- Choose entity field names, DTO structure, exception names\n"
-                "- Choose JWT implementation approach (key format, claims, expiry)\n"
+                "- Choose JWT implementation approach (key format, claims, expiry) if applicable\n"
+                "- Choose Spring Security filter/configuration approach if applicable\n"
                 "\n"
                 "FILE RULES:\n"
-                "- Generate 4-6 Java files; every file you reference must be in code_bundle\n"
-                "- Every file MUST start with: package com.staybooking.<subpackage>;\n"
+                f"- Generate {min_files}-{max_files} Java files; every file you reference must be in code_bundle\n"
+                f"- Every file MUST start with: package {pkg_root}.<subpackage>;\n"
                 "- Every file MUST include all necessary import statements\n"
                 "- Every referenced class must be defined in the bundle OR be a standard Spring/Java library class\n"
                 "- Use constructor injection only (NO @Autowired field injection)\n"
@@ -141,10 +180,10 @@ class BackendDeveloperAgent(BaseAgent):
                 "test_notes",
             ],
             extra_output_constraints=[
-                "- Generate 4-6 files; limit changed_files accordingly.",
+                f"- Generate {min_files}-{max_files} files; limit changed_files accordingly.",
                 "- code_bundle keys must exactly match changed_files.",
-                "- Every file path must be under src/main/java/com/staybooking/<subpackage>/.",
-                "- Every Java file MUST begin with 'package com.staybooking.<subpackage>;'.",
+                f"- Every file path must be under {src_root}/{pkg_path}/<subpackage>/.",
+                f"- Every Java file MUST begin with 'package {pkg_root}.<subpackage>;'.",
                 "- Every Java file MUST include complete import statements before the class declaration.",
                 "- Every class referenced must be defined in the bundle OR imported from Spring/Java stdlib.",
                 "- Do NOT use field injection (@Autowired on fields); use constructor injection only.",
@@ -161,7 +200,7 @@ class BackendDeveloperAgent(BaseAgent):
                 {
                     "store_key": "backend_code",
                     "artifact": Artifact(
-                        artifact_id="backend-auth-module",
+                        artifact_id=f"backend-{module_id}-module",
                         artifact_type="backend_code",
                         producer=self.role,
                         content=backend_artifact,
@@ -173,9 +212,9 @@ class BackendDeveloperAgent(BaseAgent):
                 AgentMessage(
                     sender=self.role,
                     receiver="frontend_dev",
-                    content="Backend auth module ready for frontend integration.",
+                    content=f"Backend {module_name} module ready for frontend integration.",
                     msg_type=MessageType.TASK,
-                    artifacts=["backend-auth-module:v1"],
+                    artifacts=[f"backend-{module_id}-module:v1"],
                 )
             ],
             "usage": usage,
