@@ -12,6 +12,53 @@ from core.project_state import ProjectState
 from .base_agent import BaseAgent
 
 
+def _qa_rework_needed(context: ProjectState) -> bool:
+    """Return True when QA has reported failures that require a rework pass."""
+    qa_art = context.get_latest_artifact("qa_report")
+    if qa_art is None or not isinstance(qa_art.content, dict):
+        return False
+    summary = qa_art.content.get("summary", {})
+    if not isinstance(summary, dict):
+        return False
+    pass_rate = float(summary.get("test_pass_rate", 1.0))
+    critical = int(summary.get("critical_bugs", 0))
+    major = int(summary.get("major_bugs", 0))
+    return pass_rate < 0.85 or critical > 0 or major > 0
+
+
+def _build_backend_qa_feedback(context: ProjectState) -> str:
+    """Format QA bug reports as a feedback section for the backend task instruction."""
+    qa_art = context.get_latest_artifact("qa_report")
+    if qa_art is None or not isinstance(qa_art.content, dict):
+        return ""
+    bug_reports = qa_art.content.get("bug_reports", [])
+    if not isinstance(bug_reports, list) or not bug_reports:
+        return ""
+    # Prefer backend-relevant bugs; fall back to all bugs if none found
+    backend_bugs = [
+        b for b in bug_reports
+        if isinstance(b, dict) and (
+            "src/main/java" in str(b.get("file", ""))
+            or str(b.get("file", "")).lower().endswith(".java")
+        )
+    ] or [b for b in bug_reports if isinstance(b, dict)]
+    lines = [
+        "\n*** REVISION MODE ***",
+        "Your previous implementation had QA failures listed below.",
+        "Return a COMPLETE updated code_bundle that fixes ALL issues.\n",
+        "QA BUG REPORTS TO FIX:",
+    ]
+    for bug in backend_bugs:
+        sev = bug.get("severity", "")
+        f = bug.get("file", "")
+        desc = bug.get("description", "")
+        fix = bug.get("suggested_fix", "")
+        lines.append(f"- [{sev}] {f}: {desc}")
+        if fix:
+            lines.append(f"  Fix: {fix}")
+    return "\n".join(lines) + "\n"
+
+
 class BackendDeveloperAgent(BaseAgent):
     """Generate backend code artifact for the current module."""
 
@@ -47,6 +94,7 @@ class BackendDeveloperAgent(BaseAgent):
                 isinstance(generation, dict)
                 and generation.get("source") == "llm"
                 and cached_module == module_id
+                and not _qa_rework_needed(context)
             ):
                 cached_content = (
                     copy.deepcopy(latest_backend_artifact.content)
@@ -138,12 +186,15 @@ class BackendDeveloperAgent(BaseAgent):
             f"{be.get('language', 'Java')} {be.get('language_version', '')}"
         ).strip(", ")
 
+        qa_feedback_section = _build_backend_qa_feedback(context) if _qa_rework_needed(context) else ""
+
         backend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
                 f"Generate a backend {module_id} module code_bundle JSON for the "
                 f"{proj.get('project_name', 'project')} project using scaffold-overlay mode.\n"
-                "\n"
+                + qa_feedback_section
+                + "\n"
                 "SCAFFOLD CONTEXT:\n"
                 f"- {framework_line}\n"
                 f"- Root package: {pkg_root} ({be.get('main_class', 'Application')}.java already exists there)\n"

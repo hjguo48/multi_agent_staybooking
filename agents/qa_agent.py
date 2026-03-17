@@ -118,7 +118,7 @@ class QAAgent(BaseAgent):
                 "and the required files are present in the inventory.\n"
                 "- summary.major_bugs should only count genuine structural issues visible in the code "
                 "(e.g. frontend fetch path does not match any backend endpoint path).\n"
-                "- bug_reports must be a list of objects, each with: file, severity, description, suggested_fix.\n"
+                "- bug_reports must be a list of objects, each with: bug_id (unique short id, e.g. 'B1'), file, severity, description, suggested_fix.\n"
                 "- coverage_map must map each functional requirement to the test/component covering it.\n"
                 "- api_alignment: check if frontend fetch() paths match backend controller paths.\n"
             ),
@@ -128,7 +128,7 @@ class QAAgent(BaseAgent):
             extra_output_constraints=[
                 "- summary must have keys: test_pass_rate (float), critical_bugs (int), major_bugs (int).",
                 "- critical_bugs must be 0 for structurally valid generated code.",
-                "- bug_reports is a list; each entry has: file (string), severity (string), description (string), suggested_fix (string).",
+                "- bug_reports is a list; each entry has: bug_id (string, unique short id like 'B1'), file (string), severity (string), description (string), suggested_fix (string).",
                 "- api_alignment is an object describing whether frontend API calls match backend endpoints.",
                 "- Return JSON only.",
             ],

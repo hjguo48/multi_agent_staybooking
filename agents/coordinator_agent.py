@@ -26,6 +26,29 @@ class CoordinatorAgent(BaseAgent):
         self.max_qa_retries = max_qa_retries
         self.qa_fallback_role = qa_fallback_role
         self.qa_retry_count = 0
+    def _select_rework_role(self, context: ProjectState) -> str:
+        """Select backend_dev or frontend_dev based on QA bug file ownership.
+
+        Rules (applied to the first bug that matches):
+        - .java file or src/main/java path → backend_dev
+        - src/ file that is not .java → frontend_dev
+        Defaults to qa_fallback_role if no match found.
+        """
+        qa_artifact = context.get_latest_artifact("qa_report")
+        if qa_artifact is None or not isinstance(qa_artifact.content, dict):
+            return self.qa_fallback_role
+        bug_reports = qa_artifact.content.get("bug_reports", [])
+        if not isinstance(bug_reports, list):
+            return self.qa_fallback_role
+        for bug in bug_reports:
+            if not isinstance(bug, dict):
+                continue
+            file_path = str(bug.get("file", "")).lower()
+            if file_path.endswith(".java") or "src/main/java" in file_path:
+                return "backend_dev"
+            if file_path.startswith("src/") and not file_path.endswith(".java"):
+                return "frontend_dev"
+        return self.qa_fallback_role
 
     def _qa_gate_passed(self, context: ProjectState) -> bool:
         qa_artifact = context.get_latest_artifact("qa_report")
@@ -64,13 +87,15 @@ class CoordinatorAgent(BaseAgent):
         qa_version = self._latest_version(context, "qa_report")
         backend_version = self._latest_version(context, "backend_code")
         frontend_version = self._latest_version(context, "frontend_code")
+        recomm_version = self._latest_version(context, "recommendation")
 
         if max(backend_version, frontend_version) > qa_version:
             return "qa", "re-run qa after code changes"
 
         if self.qa_retry_count < self.max_qa_retries:
             self.qa_retry_count += 1
-            return self.qa_fallback_role, "qa gate failed, request rework"
+            rework_role = self._select_rework_role(context)
+            return rework_role, f"qa gate failed, request rework from {rework_role}"
 
         return None, "qa gate failed after retry budget"
 

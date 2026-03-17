@@ -33,12 +33,76 @@ class ArchitectAgent(BaseAgent):
             "endpoints": [],
         }
 
-        # Build database_schema: only entity names from module config — no fields (architect decides)
-        entities = mod.get("data_model", {}).get("entities", [])
-        db_tables = [
-            {"name": ent.get("name", ent) if isinstance(ent, dict) else str(ent)}
-            for ent in entities
-        ] if entities else []
+        # --- Read from PM's requirements artifact (Option A: true content passing) ---
+        req_art = context.get_latest_artifact("requirements")
+        if req_art is not None and isinstance(req_art.content, dict):
+            req_content = req_art.content
+            pm_fr_raw = req_content.get("functional_requirements", [])
+            pm_nfr_raw = req_content.get("non_functional_requirements", [])
+            pm_api_hints = req_content.get("api_contracts", [])
+            pm_data_model_raw = req_content.get("data_model", {})
+        else:
+            pm_fr_raw = mod.get("functional_requirements", [])
+            pm_nfr_raw = mod.get("non_functional_requirements", [])
+            pm_api_hints = []
+            pm_data_model_raw = {}
+
+        # Format functional requirements (PM may return structured dicts or plain strings)
+        def _fmt_fr(fr: object) -> str:
+            if isinstance(fr, str):
+                return f"- {fr}"
+            title = fr.get("title", fr.get("id", ""))
+            desc = fr.get("description", fr.get("user_story", str(fr)))
+            criteria = fr.get("acceptance_criteria", [])
+            lines = [f"- {title}: {desc}"]
+            for c in criteria[:3]:
+                lines.append(f"  * {c}")
+            return "\n".join(lines)
+
+        fr_lines = (
+            "\n".join(_fmt_fr(fr) for fr in pm_fr_raw)
+            if pm_fr_raw else f"Implement the {module_name} module."
+        )
+        nfr_lines = "\n".join(
+            f"- {nfr}" if isinstance(nfr, str) else f"- {nfr.get('description', str(nfr))}"
+            for nfr in pm_nfr_raw
+        )
+
+        # Build database_schema from PM's data_model (entities with field context)
+        if isinstance(pm_data_model_raw, list):
+            pm_entities = pm_data_model_raw
+        elif isinstance(pm_data_model_raw, dict):
+            pm_entities = pm_data_model_raw.get("entities", [])
+        else:
+            pm_entities = []
+
+        if pm_entities:
+            db_tables = [
+                {"name": ent.get("entity_name", ent.get("name", str(ent))) if isinstance(ent, dict) else str(ent)}
+                for ent in pm_entities
+            ]
+        else:
+            # Fall back to module_config entity names
+            mod_entities = mod.get("data_model", {}).get("entities", [])
+            db_tables = [
+                {"name": ent.get("name", ent) if isinstance(ent, dict) else str(ent)}
+                for ent in mod_entities
+            ] if mod_entities else []
+
+        # Optional PM api hints section for Architect context
+        pm_api_section = ""
+        if pm_api_hints:
+            hint_paths = [
+                h.get("path_pattern", h.get("path", ""))
+                for h in pm_api_hints if isinstance(h, dict)
+            ]
+            hint_paths = [p for p in hint_paths if p]
+            if hint_paths:
+                pm_api_section = (
+                    "\nPM REQUIREMENTS ANALYSIS — suggested endpoint patterns (for context; adapt freely):\n"
+                    + "\n".join(f"  - {p}" for p in hint_paths)
+                    + "\n"
+                )
 
         # Build openapi_spec paths: starts empty; LLM will populate
         fallback_architecture = {
@@ -69,19 +133,6 @@ class ArchitectAgent(BaseAgent):
             "api_contract": fallback_api_contract,
         }
 
-        # Provide functional requirements context for the LLM
-        fr_raw = mod.get("functional_requirements", [])
-        fr_lines = "\n".join(
-            f"- {fr}" if isinstance(fr, str) else f"- {fr.get('user_story', str(fr))}"
-            for fr in fr_raw
-        ) if fr_raw else f"Implement the {module_name} module."
-
-        nfr_raw = mod.get("non_functional_requirements", [])
-        nfr_lines = "\n".join(
-            f"- {nfr}" if isinstance(nfr, str) else f"- {nfr.get('description', str(nfr))}"
-            for nfr in nfr_raw
-        )
-
         architecture, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
@@ -90,11 +141,12 @@ class ArchitectAgent(BaseAgent):
                 "\nFunctional requirements:\n"
                 + fr_lines
                 + ("\n\nNon-functional constraints:\n" + nfr_lines if nfr_lines else "")
+                + (pm_api_section)
                 + "\n\nInclude: tech_stack, modules, database_schema, openapi_spec, deployment, api_contract.\n"
                 "\n"
                 "IMPORTANT: You are the Architect. Design the api_contract endpoints from scratch "
                 "based on the functional requirements above. Choose REST paths, HTTP methods, "
-                "request/response fields, and auth requirements yourself — do NOT use any pre-defined paths.\n"
+                "request/response fields, and auth requirements yourself.\n"
                 "\n"
                 "api_contract is a machine-readable endpoint list consumed by the frontend agent.\n"
                 "It MUST follow this exact format:\n"

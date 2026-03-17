@@ -10,6 +10,40 @@ from core.models import AgentMessage, Artifact, MessageType
 from core.project_state import ProjectState
 
 from .base_agent import BaseAgent
+from .backend_dev_agent import _qa_rework_needed
+
+
+def _build_frontend_qa_feedback(context: ProjectState) -> str:
+    """Format QA bug reports as a feedback section for the frontend task instruction."""
+    qa_art = context.get_latest_artifact("qa_report")
+    if qa_art is None or not isinstance(qa_art.content, dict):
+        return ""
+    bug_reports = qa_art.content.get("bug_reports", [])
+    if not isinstance(bug_reports, list) or not bug_reports:
+        return ""
+    # Prefer frontend-relevant bugs; fall back to all bugs if none found
+    frontend_bugs = [
+        b for b in bug_reports
+        if isinstance(b, dict) and (
+            str(b.get("file", "")).startswith("src/")
+            and not str(b.get("file", "")).endswith(".java")
+        )
+    ] or [b for b in bug_reports if isinstance(b, dict)]
+    lines = [
+        "\n*** REVISION MODE ***",
+        "Your previous implementation had QA failures listed below.",
+        "Return a COMPLETE updated code_bundle that fixes ALL issues.\n",
+        "QA BUG REPORTS TO FIX:",
+    ]
+    for bug in frontend_bugs:
+        sev = bug.get("severity", "")
+        f = bug.get("file", "")
+        desc = bug.get("description", "")
+        fix = bug.get("suggested_fix", "")
+        lines.append(f"- [{sev}] {f}: {desc}")
+        if fix:
+            lines.append(f"  Fix: {fix}")
+    return "\n".join(lines) + "\n"
 
 
 class FrontendDeveloperAgent(BaseAgent):
@@ -49,6 +83,7 @@ class FrontendDeveloperAgent(BaseAgent):
                 isinstance(generation, dict)
                 and generation.get("source") == "llm"
                 and cached_module == module_id
+                and not _qa_rework_needed(context)
             ):
                 cached_content = (
                     copy.deepcopy(latest_frontend_artifact.content)
@@ -96,7 +131,7 @@ class FrontendDeveloperAgent(BaseAgent):
 
         # Determine a generic login URL hint from architect's contract (if relevant to module)
         login_ep = next((e for e in endpoints if "login" in e.get("path", "").lower()), None)
-        login_url = f"{base_url}{login_ep['path']}" if login_ep else f"{base_url}/api/login"
+        login_url = f"{base_url}{login_ep.get('path', '/api/login')}" if login_ep else f"{base_url}/api/login"
 
         fallback_code_bundle = {
             app_root: (
@@ -181,12 +216,15 @@ class FrontendDeveloperAgent(BaseAgent):
             f"{fe.get('scaffolding_tool', 'Create React App')} {fe.get('scaffolding_version', '')}"
         ).strip(", ")
 
+        qa_feedback_section = _build_frontend_qa_feedback(context) if _qa_rework_needed(context) else ""
+
         frontend_artifact, usage, generation_meta = self._llm_json_or_fallback(
             context=context,
             task_instruction=(
                 f"Generate a frontend {module_id} module code_bundle JSON for the "
                 f"{project_name} project using scaffold-overlay mode.\n"
-                "\n"
+                + qa_feedback_section
+                + "\n"
                 "SCAFFOLD CONTEXT:\n"
                 f"- {fe_framework_line}\n"
                 f"- Entry: {entry_file} renders <App /> — you MUST override {app_root}\n"
@@ -232,8 +270,8 @@ class FrontendDeveloperAgent(BaseAgent):
                 "- Avoid markdown and explanations; JSON data only.",
             ],
             retry_on_invalid_json=True,
-            json_retry_attempts=2,
-            max_output_tokens_override=3000,
+            json_retry_attempts=3,
+            max_output_tokens_override=4000,
         )
         return {
             "state_updates": {"frontend_code": {"artifact_ref": "frontend_code:v1"}},
