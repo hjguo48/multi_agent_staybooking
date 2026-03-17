@@ -8,14 +8,17 @@ __pycache__/
 # npm packages — never commit
 node_modules/
 
-# generated workspaces (materialized during runs)
+# generated workspaces and case state snapshots (materialized during runs)
 outputs/week8/generated_workspaces/
 outputs/week9/generated_workspaces/
 outputs/week9/cases/
+outputs/week11/generated_workspaces/
+outputs/week11/cases/
 
 # temp/debug scripts
 _tmp_*.py
 outputs/week9/_tmp_*
+outputs/week11/_tmp_*
 
 # cloud credentials — never commit
 **/credentials.json

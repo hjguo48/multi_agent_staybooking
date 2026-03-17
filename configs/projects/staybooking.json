@@ -18,10 +18,15 @@
       "spring-boot-starter-web",
       "spring-boot-starter-data-jpa",
       "spring-boot-starter-security",
+      "spring-boot-starter-validation",
       "io.jsonwebtoken:jjwt-api:0.11.5",
       "io.jsonwebtoken:jjwt-impl:0.11.5",
       "io.jsonwebtoken:jjwt-jackson:0.11.5",
-      "org.postgresql:postgresql"
+      "org.postgresql:postgresql",
+      "com.google.cloud:google-cloud-storage:2.23.0",
+      "com.google.maps:google-maps-services:2.2.0",
+      "org.hibernate.orm:hibernate-spatial:6.1.7.Final",
+      "org.locationtech.jts:jts:1.19.0"
     ]
   },
 

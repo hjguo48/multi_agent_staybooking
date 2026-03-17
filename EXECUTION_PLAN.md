@@ -488,6 +488,32 @@ Plan owner: Project execution baseline agreed with user.
   `configs/pilot/week9_pilot_matrix.json` (see Week 11 plan).
 - All 45 unit tests pass after fix.
 
+### RISK-003: Frontend QA-feedback round occasionally produces rule_fallback — RESOLVED (2026-03-04)
+- **修复1 (Sequential work_items 过滤)**：`_run_sequential_with_granularity` 新增逻辑：
+  若无 `work_item_module_map`（单模块 case），只跑 1 个 work_item slot；
+  若有 map，只跑 map 中包含的 work_items。
+  防止单模块 case 意外跑完整 4 个 slot 产生跨 slot QA 泄漏。
+- **修复2 (best-of-N 选择)**：新增 `_promote_best_artifacts(state)` 函数，
+  在每次 attempt 结束后、materialization 之前执行：
+  扫描所有 QA 版本，找到 pass_rate 最高（critical_bugs=0 优先）的版本 N，
+  若 N ≠ latest，则将 backend_code vN / frontend_code vN 注册为新 latest，
+  并更新 state.backend_code / state.frontend_code，确保 materializer 使用最优代码。
+- **修复3 (Frontend retry 加固)**：`frontend_dev_agent.py` 中
+  `json_retry_attempts` 2→3，`max_output_tokens_override` 3000→4000，
+  降低 QA feedback 模式下因 prompt 变长导致 LLM 返回无效 JSON 的概率。
+- 全部 45 个单元测试通过。
+
+### RISK-003-original: Frontend QA-feedback round occasionally produces rule_fallback (2026-03-04)
+- **现象**：seq_listing pilot 观察到两次 attempt 的 frontend_code v2 均为 `rule_fallback`（1个文件），
+  attempt1 的 v4 也退化为 rule_fallback，导致最终 QA pass_rate 从 0.92 跌至 0.70，触发整体重试。
+- **根因**：QA feedback 注入后 task_instruction 长度增加，LLM 偶尔返回无效 JSON，
+  当前 `json_retry_attempts=2` 不足以覆盖所有失败场景。
+- **影响**：frontend 退化为 1 文件占位代码 → QA pass_rate 大幅下降 → 触发整体 attempt 重试，
+  增加 token 消耗；Week 12 48-run 矩阵中会放大此问题。
+- **候选修复**：将 `frontend_dev_agent` 的 `json_retry_attempts` 从 2 提升至 3，
+  同时将 `max_output_tokens_override` 从 3000 提升至 4000（QA feedback 模式下 prompt 更长）。
+- **状态**：待修复（Week 12 实验前需处理，否则影响数据可信度）。
+
 ### RISK-002: QA test_pass_rate is LLM-estimated, not real execution
 - build_test_gate shows `backend_test: executed=False` (disabled by validator config).
 - QA reports test_pass_rate as an LLM estimate, not from actual JUnit execution.
