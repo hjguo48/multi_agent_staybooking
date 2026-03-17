@@ -12,28 +12,100 @@
   },
   "cases": [
     {
-      "name": "seq_module",
+      "name": "seq_auth",
       "topology": "sequential",
       "granularity": "module",
       "module_config": "configs/modules/auth.json"
     },
     {
-      "name": "hub_module",
+      "name": "seq_listing",
+      "topology": "sequential",
+      "granularity": "module",
+      "module_config": "configs/modules/listing.json"
+    },
+    {
+      "name": "seq_search",
+      "topology": "sequential",
+      "granularity": "module",
+      "module_config": "configs/modules/search.json"
+    },
+    {
+      "name": "seq_booking",
+      "topology": "sequential",
+      "granularity": "module",
+      "module_config": "configs/modules/booking.json"
+    },
+    {
+      "name": "hub_auth",
       "topology": "hub_spoke",
       "granularity": "module",
       "module_config": "configs/modules/auth.json"
     },
     {
-      "name": "peer_module",
+      "name": "hub_listing",
+      "topology": "hub_spoke",
+      "granularity": "module",
+      "module_config": "configs/modules/listing.json"
+    },
+    {
+      "name": "hub_search",
+      "topology": "hub_spoke",
+      "granularity": "module",
+      "module_config": "configs/modules/search.json"
+    },
+    {
+      "name": "hub_booking",
+      "topology": "hub_spoke",
+      "granularity": "module",
+      "module_config": "configs/modules/booking.json"
+    },
+    {
+      "name": "peer_auth",
       "topology": "peer_review",
       "granularity": "module",
       "module_config": "configs/modules/auth.json"
     },
     {
-      "name": "iter_module",
+      "name": "peer_listing",
+      "topology": "peer_review",
+      "granularity": "module",
+      "module_config": "configs/modules/listing.json"
+    },
+    {
+      "name": "peer_search",
+      "topology": "peer_review",
+      "granularity": "module",
+      "module_config": "configs/modules/search.json"
+    },
+    {
+      "name": "peer_booking",
+      "topology": "peer_review",
+      "granularity": "module",
+      "module_config": "configs/modules/booking.json"
+    },
+    {
+      "name": "iter_auth",
       "topology": "iterative_feedback",
       "granularity": "module",
       "module_config": "configs/modules/auth.json"
+    },
+    {
+      "name": "iter_listing",
+      "topology": "iterative_feedback",
+      "granularity": "module",
+      "module_config": "configs/modules/listing.json"
+    },
+    {
+      "name": "iter_search",
+      "topology": "iterative_feedback",
+      "granularity": "module",
+      "module_config": "configs/modules/search.json"
+    },
+    {
+      "name": "iter_booking",
+      "topology": "iterative_feedback",
+      "granularity": "module",
+      "module_config": "configs/modules/booking.json"
     }
   ]
 }

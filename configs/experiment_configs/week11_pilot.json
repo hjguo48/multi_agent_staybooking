@@ -1,0 +1,34 @@
+{
+  "name": "week11_pilot_pipeline",
+  "description": "Week 11: 4 topologies x 4 modules pilot with QA feedback loop enabled.",
+  "report_path": "outputs/week11/week11_pilot_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "week11_pilot_experiments",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week9_pilot_experiments.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}

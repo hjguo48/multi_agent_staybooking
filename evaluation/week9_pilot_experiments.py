@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Week 9 pilot experiments and stability checks."""
+"""Week 11 pilot experiments — 4 topologies × 4 modules, QA feedback loop enabled."""
 
 from __future__ import annotations
 
+import copy
 import json
 import sys
 import time
@@ -13,7 +14,7 @@ from typing import Any
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-OUTPUT_DIR = PROJECT_ROOT / "outputs" / "week9"
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "week11"
 PILOT_CONFIG = PROJECT_ROOT / "configs" / "pilot" / "pilot_matrix.json"
 GRANULARITY_CONFIG = PROJECT_ROOT / "configs" / "granularity_profiles.json"
 PROMPTS_DIR = PROJECT_ROOT / "configs" / "prompts"
@@ -56,6 +57,12 @@ VALIDATOR_RUN_FRONTEND_TESTS = False  # CRA test runner requires CI env; disable
 VALIDATOR_RUN_FRONTEND_LINT = True
 REQUIRE_LLM_CODE_OUTPUTS = True
 ENFORCE_BUILD_TEST_GATE = True
+
+# Week 11: QA-driven rework loop (sequential topology)
+QA_FEEDBACK_ENABLED = True
+QA_FEEDBACK_MAX_ROUNDS = 3      # Max rework iterations per work item
+QA_FEEDBACK_PASS_THRESHOLD = 0.85  # Minimum test_pass_rate for QA gate
+_QA_REWORK_ROLES = ["backend_dev", "frontend_dev", "qa"]
 
 
 @dataclass
@@ -274,6 +281,37 @@ def _evaluate_build_test_gate(validation: dict[str, Any]) -> tuple[bool, dict[st
     }
 
 
+def _qa_passes_gate(state: ProjectState) -> bool:
+    """Return True when QA report meets the passing threshold (no critical bugs, pass_rate >= threshold)."""
+    qa_art = state.get_latest_artifact("qa_report")
+    if qa_art is None or not isinstance(qa_art.content, dict):
+        return False
+    summary = qa_art.content.get("summary", {})
+    if not isinstance(summary, dict):
+        return False
+    pass_rate = float(summary.get("test_pass_rate", 0.0))
+    critical = int(summary.get("critical_bugs", 1))
+    return pass_rate >= QA_FEEDBACK_PASS_THRESHOLD and critical == 0
+
+
+def _qa_state_signature(state: ProjectState) -> str:
+    """Return a stable fingerprint of the current QA report for anti-loop detection."""
+    qa_art = state.get_latest_artifact("qa_report")
+    if qa_art is None or not isinstance(qa_art.content, dict):
+        return "qa:none"
+    summary = qa_art.content.get("summary", {})
+    pass_rate = summary.get("test_pass_rate", "na")
+    critical = summary.get("critical_bugs", "na")
+    major = summary.get("major_bugs", "na")
+    bug_reports = qa_art.content.get("bug_reports", [])
+    bug_ids = sorted(
+        str(b.get("bug_id", "")).strip()
+        for b in (bug_reports if isinstance(bug_reports, list) else [])
+        if isinstance(b, dict) and b.get("bug_id")
+    )
+    return f"pass_rate={pass_rate}|critical={critical}|major={major}|bugs={','.join(bug_ids)}"
+
+
 def _register_standard_agents(
     orchestrator: Orchestrator,
     *,
@@ -323,7 +361,18 @@ def _run_sequential_with_granularity(
             )
         )
 
-    for work_item in profile.work_items:
+    # Determine which work_items to actually run:
+    # - Multi-module run: only the work_items covered by work_item_module_map
+    # - Single-module run (no map): one slot only — avoids unintended QA leakage
+    #   between subsequent work_items when all slots share the same module_config.
+    if work_item_module_map:
+        items_to_run = [wi for wi in profile.work_items if wi in work_item_module_map]
+        if not items_to_run:
+            items_to_run = profile.work_items[:1]
+    else:
+        items_to_run = profile.work_items[:1]
+
+    for work_item in items_to_run:
         # Update module_config and current_module_id for this work_item when a
         # per-item mapping is provided.  This ensures backend/frontend agents
         # see the correct module context for each module in a multi-module run.
@@ -337,6 +386,66 @@ def _run_sequential_with_granularity(
                 f"[pilot] {granularity} item: {work_item}"
             )
         )
+
+        # Week 11: QA-driven rework loop.
+        # Only active when QA already ran in per_item_roles (qa_report artifact exists)
+        # and QA_FEEDBACK_ENABLED is True.
+        if QA_FEEDBACK_ENABLED and "qa" in profile.per_item_roles:
+            prev_signature: str | None = None
+            stagnant_rounds = 0
+            qa_loop_passed = _qa_passes_gate(orchestrator.state)
+            for rework_round in range(1, QA_FEEDBACK_MAX_ROUNDS + 1):
+                if _qa_passes_gate(orchestrator.state):
+                    qa_loop_passed = True
+                    break  # QA passed — no rework needed
+                current_sig = _qa_state_signature(orchestrator.state)
+                if prev_signature is not None and current_sig == prev_signature:
+                    stagnant_rounds += 1
+                else:
+                    stagnant_rounds = 0
+                if stagnant_rounds >= 1:
+                    # Anti-loop guard: same QA failure after revision → stop
+                    break
+                prev_signature = current_sig
+                orchestrator.state.increment_iteration()
+                all_results.extend(
+                    SequentialTopology(
+                        orchestrator=orchestrator, roles=_QA_REWORK_ROLES
+                    ).run(
+                        f"[pilot] qa-rework round {rework_round} for {work_item}"
+                    )
+                )
+            # PM verdict: called when rework loop exits without QA passing
+            # (cap reached or anti-loop triggered). PM decides accept/reject.
+            if not qa_loop_passed and not _qa_passes_gate(orchestrator.state):
+                pm_agent = orchestrator.agents.get("pm")
+                if pm_agent is not None:
+                    try:
+                        pm_verdict_output = pm_agent.act_qa_verdict(orchestrator.state)  # type: ignore[attr-defined]
+                        verdict_usage = pm_verdict_output.get("usage", {})
+                        orchestrator.state.update_usage(
+                            token_delta=int(verdict_usage.get("tokens", 0)),
+                            api_call_delta=int(verdict_usage.get("api_calls", 0)),
+                        )
+                        all_results.append(
+                            TurnResult(
+                                agent_role="pm",
+                                success=True,
+                                artifacts_registered=["pm_qa_verdict:v1"],
+                                messages_emitted=1,
+                                usage_tokens=int(verdict_usage.get("tokens", 0)),
+                                usage_api_calls=int(verdict_usage.get("api_calls", 0)),
+                                updated_fields=[],
+                            )
+                        )
+                    except Exception as exc:
+                        all_results.append(
+                            TurnResult(
+                                agent_role="pm",
+                                success=False,
+                                error=f"pm_qa_verdict_error:{exc}",
+                            )
+                        )
 
     if profile.final_roles:
         all_results.extend(
@@ -396,6 +505,62 @@ def _execute_case(
         return topology_runtime.run(f"[pilot] iterative-feedback {granularity}"), orchestrator.state
 
     raise ValueError(f"Unsupported topology: {topology}")
+
+
+def _promote_best_artifacts(state: ProjectState) -> None:
+    """After all QA iterations, promote the best-scoring version's artifacts to latest.
+
+    QA report vN was produced after backend_code vN and frontend_code vN, so the
+    version numbers are correlated.  If the final iteration degraded quality (e.g.
+    rule_fallback lowered pass_rate), this promotes the better earlier version so
+    that materialization and gate checks use the highest-quality code.
+    """
+    qa_versions = state.artifact_store.artifact_versions.get("qa_report", [])
+    if len(qa_versions) <= 1:
+        return
+
+    best_n: int | None = None
+    best_score = -1.0
+    # Prefer versions with 0 critical bugs; among those take highest pass_rate
+    for art in qa_versions:
+        content = art.content if isinstance(art.content, dict) else {}
+        summary = content.get("summary", {}) if isinstance(content.get("summary"), dict) else {}
+        pass_rate = float(summary.get("test_pass_rate", 0.0))
+        critical = int(summary.get("critical_bugs", 1))
+        if critical == 0 and pass_rate > best_score:
+            best_score = pass_rate
+            best_n = art.version
+
+    # Fallback: if every version has critical bugs, still pick the least-bad one
+    if best_n is None:
+        for art in qa_versions:
+            content = art.content if isinstance(art.content, dict) else {}
+            summary = content.get("summary", {}) if isinstance(content.get("summary"), dict) else {}
+            pass_rate = float(summary.get("test_pass_rate", 0.0))
+            if pass_rate > best_score:
+                best_score = pass_rate
+                best_n = art.version
+
+    latest_n = qa_versions[-1].version
+    if best_n is None or best_n == latest_n:
+        return  # Best is already the latest version — nothing to do
+
+    # Promote backend_code and frontend_code from best_n to new latest versions
+    for key in ("backend_code", "frontend_code"):
+        best_art = state.artifact_store.get_version(key, best_n)
+        if best_art is None:
+            continue
+        latest_art = state.artifact_store.get_latest(key)
+        if latest_art is not None and latest_art.version == best_n:
+            continue
+        promoted = copy.deepcopy(best_art)
+        promoted.metadata = dict(promoted.metadata or {})
+        promoted.metadata["best_of_n_selection"] = True
+        promoted.metadata["promoted_from_version"] = best_n
+        promoted.metadata["best_qa_pass_rate"] = best_score
+        state.artifact_store.register(key, promoted)
+        # Update the plain state field so the materializer uses the promoted content
+        setattr(state, key, copy.deepcopy(best_art.content))
 
 
 def _case_success(turn_results: list[TurnResult], state: ProjectState) -> tuple[bool, str]:
@@ -568,6 +733,7 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
                     module_config=case_module_config,
                     work_item_module_map=work_item_module_map,
                 )
+                _promote_best_artifacts(state)
                 run_ok, run_reason = _case_success(turn_results, state)
             except Exception as exc:
                 run_ok = False
@@ -775,7 +941,7 @@ def run_pilot() -> tuple[int, list[CheckResult], Path]:
     )
 
     status = "success" if all(item.passed for item in checks) else "failed"
-    report_path = OUTPUT_DIR / "week9_pilot_report.json"
+    report_path = OUTPUT_DIR / "week11_pilot_report.json"
     write_json(
         report_path,
         {
