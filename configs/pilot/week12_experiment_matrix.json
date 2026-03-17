@@ -1,0 +1,201 @@
+{
+  "description": "Week 12 primary experiment matrix: 4 topologies x 3 granularities = 32 cases (module:16, layer:4, feature:12). Answers RQ1 (topology effect) and RQ2 (granularity interaction).",
+  "llm_profiles_path": "configs/llm_profiles.json",
+  "llm_profile": "claude_sonnet_4",
+  "allow_network_llm": true,
+  "max_attempts_per_case": 1,
+  "disable_llm_on_retry": false,
+  "project_config": "configs/projects/staybooking.json",
+  "repo_landing": {
+    "materialization_mode": "scaffold_overlay",
+    "backend_template": "scaffold/backend",
+    "frontend_template": "scaffold/frontend"
+  },
+
+  "cases": [
+    {"name": "seq_module_auth",    "topology": "sequential",         "granularity": "module",  "module_config": "configs/modules/auth.json"},
+    {"name": "seq_module_listing", "topology": "sequential",         "granularity": "module",  "module_config": "configs/modules/listing.json"},
+    {"name": "seq_module_search",  "topology": "sequential",         "granularity": "module",  "module_config": "configs/modules/search.json"},
+    {"name": "seq_module_booking", "topology": "sequential",         "granularity": "module",  "module_config": "configs/modules/booking.json"},
+
+    {"name": "hub_module_auth",    "topology": "hub_spoke",          "granularity": "module",  "module_config": "configs/modules/auth.json"},
+    {"name": "hub_module_listing", "topology": "hub_spoke",          "granularity": "module",  "module_config": "configs/modules/listing.json"},
+    {"name": "hub_module_search",  "topology": "hub_spoke",          "granularity": "module",  "module_config": "configs/modules/search.json"},
+    {"name": "hub_module_booking", "topology": "hub_spoke",          "granularity": "module",  "module_config": "configs/modules/booking.json"},
+
+    {"name": "peer_module_auth",    "topology": "peer_review",       "granularity": "module",  "module_config": "configs/modules/auth.json"},
+    {"name": "peer_module_listing", "topology": "peer_review",       "granularity": "module",  "module_config": "configs/modules/listing.json"},
+    {"name": "peer_module_search",  "topology": "peer_review",       "granularity": "module",  "module_config": "configs/modules/search.json"},
+    {"name": "peer_module_booking", "topology": "peer_review",       "granularity": "module",  "module_config": "configs/modules/booking.json"},
+
+    {"name": "iter_module_auth",    "topology": "iterative_feedback","granularity": "module",  "module_config": "configs/modules/auth.json"},
+    {"name": "iter_module_listing", "topology": "iterative_feedback","granularity": "module",  "module_config": "configs/modules/listing.json"},
+    {"name": "iter_module_search",  "topology": "iterative_feedback","granularity": "module",  "module_config": "configs/modules/search.json"},
+    {"name": "iter_module_booking", "topology": "iterative_feedback","granularity": "module",  "module_config": "configs/modules/booking.json"},
+
+    {
+      "name": "seq_layer_fullstack",
+      "topology": "sequential",
+      "granularity": "layer",
+      "module_config": "configs/modules/full_stack.json",
+      "work_item_module_configs": {"full_stack_delivery": "configs/modules/full_stack.json"}
+    },
+    {
+      "name": "hub_layer_fullstack",
+      "topology": "hub_spoke",
+      "granularity": "layer",
+      "module_config": "configs/modules/full_stack.json",
+      "work_item_module_configs": {"full_stack_delivery": "configs/modules/full_stack.json"}
+    },
+    {
+      "name": "peer_layer_fullstack",
+      "topology": "peer_review",
+      "granularity": "layer",
+      "module_config": "configs/modules/full_stack.json",
+      "work_item_module_configs": {"full_stack_delivery": "configs/modules/full_stack.json"}
+    },
+    {
+      "name": "iter_layer_fullstack",
+      "topology": "iterative_feedback",
+      "granularity": "layer",
+      "module_config": "configs/modules/full_stack.json",
+      "work_item_module_configs": {"full_stack_delivery": "configs/modules/full_stack.json"}
+    },
+
+    {
+      "name": "seq_feature_user_registration",
+      "topology": "sequential",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_user_registration.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "seq_feature_listing_search",
+      "topology": "sequential",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_listing_search.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "seq_feature_make_booking",
+      "topology": "sequential",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_make_booking.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+
+    {
+      "name": "hub_feature_user_registration",
+      "topology": "hub_spoke",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_user_registration.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "hub_feature_listing_search",
+      "topology": "hub_spoke",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_listing_search.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "hub_feature_make_booking",
+      "topology": "hub_spoke",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_make_booking.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+
+    {
+      "name": "peer_feature_user_registration",
+      "topology": "peer_review",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_user_registration.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "peer_feature_listing_search",
+      "topology": "peer_review",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_listing_search.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "peer_feature_make_booking",
+      "topology": "peer_review",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_make_booking.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+
+    {
+      "name": "iter_feature_user_registration",
+      "topology": "iterative_feedback",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_user_registration.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "iter_feature_listing_search",
+      "topology": "iterative_feedback",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_listing_search.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    },
+    {
+      "name": "iter_feature_make_booking",
+      "topology": "iterative_feedback",
+      "granularity": "feature",
+      "module_config": "configs/modules/feature_make_booking.json",
+      "work_item_module_configs": {
+        "user_registration": "configs/modules/feature_user_registration.json",
+        "listing_search":    "configs/modules/feature_listing_search.json",
+        "make_booking":      "configs/modules/feature_make_booking.json"
+      }
+    }
+  ]
+}

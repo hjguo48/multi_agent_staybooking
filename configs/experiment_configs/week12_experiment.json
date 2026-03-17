@@ -1,0 +1,34 @@
+{
+  "name": "week12_experiment_pipeline",
+  "description": "Week 12: 4 topologies x 3 granularities = 32 cases. Answers RQ1 (topology effect) and RQ2 (granularity interaction). Computes composite Q score and selects best config.",
+  "report_path": "outputs/week12/week12_experiment_pipeline_report.json",
+  "steps": [
+    {
+      "name": "verify_baseline_lock",
+      "command": [
+        "${PYTHON}",
+        "evaluation/verify_baseline_lock.py"
+      ]
+    },
+    {
+      "name": "week12_experiment",
+      "command": [
+        "${PYTHON}",
+        "evaluation/week12_experiment.py"
+      ]
+    },
+    {
+      "name": "unit_tests",
+      "command": [
+        "${PYTHON}",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ]
+    }
+  ]
+}
