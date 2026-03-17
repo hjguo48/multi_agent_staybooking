@@ -1,0 +1,22 @@
+{
+  "$schema_version": "1.1",
+  "module_id": "listing_search",
+  "module_name": "Listing & Search Feature",
+  "description": "Vertical feature slice: hosts create and manage property listings (with photo upload to GCS and address geocoding), and guests search listings by location, date range, and guest count. This slice assumes JWT authentication is already in place.",
+  "functional_requirements": [
+    "As a host, I can create a new property listing with title, description, address, price, and availability dates; the address is geocoded to latitude and longitude using Google Maps Geocoding API",
+    "As a host, I can upload up to 6 photos for my listing; photos are stored in Google Cloud Storage and the listing stores the resulting public URLs",
+    "As a host, I can delete my own listings; other users receive a 403 if they attempt to delete my listing",
+    "As a guest, I can search listings by location (geocoded coordinates), check-in/check-out dates, and guest count; listings with conflicting bookings on those dates are excluded",
+    "Location search finds listings within a configurable radius (default 50 km) using PostGIS spatial distance",
+    "Search results are paginated with a default page size of 20"
+  ],
+  "non_functional_requirements": [
+    "Listing create, update, and delete endpoints require JWT authentication with HOST role",
+    "Only the host who created a listing can modify or delete it",
+    "Listing coordinates stored as PostGIS Point geometry using Hibernate Spatial",
+    "Photo upload accepts multipart/form-data; each image stored as a separate GCS object with a public URL",
+    "Search endpoint is public (no authentication required)",
+    "Geographic distance computed using PostGIS ST_Distance or Hibernate Spatial"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "$schema_version": "1.1",
+  "module_id": "full_stack",
+  "module_name": "StayBooking Full Stack",
+  "description": "Complete StayBooking platform covering all four core modules: Authentication (JWT, GUEST/HOST roles), Listing Management (GCS photo upload, geocoding), Listing Search (PostGIS geo-distance), and Booking (conflict detection, CONFIRMED/CANCELLED states). Generate the full backend and frontend in a single pass.",
+  "functional_requirements": [
+    "Users can register with a username, password, and role (GUEST or HOST)",
+    "Registered users can login with username and password to receive a JWT token",
+    "JWT-protected endpoints reject unauthenticated requests with 401",
+    "As a host, I can create a new property listing with title, description, address, price, and availability dates; the address is geocoded to latitude and longitude using Google Maps Geocoding API",
+    "As a host, I can upload up to 6 photos for my listing; photos are stored in Google Cloud Storage and the listing stores the resulting public URLs",
+    "As a host, I can edit or delete my own listings; other users receive a 403 if they attempt to modify my listing",
+    "As a guest, I can search listings by location (geocoded address), date range, and optional price range; listings with conflicting bookings are excluded",
+    "Location search finds listings within a configurable radius (default 50 km) using PostGIS spatial distance",
+    "Search results are paginated with a default page size of 20",
+    "As a guest, I can book a listing for a specific date range; conflicting dates return 409",
+    "As a guest, I can view all my bookings",
+    "As a guest, I can cancel a booking I made; another user attempting to cancel my booking receives 403"
+  ],
+  "non_functional_requirements": [
+    "Stateless JWT-based authentication",
+    "Passwords stored as BCrypt hashes",
+    "Create, update, and delete listing endpoints require JWT authentication",
+    "Only the host who created a listing can modify or delete it",
+    "Listing coordinates stored as PostGIS Point geometry using Hibernate Spatial",
+    "Photo upload accepts multipart/form-data; each image stored as a separate GCS object",
+    "Search endpoint is public (no authentication required)",
+    "Geographic distance computed using PostGIS ST_Distance or Hibernate Spatial",
+    "All booking endpoints require JWT authentication",
+    "Booking creation must prevent double-booking via atomic check-and-insert"
+  ]
+}

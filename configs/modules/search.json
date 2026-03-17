@@ -2,13 +2,15 @@
   "$schema_version": "1.1",
   "module_id": "search",
   "module_name": "Listing Search",
-  "description": "Guests search available listings by location, date range, and price. Results are paginated and exclude listings with conflicting bookings.",
+  "description": "Guests search available listings by location, date range, and price. Location search uses geographic distance — the query address is geocoded to coordinates and listings within a specified radius (default 50 km) are returned. Results are paginated and exclude listings with conflicting bookings.",
   "functional_requirements": [
-    "As a guest, I can search available listings by location and date range; unavailable listings are excluded from results",
+    "As a guest, I can search available listings by location (address string geocoded to lat/lng), date range, and optional price range; listings with conflicting bookings for the requested dates are excluded",
+    "Location search finds listings within a configurable radius (default 50 km) of the searched coordinates using PostGIS spatial distance query",
     "Search results are paginated with a configurable page size"
   ],
   "non_functional_requirements": [
     "Search endpoint is publicly accessible (no authentication required)",
-    "Results are paginated; default page size is 20"
+    "Results are paginated; default page size is 20",
+    "Geographic distance filtering uses PostGIS ST_Distance or hibernate-spatial; coordinates stored as Point geometry"
   ]
 }

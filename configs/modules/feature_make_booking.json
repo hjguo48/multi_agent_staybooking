@@ -1,0 +1,17 @@
+{
+  "$schema_version": "1.1",
+  "module_id": "make_booking",
+  "module_name": "Make Booking Feature",
+  "description": "Vertical feature slice: guests book available listings for date ranges, view their bookings, and cancel bookings. Double-booking is prevented via atomic conflict detection. Booking status transitions: CONFIRMED → CANCELLED. This slice assumes JWT authentication and listing management are already in place.",
+  "functional_requirements": [
+    "As a guest, I can book a listing for a specific check-in and check-out date range; conflicting bookings on those dates return 409",
+    "As a guest, I can view all my current and past bookings",
+    "As a guest, I can cancel a booking I made; the booking status changes to CANCELLED",
+    "Another user attempting to cancel my booking receives a 403 Forbidden error"
+  ],
+  "non_functional_requirements": [
+    "All booking endpoints require JWT authentication with GUEST role",
+    "Booking creation must prevent double-booking via atomic check-and-insert (no race conditions)",
+    "Booking status follows the transition: CONFIRMED → CANCELLED only"
+  ]
+}

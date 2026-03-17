@@ -2,14 +2,17 @@
   "$schema_version": "1.1",
   "module_id": "listing",
   "module_name": "Listing Management",
-  "description": "Hosts create, edit, and manage property listings. Listings include title, description, location, price, and availability dates. Only the host who created a listing can modify or delete it.",
+  "description": "Hosts create, edit, and manage property listings. Listings include title, description, location (address geocoded to latitude/longitude), price, and availability dates. Hosts can upload up to 6 photos per listing stored in cloud object storage. Only the host who created a listing can modify or delete it.",
   "functional_requirements": [
-    "As a host, I can create a new property listing with title, description, location, price, and availability dates",
+    "As a host, I can create a new property listing with title, description, address, price, and availability dates; the address is geocoded to latitude and longitude using Google Maps Geocoding API",
+    "As a host, I can upload up to 6 photos for my listing; photos are stored in Google Cloud Storage and the listing stores the resulting public URLs",
     "As a host, I can edit or delete my own listings; other users receive a 403 if they attempt to modify my listing",
-    "As any user, I can view the details of a specific listing by its ID"
+    "As any user, I can view the details of a specific listing by its ID, including its photos and coordinates"
   ],
   "non_functional_requirements": [
     "Create, update, and delete listing endpoints require JWT authentication",
-    "Only the host who created a listing can modify or delete it"
+    "Only the host who created a listing can modify or delete it",
+    "Listing coordinates (latitude, longitude) are stored as a PostGIS Point geometry using Hibernate Spatial",
+    "Photo upload accepts multipart/form-data; each image is stored as a separate GCS object"
   ]
 }
